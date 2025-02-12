@@ -7,9 +7,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#fff',
     },
-    title: {
+    welcomeText: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    questionText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+    button: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
+        width: '80%',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
     },
 });
 

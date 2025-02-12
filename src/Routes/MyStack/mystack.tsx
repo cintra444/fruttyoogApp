@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Navigation/types";
-import Home from "../../screens/Home/home";
+import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
 import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
 import Dashboard from "src/screens/Admin/Dashboard";

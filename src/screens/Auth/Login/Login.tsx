@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Alert, Text, View } from 'react-native';
 import styles from './styles';
 import LoginForm from '../../../components/LoginForm/LoginForm';
-import ModalSuccess from 'src/components/ModalSucess/ModalSucess';
+import ModalSuccess from  '../../../components/ModalSucess/ModalSucess';
+import { useNavigation } from '@react-navigation/native';
 
 const Login: React.FC = () => {
-    const navigate = useNavigate();
+    const navigation = useNavigation<any>();
     const [modalVisible, setModalVisible] = React.useState(false);
     const [usuario, setUsuario] = useState('');
 
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
 
     const handleModalClose = () => {
         setModalVisible(false);
-        navigate('Dashboard');
+        navigation.navigate('Dashboard');
     };
 
     return (

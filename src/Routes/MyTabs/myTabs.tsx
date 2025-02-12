@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import Home from '../../screens/Home/home';
+import Home from '../../screens/Home/Home';
 import Settings from '../../screens/Settings/settings'
 import Footer from 'src/components/Footer/Footer';
 import Logout from 'src/screens/Logout/Logout';
