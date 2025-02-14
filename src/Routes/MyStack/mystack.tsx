@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function MyStack() {
     return (
         <Stack.Navigator
-        screenOptions={{ header: () => Header />, 
+        screenOptions={{ header: () => <Header />, 
         }}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Login" component={Login} />

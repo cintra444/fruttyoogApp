@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from './styles';
+import logo from '../../../assets/logo.png';
 
 const Header: React.FC = () => {
     const navigation = useNavigation();
@@ -13,10 +14,10 @@ const Header: React.FC = () => {
             </View>
             <View style={styles.headerCenter}>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Image source={require('/path/to/login-image.png')} style={styles.headerImage} />
+                    <Image source={require('../../../assets/logo.png')} style={styles.headerImage} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                    <Image source={require('/path/to/register-image.png')} style={styles.headerImage} />
+                    <Image source={require('../../../assets/logo.png')} style={styles.headerImage} />
                 </TouchableOpacity>
             </View>
             <View style={styles.headerRight}>
