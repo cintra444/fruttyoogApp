@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     const [modalVisible, setModalVisible] = React.useState(false);
     const [usuario, setUsuario] = useState('');
 
-    const handleLogin = (email: string, password: string) => {
+    const handleLogin = async (email: string, password: string) => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         const normalizedEmail = email.trim().toLowerCase();
@@ -25,9 +25,17 @@ const Login: React.FC = () => {
             Alert.alert('Erro', 'Email ou senha inválida');
             return;
         }
-
-        setUsuario(normalizedEmail);
-        setModalVisible(true);
+        try {
+            const response = await Login({ email: normalizedEmail, password: normalizedPassword });
+            if (response) {
+                setUsuario(normalizedEmail);
+                setModalVisible(true);
+        } else {
+            Alert.alert('Erro', 'Email ou senha inválida');
+        }
+        } catch (error) {
+            Alert.alert('Erro', 'Email ou senha inválida');
+        }      
     };
 
     const handleModalClose = () => {

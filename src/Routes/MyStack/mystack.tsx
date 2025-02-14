@@ -5,13 +5,16 @@ import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
 import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
 import Dashboard from "src/screens/Admin/Dashboard";
+import Header from "src/components/Header/Header";
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function MyStack() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{ header: () => Header />, 
+        }}>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Cadastro} />
