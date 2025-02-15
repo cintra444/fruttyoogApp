@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-
-import styles from './styles';  
 import { RootStackParamList } from 'src/Navigation/types';
+import styles from './styles';  
 
     const Home: React.FC = () => {
         const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     return (
         <View style={styles.container}>
+            <Image source={require('../../assets/logo.png')} style={styles.logo} />
             <Text style={styles.welcomeText}>Seja bem vindo ao App Fruttyoog!</Text>
             <Text style={styles.questionText}>O que deseja fazer?</Text>
             <TouchableOpacity 

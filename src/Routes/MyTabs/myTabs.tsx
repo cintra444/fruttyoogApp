@@ -6,7 +6,7 @@ import Settings from '../../screens/Settings/settings'
 import Footer from 'src/components/Footer/Footer';
 import Logout from 'src/screens/Logout/Logout';
 import Refresh from 'src/screens/Refresh/Refresh';
-import Chat from 'src/screens/Chat/Chat';
+import Chat from 'src/screens/Chat/Chat'; 
 
 const Tab = createBottomTabNavigator();
 

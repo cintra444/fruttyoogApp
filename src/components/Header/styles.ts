@@ -20,9 +20,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'flex-end',
     },
-    headerImage: {
-        width: 50,
-        height: 50,
+    headerIcon: {
         marginHorizontal: 10,
     },
 });

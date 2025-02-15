@@ -7,7 +7,7 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-
+//configurando o interceptor para adicionar o token automaticamente
 api.interceptors.request.use(async (config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -16,6 +16,21 @@ api.interceptors.request.use(async (config) => {
   return config;
 }, (error) => {
   return Promise.reject(error);
+});
+//configurando o interceptor para lidar com erros
+api.interceptors.response.use((response) => response, (error) => {
+    if (error.response && error.response.status === 401) {
+        localStorage.removeItem("token");
+        //redireciona para a tela de login
+        window.location.href = "/login";
+    } else 
+        if (error.request) {
+             console.error("Erro de rede: ", error.request);
+    } else {
+        console.error("Erro: ", error.message);
+    }
+    return Promise.reject(error);
+    
 });
 
 interface ApiError {
@@ -28,16 +43,17 @@ interface ApiError {
     config?: any;
 }
 
-const handleApiError = (error: ApiError): void => {
+const handleApiError = (error: any): void => {
+    console.log('Erro completo: ', error);
     if (error.response) {
         console.error("Status: ", error.response.status);
-        console.error("Mensagem: ", error.response.data);
+        console.error('Resposta da API: ', JSON.stringify(error.response.data, null, 2));
     } else if (error.request) {
-        console.error("Requisição: ", error.request);
+        console.error("Requisição enviada: ", error.config.data);
     } else {
         console.error("Erro: ", error.message);
     }
-    console.error("Configuração: ", error.config);
+    
 };
 
 //função para fazer cadastro usuario
@@ -66,14 +82,34 @@ interface LoginData {
     password: string;
 }
 
-export const Login = async (data: LoginData): Promise<ApiResponse | void> => {
+export const Login = async (data: LoginData): Promise<any> => {
     try {
-        const response = await api.post<ApiResponse>("/login", data);
+        
+        //faz a requisição para a api
+        const response = await api.post("/login", {
+            email: data.email,
+            password: data.password,
+        });
+        //salva o token no localStorage
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+       
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
+        throw error;
     }
-}
+};
+// funcao para fazer logout
+export const Logout = async (): Promise<void> => {
+    try {
+        await api.delete("/logout");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
 
 //funções do usuario - Get, Post, Put, Delete
 interface User {

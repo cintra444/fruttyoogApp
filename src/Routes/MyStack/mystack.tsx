@@ -5,8 +5,7 @@ import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
 import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
 import Dashboard from "src/screens/Admin/Dashboard";
-import Header from "src/components/Header/Header";
-
+import Header from '../../components/Header/Header';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

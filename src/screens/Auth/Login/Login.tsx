@@ -4,8 +4,10 @@ import styles from './styles';
 import LoginForm from '../../../components/LoginForm/LoginForm';
 import ModalSuccess from  '../../../components/ModalSucess/ModalSucess';
 import { useNavigation } from '@react-navigation/native';
+import { Login as LoginApi } from '../../../Services/api';
 
-const Login: React.FC = () => {
+
+const Login: React.FC = () => { 
     const navigation = useNavigation<any>();
     const [modalVisible, setModalVisible] = React.useState(false);
     const [usuario, setUsuario] = useState('');
@@ -15,6 +17,8 @@ const Login: React.FC = () => {
         const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         const normalizedEmail = email.trim().toLowerCase();
         const normalizedPassword = password.trim();
+
+        console.log("Enviando login:", { email: normalizedEmail, password: normalizedPassword });
 
         if (!emailRegex.test(normalizedEmail)) {
             Alert.alert('Erro', 'Email ou senha inválida');
@@ -26,7 +30,7 @@ const Login: React.FC = () => {
             return;
         }
         try {
-            const response = await Login({ email: normalizedEmail, password: normalizedPassword });
+            const response = await LoginApi({ email: normalizedEmail, password: normalizedPassword });
             if (response) {
                 setUsuario(normalizedEmail);
                 setModalVisible(true);
@@ -34,8 +38,12 @@ const Login: React.FC = () => {
             Alert.alert('Erro', 'Email ou senha inválida');
         }
         } catch (error) {
-            Alert.alert('Erro', 'Email ou senha inválida');
-        }      
+            if (error instanceof Error && (error as any).response && (error as any).response.data) {
+                Alert.alert('Mensagem do erro: ', (error as any).response.data.message);
+            } else {
+                Alert.alert('Erro', 'Ocorreu um erro inesperado');
+            }
+        }
     };
 
     const handleModalClose = () => {
