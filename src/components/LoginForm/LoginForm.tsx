@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, TextInput, Button, Text, Alert } from 'react-native';
 import { styles } from './styles';
 
 interface LoginFormProps {
@@ -10,7 +10,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
+
+    const handleLoginPress = async () => {
+        if(!email || !password) {
+            Alert.alert('Erro', 'Preencha todos os campos');
+            return;
+        }
         onLogin(email, password);
     };
 
@@ -25,7 +30,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
             />
-            <Text style={styles.label}>Password</Text>
+            <Text style={styles.label}>Senha</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Digite sua senha"
@@ -33,7 +38,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 onChangeText={setPassword}
                 secureTextEntry
             />
-            <Button title="Login" onPress={handleLogin} />
+            <Button title="Login" onPress={handleLoginPress} />
         </View>
     );
 };

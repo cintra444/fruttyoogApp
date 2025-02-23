@@ -1,61 +1,70 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { useContext, createContext, useState, useEffect } from "react";
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
+import { Alert } from "react-native";
 
-interface AuthContextData {
-    isLoggedIn: boolean;
-    login: () => void;
-    logout: () => void;
-}
+type AppContextProps = {
+     user: UserProps | null;
+    handleLogin: (user: UserProps) => void;
+    handleLogout: () => void;
+};
 
-interface Venda{
-    id: string;
-    cliente: string;
-    fornecedor: string;
-    produto: string;
-    valor: number;
-    quantidade: number;
-    data: string;
-    preco: number;
-    total: number;
-    status: string;
-}
+type UserProps = {
+    id: string,
+    name: string,
+    email: string,
+    password: string,
+    token: string,
+};
 
-interface VendaContextData {
-    vendas: Venda[];
-    addVenda: (venda: Venda) => void;
-    updateVenda: (venda: Venda) => void;
-    deleteVenda: (id: string) => void;
-    getVendaById: (id: string) => Venda | undefined;
-}
+const AppContext = createContext<AppContextProps>({} as AppContextProps);
 
-interface AppContextData extends AuthContextData, VendaContextData {}
+export const AppProvider = ({ children }: any) => {
+    const [user, setUser] = useState<UserProps | null>(null);
 
-interface AppProviderProps {
-    children: ReactNode;
-}
+    useEffect(() => {
+        loadingUser();
+    }, []);
 
-export const AppContext = createContext<AppContextData>({} as AppContextData);
-
-export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [vendas, setVendas] = useState<Venda[]>([]);
-
-    const login = () => setIsLoggedIn(true);
-    const logout = () => setIsLoggedIn(false);
-
-    const addVenda = (venda: Venda) => setVendas([...vendas, venda]);
-    const updateVenda = (venda: Venda) => {
-        const index = vendas.findIndex((v) => v.id === venda.id);
-        if (index !== -1) {
-            vendas[index] = venda;
-            setVendas([...vendas]);
+    const loadingUser = async () => {
+        try {
+            const response = await AsyncStorage.getItem('@fruttyoog:user');
+            if (response) {
+                const data = JSON.parse(response);
+                setUser(data);
+            }
+        } catch (error) {
+            Alert.alert('Erro: ', 'Erro ao carregar usuário');
         }
     };
-    const deleteVenda = (id: string) => setVendas(vendas.filter((v) => v.id !== id));
-    const getVendaById = (id: string) => vendas.find((v) => v.id === id);
+
+    const handleLogin = async (userData: UserProps) => {
+        setUser(userData);
+
+        try {
+            await AsyncStorage.setItem('@fruttyoog:user', JSON.stringify(userData));
+        } catch (error) {
+            Alert.alert('Erro', 'Erro ao salvar usuário');
+        }
+    };
+
+    const handleLogout = async () => {
+        setUser(null);
+        try {
+            await AsyncStorage.removeItem('@fruttyoog:user');
+        } catch (error) {
+            Alert.alert('Erro', 'Erro ao remover usuário');
+        }
+    };
 
     return (
-        <AppContext.Provider value={{ isLoggedIn, login, logout, vendas, addVenda, updateVenda, deleteVenda, getVendaById }}>
+        <AppContext.Provider value={{ user, handleLogin, handleLogout }}>
             {children}
         </AppContext.Provider>
     );
+
 };
+
+export const useApp = () => {
+    const context = useContext(AppContext);
+    return context;
+}

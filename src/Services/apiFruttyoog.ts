@@ -1,15 +1,16 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //configurando a base url da api
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://192.168.18.249:8080",
   headers: {
-    "Content-Type": "application/json",
-  },
+     "Content-Type": "application/json",
+   },
 });
 //configurando o interceptor para adicionar o token automaticamente
 api.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem("token");
+  const token = await AsyncStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,12 +18,13 @@ api.interceptors.request.use(async (config) => {
 }, (error) => {
   return Promise.reject(error);
 });
-//configurando o interceptor para lidar com erros
+
+//interceptador para lidar com erros
 api.interceptors.response.use((response) => response, (error) => {
     if (error.response && error.response.status === 401) {
-        localStorage.removeItem("token");
+        AsyncStorage.removeItem("token");
         //redireciona para a tela de login
-        window.location.href = "/login";
+        
     } else 
         if (error.request) {
              console.error("Erro de rede: ", error.request);
@@ -53,7 +55,6 @@ const handleApiError = (error: any): void => {
     } else {
         console.error("Erro: ", error.message);
     }
-    
 };
 
 //função para fazer cadastro usuario
@@ -67,15 +68,6 @@ interface ApiResponse {
     data: any;
 }
 
-export const Register = async (data: RegisterData): Promise<ApiResponse | void> => {
-    try {
-        const response = await api.post<ApiResponse>("/register", data);
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
-};
-
 //função para fazer login usuario ou administrador
 interface LoginData {
     email: string;
@@ -84,30 +76,16 @@ interface LoginData {
 
 export const Login = async (data: LoginData): Promise<any> => {
     try {
-        
-        //faz a requisição para a api
         const response = await api.post("/login", {
             email: data.email,
             password: data.password,
         });
-        //salva o token no localStorage
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-       
+       const token = response.data.token;
+       await AsyncStorage.setItem("token", token);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
         throw error;
-    }
-};
-// funcao para fazer logout
-export const Logout = async (): Promise<void> => {
-    try {
-        await api.delete("/logout");
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-    } catch (error) {
-        handleApiError(error as ApiError);
     }
 };
 
@@ -120,14 +98,7 @@ interface User {
     role: string;
 }
 
-export const GetUsers = async (): Promise<User[] | void> => {
-    try {
-        const response = await api.get<User[]>("/users");
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
-};
+
 
 interface PostUser {
     username: string;
@@ -136,39 +107,8 @@ interface PostUser {
     role: string;
 }
 
-export const PostUser = async (data: PostUser): Promise<User | void> => {
-    try {
-        const response = await api.post<User>("/users", data);
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }   
-}
 
-interface PutUser {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-    role: string;
-}
 
-export const PutUser = async (data: PutUser): Promise<User | void> => {
-    try {
-        const response = await api.put<User>(`/users/${data.id}`, data);
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }       
-}
-
-export const DeleteUser = async (id: number): Promise<void> => {
-    try {
-        await api.delete(`/users/${id}`);
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
-}
 
 //funções do produto - Get, Post, Put, Delete
 interface Product {
@@ -410,8 +350,7 @@ interface Endereco {
   bairro: string;
   localidade: string;
   uf: string;
-  cep: string;
-  cliente: string;
+    cep: string;
 }
 
 interface FormaPagamento {
@@ -445,7 +384,7 @@ interface Produto {
     name: string;
     type: string;
     data: string[];
-  };
+  }
   tipoUnidade: string;
   qtdeEstoque: number;
 }
@@ -636,26 +575,6 @@ export const DeleteFormaPagamento = async (id: number): Promise<void> => {
 };
 
 //funcao para venda - Get, Post, Put, Delete
-interface ItemVenda {
-    id: number;
-    notaVendaId: number;
-    quantidade: number;
-    valorUnitario: number;
-    produtoId: number;
-    subTotal: number;
-}
-
-interface Payment {
-    id: number;
-    idClient: number;
-    formaPagamento: string;
-    idVenda: number;
-    dataPagamento: string;
-    valor: number;
-    status: string;
-    criadoEm: string;
-    atualizadoEm: string;
-}
 interface Venda {
     id: number;
     dataVenda: string;
