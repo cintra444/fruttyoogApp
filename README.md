@@ -4,7 +4,7 @@ Bem-vindo ao repositório do Fruttyoog App!
 
 ## Descrição
 
-O Fruttyoog App é uma aplicação desenvolvida para [descreva o propósito do aplicativo]. Este projeto foi criado utilizando [tecnologias e frameworks utilizados].
+em desenvolvimento....
 
 ## Instalação
 
