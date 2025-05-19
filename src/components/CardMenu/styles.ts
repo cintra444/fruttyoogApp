@@ -1,32 +1,34 @@
-import { StyleSheet } from "react-native";
+import styled from 'styled-components/native';
 
-export const styles = StyleSheet.create({
-    card: {
-        backgroundColor: "white",
-        padding: 12,
-        marginVertical: 10,
-        marginHorizontal: 20,
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: "black",
-        width: "80%",
-        borderRadius: 40,
-        marginTop: 215,
-    },
-    icon: {
-        marginBottom: 10,
-    },
-    cardContent: {
-        marginTop: 10,
-        alignItems: "center",
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 5,
-    },
-    description: {
-        fontSize: 14,
-        color: "gray",
-    }
-});
+export const CardContainer = styled.TouchableOpacity`
+    background-color: #fff;
+    padding: 12px;
+    margin-vertical: 10px;
+    margin-horizontal: 20px;
+    align-items: center;
+    justify-content: center;
+    border-color: #000;
+    width: 80%;
+    border-radius: 40px;
+    margin-top: 215px;
+`;
+
+export const IconContainer = styled.View`
+    margin-bottom: 10px;
+`;
+
+export const CardContent = styled.View`
+    margin-top: 10px;
+    align-items: center;
+`;
+
+export const Title = styled.Text`
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+`;
+
+export const Description = styled.Text`
+    font-size: 14px;
+    color: #808080;
+`;

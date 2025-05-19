@@ -1,20 +1,27 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions, PixelRatio, Platform } from 'react-native';
+
+
+const { width, height } = Dimensions.get('window');
+const scalenFont = (size: number): number => size * PixelRatio.getFontScale();
 
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 16,
+        paddingHorizontal: width * 0.05, // 5% largura da tela
+        paddingVertical: height * 0.02, // 2% altura da tela
     },
     label: {
-        marginBottom: 8,
-        fontSize: 16,
+        marginBottom: height * 0.01, // 1% altura da tela
+        fontSize: scalenFont(16),
     },
     input: {
-        height: 40,
+        height: height * 0.06, // 6% altura da tela
         borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
+        marginBottom: height * 0.015, // 1,5% altura da tela
+        paddingHorizontal: width * 0.02, // 2% largura da tela
+        borderRadius: 6,
+        backgroundColor: Platform.OS === 'ios' ? '#f8f8f8' : '#fff',
     },
 });

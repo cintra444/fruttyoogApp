@@ -15,7 +15,7 @@ const cardMenu = [
     id: "2",
     title: "Vendas",
     icon: "attach-money",
-    description: "Gerencie suas vendas",
+    description: "Gerencie suas vendas", 
   },
 
   {

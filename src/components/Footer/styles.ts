@@ -1,15 +1,16 @@
-import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 
-export const styles = StyleSheet.create({
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        backgroundColor: '#fff',
-        padding: 10,
-        borderTopWidth: 1,
-        borderColor: '#ddd',
-    },
-    iconContainer: {
-        alignItems: 'center',
-    },
-});
+export const FooterContainer = styled.View`
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-top-width: 1px;
+    border-color: #ddd;
+`;
+
+export const IconContainer = styled.TouchableOpacity`
+    padding: 10px;
+    align-items: center;
+`;

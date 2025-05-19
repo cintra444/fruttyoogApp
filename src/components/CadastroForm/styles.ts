@@ -1,24 +1,36 @@
-import { StyleSheet } from "react-native";
+import styled from "styled-components/native";
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-  },
-  button: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-  },
-  image: {
-    width: 200,
-    height: 200,
-  },
-});
+export const Container = styled.View`
+  flex: 1;
+  background-color: #fff;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Label = styled.Text`
+  font-size: 18px;
+  margin-bottom: 10px;
+`;
+  
+export const Input = styled.TextInput`
+  height: 40px;
+  margin: 12px;
+  border-width: 1px;
+  border-color: #ccc;
+  padding: 10px;
+`;
+  
+export const Button = styled.TouchableOpacity`
+  align-items: center;
+  background-color: #ddd;
+  padding: 10px;
+`;
+
+export const ButtonText = styled.Text`
+  font-size: 16px;
+`;
+
+export const Image = styled.Image`
+  width: 200px;
+  height: 200px;
+  `;
