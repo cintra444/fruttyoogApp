@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, Alert } from 'react-native';
-import { styles } from './styles';
+import { Container, Label, Input } from './styles';
 
 interface LoginFormProps {
     onLogin: (email: string, password: string) => void;
@@ -20,26 +20,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-                style={styles.input}
+        <Container>
+            <Label>Email</Label>
+            <Input
                 placeholder="Digite seu email"
+                keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
-                keyboardType="email-address"
                 autoCapitalize="none"
+                autoCorrect={false}
             />
-            <Text style={styles.label}>Senha</Text>
-            <TextInput
-                style={styles.input}
+            <Label>Senha</Label>
+            <Input
                 placeholder="Digite sua senha"
+                secureTextEntry
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
             />
             <Button title="Login" onPress={handleLoginPress} />
-        </View>
+        </Container>
     );
 };
 

@@ -6,17 +6,18 @@ import { RootStackParamList } from 'src/Navigation/types';
 import { FooterContainer, IconContainer } from './styles';
 
 interface FooterItem {
+    id: number;
     name: string;
     icon: string;
     route: keyof RootStackParamList;
 }
 
 const footerItems: FooterItem[] = [
-    { name: 'Home', icon: 'home', route: 'Home' },
-    { name: 'Settings', icon: 'settings', route: 'Settings' },
-    { name: 'Refresh', icon: 'refresh', route: 'Refresh' },
-    { name: 'Logout', icon: 'logout', route: 'Logout' },
-    { name: 'Chat', icon: 'chat', route: 'Chat' },
+    {id: 1, name: 'Home', icon: 'home', route: 'Home' },
+    {id: 2, name: 'Settings', icon: 'settings', route: 'Settings' },
+    {id: 3, name: 'Refresh', icon: 'refresh', route: 'Refresh' },
+    {id: 4, name: 'Logout', icon: 'logout', route: 'Logout' },
+    {id: 5, name: 'Chat', icon: 'chat', route: 'Chat' },
 ];
 
 const Footer = () => {
@@ -25,7 +26,7 @@ const Footer = () => {
     return (
         <FooterContainer>
             {footerItems.map((item) => (
-                <IconContainer key={item.name} onPress={() => navigation.navigate(item.route)}>
+                <IconContainer activeOpacity={0.8} key={item.id} onPress={() => navigation.navigate(item.route)}>
                     <Icon name={item.icon} size={30} color="#000" />
                 </IconContainer>
             ))}

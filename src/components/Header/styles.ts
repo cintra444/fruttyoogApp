@@ -1,27 +1,35 @@
-import { StyleSheet } from 'react-native';
+import styled from "styled-components/native";
 
-export const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: '#fff',
-    },
-    headerLeft: {
-        flex: 1,
-    },
-    headerCenter: {
-        flex: 2,
-        flexDirection: 'row',
-        justifyContent: 'center',
-    },
-    headerRight: {
-        flex: 1,
-        alignItems: 'flex-end',
-    },
-    headerIcon: {
-        marginHorizontal: 10,
-    },
-});
+export const HeaderContainer = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    border-bottom-width: 1px;
+    border-color: #ddd;
+`;
 
+export const HeaderLeft = styled.View`
+    flex: 1;
+`;
+
+export const HeaderCenter = styled.View`
+    flex: 2;
+    flex-direction: row;
+    justify-content: center;
+`;
+
+export const HeaderRight = styled.View`
+    flex: 1;
+    align-items: flex-end;
+`;
+
+export const IconButton = styled.TouchableOpacity`
+    margin-horizontal: 10px;
+`;
+
+export const VersionText = styled.Text`
+    font-size: 16px;
+    `;
+    

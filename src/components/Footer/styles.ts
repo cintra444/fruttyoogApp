@@ -8,6 +8,7 @@ export const FooterContainer = styled.View`
     background-color: #fff;
     border-top-width: 1px;
     border-color: #ddd;
+    hmin-height: 60px;
 `;
 
 export const IconContainer = styled.TouchableOpacity`
