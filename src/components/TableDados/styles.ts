@@ -1,30 +1,33 @@
-import { StyleSheet } from 'react-native';
+import styled from "styled-components/native";
 
-export const styles = StyleSheet.create({
-    table: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    tableRow: {
-        flexDirection: 'row',
-    },
-    tableHeader: {
-        flex: 1,
-        padding: 8,
-        backgroundColor: '#f1f1f1',
-        fontWeight: 'bold',
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    tableCell: {
-        flex: 1,
-        padding: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    noDataText: {
-        textAlign: 'center',
-        marginTop: 20,
-        fontSize: 16,
-    },
-});
+export const Table = styled.View`
+    border-width: 1px;
+    border-color: #ddd;
+`;
+
+export const TableRow = styled.View`
+    flex-direction: row;
+`;
+
+export const TableHeader = styled.Text`
+    flex: 1;
+    padding: 8px;
+    background-color: #f1f1f1;
+    font-weight: bold;
+    border-width: 1px;
+    border-color: #ddd;
+`;
+
+export const TableCell = styled.Text`
+    flex: 1;
+    padding: 8px;
+    border-width: 1px;
+    border-color: #ddd;
+`;
+
+export const NoDataText = styled.Text`
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+`;
+   
