@@ -1,6 +1,12 @@
 import React from 'react';
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { styles } from './styles';
+import { Modal } from 'react-native';
+import { 
+     CenteredView,
+     ModalView,
+     ModalText,
+     ButtonModal,
+     ButtonTextModal,
+} from './styles';
 
 interface ModalSuccessProps {
     visible: boolean;
@@ -16,17 +22,16 @@ const ModalSuccess: React.FC<ModalSuccessProps> = ({ visible, message, onClose }
             visible={visible}
             onRequestClose={onClose}
         >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>{message}</Text>
-                    <TouchableOpacity
-                        style={styles.button}
+            <CenteredView>
+                <ModalView>
+                    <ModalText>{message}</ModalText>
+                    <ButtonModal
                         onPress={onClose}
                     >
-                        <Text style={styles.buttonText}>OK</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+                        <ButtonTextModal>OK</ButtonTextModal>
+                    </ButtonModal>
+                </ModalView>
+            </CenteredView>
         </Modal>
     );
 };
