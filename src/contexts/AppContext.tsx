@@ -1,6 +1,7 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 type AppContextProps = {
      user: UserProps | null;
@@ -12,14 +13,14 @@ type UserProps = {
     id: string,
     name: string,
     email: string,
-    password: string,
     token: string,
 };
 
 const AppContext = createContext<AppContextProps>({} as AppContextProps);
-
 export const AppProvider = ({ children }: any) => {
     const [user, setUser] = useState<UserProps | null>(null);
+    const navigation = useNavigation();
+   
 
     useEffect(() => {
         loadingUser();
@@ -30,10 +31,14 @@ export const AppProvider = ({ children }: any) => {
             const response = await AsyncStorage.getItem('@fruttyoog:user');
             if (response) {
                 const data = JSON.parse(response);
+                if(data && data.id && data.name && data.email && data.token) {
                 setUser(data);
+            } else {
+                Alert.alert('Erro: ', 'Dados do usuário inválidos');
+            }
             }
         } catch (error) {
-            Alert.alert('Erro: ', 'Erro ao carregar usuário');
+            Alert.alert('Erro: ', 'Erro ao carregar usuário: ' + error);
         }
     };
 
@@ -43,7 +48,7 @@ export const AppProvider = ({ children }: any) => {
         try {
             await AsyncStorage.setItem('@fruttyoog:user', JSON.stringify(userData));
         } catch (error) {
-            Alert.alert('Erro', 'Erro ao salvar usuário');
+            Alert.alert('Erro', 'Erro ao salvar usuário: ' + error);
         }
     };
 
@@ -51,8 +56,10 @@ export const AppProvider = ({ children }: any) => {
         setUser(null);
         try {
             await AsyncStorage.removeItem('@fruttyoog:user');
+            // @ts-ignore
+            navigation.navigate('Login');
         } catch (error) {
-            Alert.alert('Erro', 'Erro ao remover usuário');
+            Alert.alert('Erro', 'Erro ao remover usuário' + error);
         }
     };
 
