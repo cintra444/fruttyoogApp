@@ -7,20 +7,53 @@ import Footer from 'src/components/Footer/Footer';
 import Logout from 'src/screens/Logout/Logout';
 import Refresh from 'src/screens/Refresh/Refresh';
 import Chat from 'src/screens/Chat/Chat'; 
+import { Icon } from 'react-native-vector-icons/Icon';
 
 const Tab = createBottomTabNavigator();
 
 const MyTabs = () => {
     return (
-        <NavigationContainer>
-            <Tab.Navigator tabBar={() => <Footer />}>
-                <Tab.Screen name="Home" component={Home} />
-                <Tab.Screen name="Settings" component={Settings} />
-                <Tab.Screen name="refresh" component={Refresh} />
-                <Tab.Screen name="Logout" component={Logout} />
-                <Tab.Screen name="Chat" component={Chat} />
-            </Tab.Navigator>
-        </NavigationContainer>
+       
+            <Tab.Navigator tabBar={() => <Footer />}
+                screenOptions={{
+                    tabBarActiveTintColor: '#e91e63',
+                    tabBarInactiveTintColor: '#000',
+                    headerShown: false,
+                }}
+                >
+
+                <Tab.Screen name="Home" component={Home} options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="home" size={24} color={color} />
+                    ),
+                }}
+            />
+                <Tab.Screen name="Settings" component={Settings}  options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="cog" size={24} color={color} />
+                    ),
+                }}
+            />
+                <Tab.Screen name="refresh" component={Refresh} options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="refresh" size={24} color={color} />
+                    ),
+                }}
+            />
+                <Tab.Screen name="Logout" component={Logout} options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="sign-out" size={24} color={color} />
+                    ),
+                }}
+            />
+                <Tab.Screen name="Chat" component={Chat} options={{
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="comments" size={24} color={color} />
+                    ),
+                }}
+            />
+              </Tab.Navigator>
+       
     );
 };
 

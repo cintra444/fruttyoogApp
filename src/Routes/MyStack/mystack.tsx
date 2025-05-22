@@ -6,18 +6,23 @@ import Login from "../../screens/Auth/Login/Login";
 import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
 import Dashboard from "src/screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
+import Footer from "src/components/Footer/Footer";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function MyStack() {
     return (
+        <>
+        {/* <NavigationContainer> */}
         <Stack.Navigator
         screenOptions={{ header: () => <Header />, 
         }}>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Cadastro} />
-            <Stack.Screen name="Dashboard" component={Dashboard} />
+            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+            <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Register" component={Cadastro} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
         </Stack.Navigator>
+        <Footer/>
+        </>
     );    
 }
