@@ -1,21 +1,42 @@
+// Dashboard.tsx
 import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { Card } from "../../components/CardMenu/CardMenuAdm";
-import { styles } from "./styles";
+import { ContainerDashboard } from "./styles";
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from "@react-navigation/stack";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const cardMenu = [
+type DashboardStackParamList = {
+  Compras: undefined;
+  Vendas: undefined;
+  Estoque: undefined;
+  Financeiro: undefined;
+  Relatorios: undefined;
+  Gestor: undefined;
+};
+
+const cardMenu: {
+  id: string;
+  title: string;
+  icon: keyof typeof MaterialIcons.glyphMap;
+  description: string;
+  screen: keyof DashboardStackParamList;
+}[] = [
   {
     id: "1",
     title: "Compras",
     icon: "shopping-cart",
     description: "Gerencie suas compras",
+    screen: "Compras"
   },
 
   {
-    id: "2",
+    id: "2", 
     title: "Vendas",
     icon: "attach-money",
-    description: "Gerencie suas vendas", 
+    description: "Gerencie suas vendas",
+    screen: "Vendas"
   },
 
   {
@@ -23,6 +44,7 @@ const cardMenu = [
     title: "Estoque",
     icon: "inventory",
     description: "Gerencie seu estoque",
+    screen: "Estoque"
   },
 
   {
@@ -30,13 +52,15 @@ const cardMenu = [
     title: "Financeiro",
     icon: "account-balance",
     description: "Gerencie seu financeiro",
+    screen: "Financeiro"
   },
 
   {
     id: "5",
     title: "Relatórios",
-    icon: "bar-chart",
+    icon: "insert-chart",
     description: "Acesse seus relatórios",
+    screen: "Relatorios"
   },
 
   {
@@ -44,17 +68,26 @@ const cardMenu = [
     title: "Gestor",
     icon: "supervisor-account",
     description: "Gerencie seus gestores",
+    screen: "Gestor"
   }
 ];
 
 const Dashboard: React.FC = () => {
-    return (
-      <ScrollView contentContainerStyle={styles.container}>
+  const navigation = useNavigation<StackNavigationProp<DashboardStackParamList>>();
+
+  const handleCardPress = (item: typeof cardMenu[number]) => {
+    navigation.navigate(item.screen);
+  };
+
+  return (
+    <ContainerDashboard>
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
         {cardMenu.map((item) => (
-          <Card key={item.id} item={item} />
+          <Card key={item.id} item={item} onPress={() => handleCardPress(item)} />
         ))}
       </ScrollView>
-    );
-  }
+    </ContainerDashboard>
+  );
+}
 
 export default Dashboard;

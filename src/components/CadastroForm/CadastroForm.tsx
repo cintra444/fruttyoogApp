@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Container, Input, Button, Image, Label, ButtonText } from './styles';
-import { fields } from './fields';
+import { fields } from '..//CadastroForm/Fields';
 
 interface FormFieldProps {
   label: string;

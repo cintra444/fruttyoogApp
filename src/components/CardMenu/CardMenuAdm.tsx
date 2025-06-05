@@ -10,20 +10,17 @@ export interface CardProps {
         title: string;
         icon: keyof typeof MaterialIcons.glyphMap;
         description: string;
+        screen: string;
     }
+    onPress?: () => void;
 }
 
-type HomeNavigationProp = StackNavigationProp<{ Home: CardProps['item'] }, "Home">;
 
-export const Card: React.FC<CardProps> = ({ item }) => {
-    const navigation = useNavigation<HomeNavigationProp>();
+export const Card: React.FC<CardProps> = ({ item, onPress }) => {
 
-    const handlePress = useCallback(() => {
-        navigation.navigate('Home', { ...item });
-    }, [navigation, item]);
 
     return (
-        <CardContainer activeOpacity={0.8} onPress={handlePress}>
+        <CardContainer activeOpacity={0.8} onPress={onPress}>
             <IconContainer>
                 <MaterialIcons name={item.icon} size={50} />
             </IconContainer>

@@ -1,11 +1,7 @@
-import { StyleSheet } from "react-native";
+import styled from 'styled-components/native';
 
-export const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 20,
-    },
-});
-
+export const ContainerDashboard = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;

@@ -1,12 +1,11 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
-import { useNavigation } from '@react-navigation/native';
 
 type AppContextProps = {
      user: UserProps | null;
     handleLogin: (user: UserProps) => void;
-    handleLogout: () => void;
+    handleLogout: (navigation: any) => void;
 };
 
 type UserProps = {
@@ -19,8 +18,6 @@ type UserProps = {
 const AppContext = createContext<AppContextProps>({} as AppContextProps);
 export const AppProvider = ({ children }: any) => {
     const [user, setUser] = useState<UserProps | null>(null);
-    const navigation = useNavigation();
-   
 
     useEffect(() => {
         loadingUser();
@@ -52,11 +49,10 @@ export const AppProvider = ({ children }: any) => {
         }
     };
 
-    const handleLogout = async () => {
+    const handleLogout = async (navigation: any) => {
         setUser(null);
         try {
             await AsyncStorage.removeItem('@fruttyoog:user');
-            // @ts-ignore
             navigation.navigate('Login');
         } catch (error) {
             Alert.alert('Erro', 'Erro ao remover usuário' + error);
