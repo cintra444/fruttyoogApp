@@ -5,7 +5,7 @@ import { Card } from "../../components/CardMenu/CardMenuAdm";
 import { ContainerDashboard } from "./styles";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from "@expo/vector-icons";
 
 type DashboardStackParamList = {
   Compras: undefined;

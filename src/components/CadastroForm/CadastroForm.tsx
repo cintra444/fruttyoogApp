@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { Alert } from 'react-native';
 import { Container, Input, Button, Image, Label, ButtonText } from './styles';
 import { fields } from '..//CadastroForm/Fields';
 
@@ -20,6 +21,8 @@ const FormField = ({ label, value, onChangeText, secureTextEntry, keyboardType }
         onChangeText={onChangeText}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
+        placeholder={`Digite seu ${label.toLowerCase()}`}
+        placeholderTextColor="#999"
       />
     </>
   );
@@ -30,7 +33,7 @@ interface CadastroFormProps {
   onSubmit: (data: any) => void;
 }
 
-const CadastroForm = ({ type, onSubmit }: CadastroFormProps) => {
+const CadastroForm: React.FC<CadastroFormProps> = ({ type, onSubmit }) => {
   const [formData, setFormData] = useState<any>({});
   const [imageUri, setImageUri] = useState<string | null>(null);
 
@@ -60,6 +63,22 @@ const CadastroForm = ({ type, onSubmit }: CadastroFormProps) => {
   };
 
   const handleSubmit = () => {
+    const requeridFields = fields[type].map(field => field.name);
+
+    const missingFields = requeridFields.filter(field => {
+      const value = formData[field];
+      return !value || value.trim() === '';
+    });
+
+    if (missingFields.length > 0) {
+      const missingLabels = fields[type]
+        .filter(field => missingFields.includes(field.name))
+        .map(field => `- ${field.label}`)
+        .join('\n');
+
+      Alert.alert('Campos obrigatórios', `Por favor, preencha os campos: \n${missingLabels}`);
+      return;
+    }
     onSubmit(formData);
   };
 
@@ -69,20 +88,23 @@ const CadastroForm = ({ type, onSubmit }: CadastroFormProps) => {
         <FormField
           key={field.name}
           label={field.label}
-          value={formData[field.name]}
+          value={formData[field.name] || ''}
           onChangeText={(value) => handleChange(field.name, value)}
+          
           />
       ))}
       {type === 'produto' && (
+          <>
         <Button onPress={handleImagePicker}>
           <ButtonText>Selecionar Imagem</ButtonText>
-          {imageUri && <Image source={{ uri: imageUri }} />}
         </Button>
+          {imageUri && <Image source={{ uri: imageUri }} />}
+          </>
       )}
       <Button onPress={handleSubmit}>
         <ButtonText>Cadastrar</ButtonText>
       </Button>
-    </Container>
+    </Container> 
   );
 };
 

@@ -1,18 +1,19 @@
 import React, { useCallback } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { CardContainer, IconContainer, CardContent, Title, Description } from "./styles";
 
-export interface CardProps {
-    item: {
-        id: string;
-        title: string;
-        icon: keyof typeof MaterialIcons.glyphMap;
-        description: string;
-        screen: string;
-    }
-    onPress?: () => void;
+type CardMenuItem = {
+    id: string;
+    title: string;
+    icon: keyof typeof MaterialIcons.glyphMap;
+    description: string;
+    screen: string;
+};
+
+interface CardProps {   
+
+    item: CardMenuItem;
+    onPress: () => void;
 }
 
 

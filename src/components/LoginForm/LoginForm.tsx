@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, Alert } from 'react-native';
-import { Container, Label, Input } from './styles';
+import { Alert } from 'react-native';
+import { Container, Label, Input, Button, ButtonText } from './styles';
 
 interface LoginFormProps {
-    onLogin: (email: string, password: string) => void;
+    onLogin: (email: string, password: string) => void; 
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
@@ -29,6 +29,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 autoCorrect={false}
+                placeholderTextColor="#999"
             />
             <Label>Senha</Label>
             <Input
@@ -36,8 +37,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
+                placeholderTextColor="#999"
             />
-            <Button title="Login" onPress={handleLoginPress} />
+            <Button onPress={handleLoginPress}>
+                <ButtonText>Login</ButtonText>
+            </Button>
         </Container>
     );
 };

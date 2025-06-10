@@ -5,7 +5,7 @@ interface Field {
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
 }
-
+ 
 
 
 export const fields = {
