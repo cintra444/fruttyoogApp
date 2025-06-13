@@ -7,6 +7,15 @@ import { Container, Logo, WelcomeText, QuestionText, Button, ButtonText } from '
     const Home: React.FC = () => {
         const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+        //apenas para navegação entre telas para desenvolvimento
+
+        const screens: (keyof RootStackParamList)[] = [
+            'Dashboard',
+            'Settings',
+            'Refresh',
+            'Logout',
+            'Chat',
+        ];
     return (
         <Container>
       <Logo source={require('../../assets/logo.png')} />
@@ -20,7 +29,16 @@ import { Container, Logo, WelcomeText, QuestionText, Button, ButtonText } from '
       <Button onPress={() => navigation.navigate('Register')}>
         <ButtonText>Cadastro</ButtonText>
       </Button>
+      Menu de navegação para desenvolvimento: 
+      <Text style={{ marginTop: 20, fontSize: 16 }}>Navegação entre telas:</Text>
+      <View style={{ height: 10 }} />
+      {screens.map((screen) => (
+        <TouchableOpacity key={screen} onPress={() => navigation.navigate(screen)}>
+          <Text>{screen}</Text>
+        </TouchableOpacity>
+      ))}
     </Container>
+
     );
 };
 
