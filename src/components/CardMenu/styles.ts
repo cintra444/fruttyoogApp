@@ -1,34 +1,47 @@
 import styled from 'styled-components/native';
 
+import { Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
+
 export const CardContainer = styled.TouchableOpacity`
-    background-color: #fff;
-    padding: 12px;
-    margin-vertical: 10px;
-    margin-horizontal: 20px;
-    align-items: center;
-    justify-content: center;
-    border-color: #000;
-    width: 80%;
-    border-radius: 40px;
-    margin-top: 215px;
+  width: ${screenWidth > 600 ? '30%' : '45%'};
+  margin-bottom: 16px;
+  margin-right: 10px;
+  margin-left: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  elevation: 3;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.1;
+  shadow-radius: 4px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 150px;
 `;
 
 export const IconContainer = styled.View`
-    margin-bottom: 10px;
+    margin-right: 8px;
 `;
 
 export const CardContent = styled.View`
-    margin-top: 10px;
-    align-items: center;
+    flex: 1;
 `;
 
 export const Title = styled.Text`
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    margin-bottom: 5px;
+    color: #1D71B8;
+    text-align: center;
+    margin-top: 8px;
 `;
 
 export const Description = styled.Text`
     font-size: 14px;
-    color: #808080;
+    color: #1D71B8;
+    margin-top: 4px;
+    text-align: center;
 `;

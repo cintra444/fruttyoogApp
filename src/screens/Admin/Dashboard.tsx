@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <ContainerDashboard>
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", padding: 16, justifyContent: "space-between" }}>
         {cardMenu.map((item) => (
           <Card key={item.id} item={item} onPress={() => handleCardPress(item)} />
         ))}
