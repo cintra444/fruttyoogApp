@@ -1,11 +1,16 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
 
 type AppContextProps = {
      user: UserProps | null;
     handleLogin: (user: UserProps) => void;
-    handleLogout: (navigation: any) => void;
+    handleLogout: (navigation: NavigationProp<any>) => void;
+};
+
+type AppProviderProps = {
+    children: React.ReactNode;
 };
 
 type UserProps = {
@@ -16,7 +21,8 @@ type UserProps = {
 };
 
 const AppContext = createContext<AppContextProps>({} as AppContextProps);
-export const AppProvider = ({ children }: any) => {
+
+export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const [user, setUser] = useState<UserProps | null>(null);
 
     useEffect(() => {
@@ -27,11 +33,15 @@ export const AppProvider = ({ children }: any) => {
         try {
             const response = await AsyncStorage.getItem('@fruttyoog:user');
             if (response) {
+                try {
                 const data = JSON.parse(response);
                 if(data && data.id && data.name && data.email && data.token) {
                 setUser(data);
             } else {
                 Alert.alert('Erro: ', 'Dados do usuário inválidos');
+            }
+            } catch(parseError) {
+                Alert.alert('Erro: ', 'Erro ao analisar dados do usuário: ' + parseError);
             }
             }
         } catch (error) {
@@ -49,7 +59,7 @@ export const AppProvider = ({ children }: any) => {
         }
     };
 
-    const handleLogout = async (navigation: any) => {
+    const handleLogout = async (navigation: NavigationProp<any>) => {
         setUser(null);
         try {
             await AsyncStorage.removeItem('@fruttyoog:user');
