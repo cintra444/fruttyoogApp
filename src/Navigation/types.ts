@@ -7,4 +7,5 @@ export type RootStackParamList = {
     Refresh: undefined;
     Logout: undefined;
     Chat: undefined;
+    Compras: undefined;
 };

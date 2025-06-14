@@ -7,6 +7,7 @@ import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
 import Dashboard from "src/screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
 import Footer from "src/components/Footer/Footer";
+import Compras from "src/screens/Admin/Compras/Compras";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ export function MyStack() {
             <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Register" component={Cadastro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
+            <Stack.Screen name="Compras" component={Compras} options={{ headerTitle: () => <Header /> }}/>
         </Stack.Navigator>
         <Footer/>
         </>
