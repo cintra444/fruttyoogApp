@@ -21,7 +21,7 @@ export const Card = styled.TouchableOpacity<CardProps>`
   border-color: ${(props) => props.borderColor};
   align-items: center;
   justify-content: center;
-  elevation: 4;
+  elevation: 4; 
 `;
 
 export const CardIcon = styled.View`

@@ -15,7 +15,7 @@ const cards = [
         title: 'Pagamentos',
         icon: 'credit-card-outline',
         color: '#2196F3',
-        onPress: () => {},
+        onPress: () => {}, 
     },
     {
         title: 'Fornecedor',
