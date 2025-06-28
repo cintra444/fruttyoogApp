@@ -1,11 +1,13 @@
 // Dashboard.tsx
 import React from "react";
+import { View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Card } from "../../components/CardMenu/CardMenuAdm";
 import { ContainerDashboard } from "./styles";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
+import { HeaderBackButton } from '@react-navigation/elements';
 
 type DashboardStackParamList = {
   Compras: undefined;

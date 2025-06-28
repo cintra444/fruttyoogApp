@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Container, Card, CardIcon, CardTitle } from './styles';
+import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
+import { HeaderBackButton } from '@react-navigation/elements';
+import { useNavigation } from '@react-navigation/native';
 
 const cards = [
     {
@@ -24,10 +26,16 @@ const cards = [
         onPress: () => {},
     },
 ];
-
 const Compras: React.FC = () => {
+  const navigation = useNavigation();
+
   return (
     <Container>
+       {/* Botão de voltar */}
+            <BackButton onPress={() => navigation.goBack()}>
+              <Icon name="arrow-left" size={33} color="#000" />
+              <BackButtonText>Voltar</BackButtonText>
+            </BackButton>
       <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
         {cards.map((card) => (
           <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>
@@ -41,6 +49,7 @@ const Compras: React.FC = () => {
     </Container>
   );
 };
+
 
 
 export default Compras;

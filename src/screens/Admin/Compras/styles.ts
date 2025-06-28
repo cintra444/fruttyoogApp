@@ -33,3 +33,16 @@ export const CardTitle = styled.Text`
   font-weight: bold;
   text-align: center;
 `;
+
+export const BackButton = styled.TouchableOpacity`
+flex-direction: row;
+align-items: center;
+margin-top: 20px;
+margin-left: 10px;
+`;
+export const BackButtonText = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: #007bff;
+  margin-left: 8px;
+`;
