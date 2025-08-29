@@ -20,7 +20,7 @@ const cards = [
     },
     {
         title: 'Relatorio Financeiro',
-        icon: 'file-chart-line',
+        icon: 'file-chart',
         color: '#FF9800',
         onPress: () => {},
     },

@@ -13,5 +13,5 @@ export type RootStackParamList = {
     Financeiro: undefined;
     Relatorios: undefined;
     Gestor: undefined;
-    BalancoMensal: undefined;
+    
 };

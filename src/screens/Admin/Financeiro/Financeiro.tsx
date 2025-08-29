@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const cards = [
     {
         title: 'Pagamentos',
-        icon: 'payment',
+        icon: 'credit-card',
         color: '#4CAF50',
         onPress: () => {},
     },

@@ -8,13 +8,13 @@ import { Text } from 'react-native';
 const cards = [
     {
         title: 'Produtos',
-        icon: 'product-hunt',
+        icon: 'cube-outline',
         color: '#4CAF50',
         onPress: () => {},
     },
     {
         title: 'Categorias',
-        icon: 'category-outline',
+        icon: 'shape-outline',
         color: '#2196F3',
         onPress: () => {}, 
     },
