@@ -7,7 +7,8 @@ import { ContainerDashboard } from "./styles";
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
-import { HeaderBackButton } from '@react-navigation/elements';
+import { RootStackParamList } from "src/Navigation/types";
+
 
 type DashboardStackParamList = {
   Compras: undefined;
@@ -83,7 +84,7 @@ const cardMenu: {
 ];
 
 const Dashboard: React.FC = () => {
-  const navigation = useNavigation<StackNavigationProp<DashboardStackParamList>>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const handleCardPress = (item: typeof cardMenu[number]) => {
     navigation.navigate(item.screen);

@@ -8,6 +8,12 @@ import Dashboard from "../../screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
 import Footer from "../../components/Footer/Footer";
 import Compras from  "../../screens/Admin/Compras/Compras";
+import Vendas from  "../../screens/Admin/Vendas/Vendas";
+import Estoque from  "../../screens/Admin/Estoque/Estoque";
+import Financeiro from  "../../screens/Admin/Financeiro/Financeiro";
+import Relatorios from  "../../screens/Admin/Relatorios/Relatorios";
+import Gestor from  "../../screens/Admin/Gestor/Gestor";
+import BalancoMensal from "../../screens/Admin/BalancoMensal/BalancoMensal";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -22,7 +28,16 @@ export function MyStack() {
             <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Register" component={Cadastro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
+
+            {/* cards dash */}
             <Stack.Screen name="Compras" component={Compras} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Vendas" component={Vendas} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Estoque" component={Estoque} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Financeiro" component={Financeiro} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Gestor" component={Gestor} options={{ headerTitle: () => <Header /> }}/> 
+            <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/>
+
         </Stack.Navigator>
         <Footer/>
         </>

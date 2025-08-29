@@ -8,4 +8,10 @@ export type RootStackParamList = {
     Logout: undefined;
     Chat: undefined;
     Compras: undefined;
+    Vendas: undefined;
+    Estoque: undefined;
+    Financeiro: undefined;
+    Relatorios: undefined;
+    Gestor: undefined;
+    BalancoMensal: undefined;
 };

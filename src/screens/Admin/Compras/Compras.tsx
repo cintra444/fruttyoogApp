@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
-import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
 
 const cards = [

@@ -6,7 +6,7 @@ import Settings from '../../screens/Settings/settings'
 import Footer from "../../components/Footer/Footer";
 import Refresh from "../../screens/Refresh/Refresh";
 import Chat from '../../screens/Chat/Chat';
-import Logout from '../../screens/Auth/Logout/logout';
+import Logout from '../../screens/Auth/Logout/Logout';
 import { Icon } from 'react-native-vector-icons/Icon';
 
 const Tab = createBottomTabNavigator();
