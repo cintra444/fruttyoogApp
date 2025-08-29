@@ -3,10 +3,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import Home from '../../screens/Home/Home';
 import Settings from '../../screens/Settings/settings'
-import Footer from 'src/components/Footer/Footer';
-import Logout from 'src/screens/Logout/Logout';
-import Refresh from 'src/screens/Refresh/Refresh';
-import Chat from 'src/screens/Chat/Chat'; 
+import Footer from "../../components/Footer/Footer";
+import Refresh from "../../screens/Refresh/Refresh";
+import Chat from '../../screens/Chat/Chat';
+import Logout from '../../screens/Auth/Logout/logout';
 import { Icon } from 'react-native-vector-icons/Icon';
 
 const Tab = createBottomTabNavigator();

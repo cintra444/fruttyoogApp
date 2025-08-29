@@ -1,7 +1,7 @@
 // Dashboard.tsx
 import React from "react";
-import { View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Dimensions, View } from "react-native";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { Card } from "../../components/CardMenu/CardMenuAdm";
 import { ContainerDashboard } from "./styles";
 import { useNavigation } from '@react-navigation/native';
@@ -66,7 +66,7 @@ const cardMenu: {
   },
 
   {
-    id: "6",
+    id: "6", 
     title: "Gestor",
     icon: "supervisor-account",
     description: "Gerencie seus gestores",
@@ -81,13 +81,21 @@ const Dashboard: React.FC = () => {
     navigation.navigate(item.screen);
   };
 
+  const screemWidth = Dimensions.get("window").width; // Obtém a largura da tela
+  const numColumns = screemWidth > 600 ? 3 : 2; // Ajusta o número de colunas com base na largura da tela
+
   return (
     <ContainerDashboard>
-      <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", padding: 16, justifyContent: "space-between" }}>
-        {cardMenu.map((item) => (
+      <FlatList 
+        data={cardMenu}
+        keyExtractor={(item) => item.id}
+        numColumns={numColumns}
+        contentContainerStyle={{ padding: 16, gap: 16, alignItems: "stretch" }}
+        columnWrapperStyle = { { justifyContent: "space-between" } }
+        renderItem={({ item }) =>(
           <Card key={item.id} item={item} onPress={() => handleCardPress(item)} />
-        ))}
-      </ScrollView>
+        )}
+      />
     </ContainerDashboard>
   );
 }

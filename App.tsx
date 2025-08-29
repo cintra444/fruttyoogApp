@@ -1,6 +1,6 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { MyStack } from "./src/Routes/MyStack/Mystack";
+import { MyStack } from "./src/Routes/MyStack/mystack";
 import { AppProvider } from "src/contexts/AppContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 

@@ -3,11 +3,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Navigation/types";
 import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
-import Cadastro from "src/screens/Auth/Cadastro/Cadastro";
-import Dashboard from "src/screens/Admin/Dashboard";
+import Cadastro from "../../screens/Auth/Cadastro/Cadastro";
+import Dashboard from "../../screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
-import Footer from "src/components/Footer/Footer";
-import Compras from "src/screens/Admin/Compras/Compras";
+import Footer from "../../components/Footer/Footer";
+import Compras from  "../../screens/Admin/Compras/Compras";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
