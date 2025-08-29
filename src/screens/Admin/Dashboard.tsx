@@ -16,6 +16,7 @@ type DashboardStackParamList = {
   Financeiro: undefined;
   Relatorios: undefined;
   Gestor: undefined;
+  BalancoMensal: undefined;
 };
 
 const cardMenu: {
@@ -71,6 +72,13 @@ const cardMenu: {
     icon: "supervisor-account",
     description: "Gerencie seus gestores",
     screen: "Gestor"
+  },
+
+  { id: "7",
+    title: "Balanço Mensal",
+    icon: "bar-chart",
+    description: "Balanço mensal da empresa",
+    screen: "BalancoMensal"
   }
 ];
 
