@@ -4,23 +4,28 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../Navigation/types';
 
-const cards = [
-    {
-        title: 'Nova compra',
-        icon: 'cart-outline',
-        color: '#4CAF50',
-        onPress: () => {},
-    },
-    {
-        title: 'Historico de compras',
-        icon: 'history',
-        color: '#2196F3',
-        onPress: () => {}, 
-    },
-];
+type ComprasScreenProp = StackNavigationProp<RootStackParamList, 'Compras'>;
+
 const Compras: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ComprasScreenProp>();
+
+  const cards = [
+    {
+      title: 'Nova compra',
+      icon: 'cart-outline',
+      color: '#4CAF50',
+      onPress: () => navigation.navigate('NewShop'),
+    },
+    {
+      title: 'Historico de compras',
+      icon: 'history',
+      color: '#2196F3',
+      onPress: () => navigation.navigate('HistoryShop'), 
+    },
+  ];
 
   return (
     <Container>

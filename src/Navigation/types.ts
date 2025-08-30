@@ -13,5 +13,6 @@ export type RootStackParamList = {
     Financeiro: undefined;
     Relatorios: undefined;
     Gestor: undefined;
-    
+    NewShop: undefined;
+    HistoryShop: undefined;
 };

@@ -9,15 +9,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RootStackParamList } from "src/Navigation/types";
 
-
 type DashboardStackParamList = {
   Compras: undefined;
   Vendas: undefined;
   Estoque: undefined;
   Financeiro: undefined;
   Relatorios: undefined;
-  Gestor: undefined;
-  BalancoMensal: undefined;
 };
 
 const cardMenu: {
