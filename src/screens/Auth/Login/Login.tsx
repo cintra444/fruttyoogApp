@@ -5,7 +5,7 @@ import ModalSuccess from  '../../../components/ModalSucess/ModalSucess';
 import { useNavigation } from '@react-navigation/native';
 import { useApp } from 'src/contexts/AppContext';
 import LoginApi from '../../../Services/apiFruttyoog';
-import { Container, Title } from './styles';
+import { Container, FormWrapper, Title } from './styles';
 
 
 const Login: React.FC = () => { 
@@ -69,6 +69,7 @@ const Login: React.FC = () => {
 
     return (
         <Container>
+          <FormWrapper>
       <Title>Login</Title>
       <LoginForm onLogin={handleLoginPress} />
       <ModalSuccess
@@ -76,6 +77,7 @@ const Login: React.FC = () => {
         onClose={handleModalClose}
         message={`Bem-vindo, ${usuario}`}
       />
+    </FormWrapper>
     </Container>
     );        
     

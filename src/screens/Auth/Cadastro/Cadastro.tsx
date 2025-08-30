@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import CadastroForm from '../../../components/CadastroForm/CadastroForm';
 import { useNavigation } from '@react-navigation/native';
-import { Container, Title } from './styles';
+import { Container, FormWrapper, Title } from './styles';
 import api from 'src/Services/apiFruttyoog';
 
 
@@ -12,7 +12,6 @@ const Cadastro: React.FC = () => {
     const handleFormSubmit = async (data: any) => {
       try {
         await api.post('/usuarios', data);
-         console.log(data);
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
         navigation.navigate('Login');
       } catch (error) {
@@ -23,8 +22,10 @@ const Cadastro: React.FC = () => {
 
     return ( 
     <Container>
+      <FormWrapper>
       <Title>Cadastro de Usuário</Title>
       <CadastroForm type="usuario" onSubmit={handleFormSubmit} />
+      </FormWrapper>
     </Container>
     );
 };
