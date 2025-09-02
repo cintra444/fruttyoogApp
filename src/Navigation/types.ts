@@ -15,4 +15,5 @@ export type RootStackParamList = {
     Gestor: undefined;
     NewShop: undefined;
     HistoryShop: undefined;
+    NewSale: undefined;
 };

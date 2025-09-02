@@ -4,13 +4,21 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from 'src/Navigation/types';
+
+
+type VendasScreenProp = StackNavigationProp<RootStackParamList, 'Vendas'>;
+
+const Vendas: React.FC = () => {
+  const navigation = useNavigation<VendasScreenProp>();
 
 const cards = [
     {
         title: 'Nova venda',
         icon: 'cart-outline',
         color: '#4CAF50',
-        onPress: () => {},
+        onPress: () => navigation.navigate('NewSale'),
     },
     {
         title: 'Historico de vendas',
@@ -25,8 +33,6 @@ const cards = [
         onPress: () => {},
     },
 ];
-const Vendas: React.FC = () => {
-  const navigation = useNavigation();
 
   return (
     <Container>
@@ -49,6 +55,7 @@ const Vendas: React.FC = () => {
     </Container>
   );
 };
+
 
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Text } from "react-native";
+import { Alert, ScrollView, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import {
@@ -83,6 +83,7 @@ const NewShop: React.FC = () => {
 
   return (
     <Container>
+      <ScrollView>
       <Title>Nova Compra</Title>
 
       <FormGroup>
@@ -170,6 +171,7 @@ const NewShop: React.FC = () => {
       <SubmitButton onPress={handleSubmit}>
         <Text>Salvar compra</Text>
       </SubmitButton>
+      </ScrollView>
     </Container>
   );
 };
