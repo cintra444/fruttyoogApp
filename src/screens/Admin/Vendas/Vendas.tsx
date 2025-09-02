@@ -24,7 +24,7 @@ const cards = [
         title: 'Historico de vendas',
         icon: 'history',
         color: '#2196F3',
-        onPress: () => {}, 
+        onPress: () => navigation.navigate('HistorySale'),  
     },
     {
         title: 'Notas de venda',

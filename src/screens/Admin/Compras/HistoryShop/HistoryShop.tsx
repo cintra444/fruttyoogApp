@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Alert, Text } from "react-native";
+import { Modal, Alert } from "react-native";
 import {
   Container,
   Section,
@@ -17,11 +17,8 @@ import {
   ModalTitle,
   CloseButton,
   CloseText,
-  PickerContainer,
-  EmptyText,
 } from "./styles";
-import axios from "axios";
-import { Picker } from "@react-native-picker/picker";
+import { GetCompra, DeleteCompra, PutCompra, GetFornecedor } from "../../../../Services/apiFruttyoog";
 
 interface Fornecedor {
   id: number;
@@ -30,70 +27,48 @@ interface Fornecedor {
 
 interface Compra {
   id: number;
-  fornecedor: string;
   dataCompra: string;
-  total: number;
+  valorTotal: number;
+  fornecedorid: number;
 }
-
-const api = axios.create({
-  baseURL: "http://localhost:3000/api",
-});
 
 const HistoryShop: React.FC = () => {
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
   const [compras, setCompras] = useState<Compra[]>([]);
-  const [filtroFornecedor, setFiltroFornecedor] = useState<number | null>(null);
+  const [filtroFornecedor, setFiltroFornecedor] = useState("");
   const [filtroData, setFiltroData] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCompra, setSelectedCompra] = useState<Compra | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [fornecedoresRes, comprasRes] = await Promise.all([
-          api.get("/fornecedores"),
-          api.get("/compras"),
-        ]);
-        setFornecedores(fornecedoresRes.data);
-        setCompras(comprasRes.data);
-      } catch (err) {
-        Alert.alert("Erro", "Não foi possível carregar dados da API");
-      }
-    };
-    fetchData();
+    carregarFornecedores();
+    listarTodas();
   }, []);
 
+  const carregarFornecedores = async () => {
+    const data = await GetFornecedor();
+    if (data) setFornecedores(data);
+  };
+
   const filtrarCompras = async () => {
-    try {
-      let endpoint = "/compras";
-      if (filtroFornecedor && filtroData) {
-        endpoint += `?fornecedor=${filtroFornecedor}&data=${filtroData}`;
-      } else if (filtroFornecedor) {
-        endpoint += `?fornecedor=${filtroFornecedor}`;
-      } else if (filtroData) {
-        endpoint += `?data=${filtroData}`;
+    const data = await GetCompra();
+    if (data) {
+      let filtradas = data;
+      if (filtroFornecedor) {
+        filtradas = filtradas.filter((c) =>
+          String(c.fornecedorid).includes(filtroFornecedor)
+        );
       }
-
-      const res = await api.get(endpoint);
-      setCompras(res.data);
-
-      if (res.data.length === 0) {
-        Alert.alert("Aviso", "Nenhuma compra encontrada com esses filtros");
+      if (filtroData) {
+        filtradas = filtradas.filter((c) => c.dataCompra.startsWith(filtroData));
       }
-    } catch (err) {
-      Alert.alert("Erro", "Não foi possível carregar as compras filtradas");
+      setCompras(filtradas);
     }
   };
 
   const listarTodas = async () => {
-    try {
-      const res = await api.get("/compras");
-      setCompras(res.data);
-      setFiltroFornecedor(null);
-      setFiltroData("");
-    } catch {
-      Alert.alert("Erro", "Não foi possível listar todas as compras");
-    }
+    const data = await GetCompra();
+    if (data) setCompras(data);
   };
 
   const abrirModal = (compra: Compra) => {
@@ -102,25 +77,25 @@ const HistoryShop: React.FC = () => {
   };
 
   const editarCompra = async () => {
-    Alert.alert("Editar", `Compra ${selectedCompra?.id} editada com sucesso!`);
+    if (!selectedCompra) return;
+    await PutCompra({ ...selectedCompra, valorTotal: selectedCompra.valorTotal });
+    Alert.alert("Sucesso", "Compra editada!");
+    listarTodas();
     setModalVisible(false);
   };
 
   const excluirCompra = async () => {
-    try {
-      await api.delete(`/compras/${selectedCompra?.id}`);
-      setCompras(compras.filter((c) => c.id !== selectedCompra?.id));
-      Alert.alert("Sucesso", "Compra excluída!");
-    } catch {
-      Alert.alert("Erro", "Não foi possível excluir a compra");
-    }
+    if (!selectedCompra) return;
+    await DeleteCompra(selectedCompra.id);
+    Alert.alert("Sucesso", "Compra excluída!");
+    listarTodas();
     setModalVisible(false);
   };
 
   const visualizarCompra = () => {
     Alert.alert(
-      "Visualizar",
-      `Fornecedor: ${selectedCompra?.fornecedor}\nData: ${selectedCompra?.dataCompra}\nTotal: R$ ${selectedCompra?.total}`
+      "Detalhes da Compra",
+      `ID: ${selectedCompra?.id}\nFornecedor: ${selectedCompra?.fornecedorid}\nData: ${selectedCompra?.dataCompra}\nTotal: R$ ${selectedCompra?.valorTotal}`
     );
     setModalVisible(false);
   };
@@ -130,17 +105,11 @@ const HistoryShop: React.FC = () => {
       {/* Filtros */}
       <Section>
         <Label>Fornecedor</Label>
-        <PickerContainer>
-          <Picker
-            selectedValue={filtroFornecedor}
-            onValueChange={(itemValue) => setFiltroFornecedor(itemValue)}
-          >
-            <Picker.Item label="Todos" value={null} />
-            {fornecedores.map((f) => (
-              <Picker.Item key={f.id} label={f.nome} value={f.id} />
-            ))}
-          </Picker>
-        </PickerContainer>
+        <Input
+          placeholder="ID do fornecedor"
+          value={filtroFornecedor}
+          onChangeText={setFiltroFornecedor}
+        />
 
         <Label>Data da compra</Label>
         <Input
@@ -153,28 +122,24 @@ const HistoryShop: React.FC = () => {
           <ButtonText>Filtrar Compras</ButtonText>
         </Button>
 
-        <Button onPress={listarTodas} style={{ marginTop: 8 }}>
+        <Button onPress={listarTodas} bgColor="#4caf50">
           <ButtonText>Listar Todas</ButtonText>
         </Button>
       </Section>
 
-      {/* Lista de compras */}
+      {/* Lista */}
       <PurchaseList>
-        {compras.length === 0 ? (
-          <EmptyText>Nenhuma compra encontrada</EmptyText>
-        ) : (
-          compras.map((compra) => (
-            <PurchaseItem key={compra.id} onPress={() => abrirModal(compra)}>
-              <PurchaseText>
-                {compra.fornecedor} - {compra.dataCompra}
-              </PurchaseText>
-              <PurchaseText>Total: R$ {compra.total}</PurchaseText>
-            </PurchaseItem>
-          ))
-        )}
+        {compras.map((compra) => (
+          <PurchaseItem key={compra.id} onPress={() => abrirModal(compra)}>
+            <PurchaseText>Compra #{compra.id}</PurchaseText>
+            <PurchaseText>
+              Data: {compra.dataCompra} - R$ {compra.valorTotal}
+            </PurchaseText>
+          </PurchaseItem>
+        ))}
       </PurchaseList>
 
-      {/* Modal de ações */}
+      {/* Modal */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <ModalContent>
           <ModalTitle>Opções da compra</ModalTitle>

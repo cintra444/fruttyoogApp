@@ -16,4 +16,5 @@ export type RootStackParamList = {
     NewShop: undefined;
     HistoryShop: undefined;
     NewSale: undefined;
+    HistorySale: undefined;
 };

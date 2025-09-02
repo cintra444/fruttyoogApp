@@ -17,6 +17,7 @@ import BalancoMensal from "../../screens/Admin/BalancoMensal/BalancoMensal";
 import NewShop from "../../screens/Admin/Compras/NewShop/NewShop";
 import NewSale from "../../screens/Admin/Vendas/NewSale/NewSale";
 import HistoryShop from "../../screens/Admin/Compras/HistoryShop/HistoryShop";
+import HistorySale from "../../screens/Admin/Vendas/HistorySale/HistorySale";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,7 +39,7 @@ export function MyStack() {
             <Stack.Screen name="HistoryShop" component={HistoryShop} options={{ headerTitle: () => <Header /> }} /> 
             <Stack.Screen name="Vendas" component={Vendas} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewSale" component={NewSale} options={{ headerTitle: () => <Header /> }} />
-            {/* <Stack.Screen name="HistorySale" component={HistorySale} options={{ headerTitle: () => <Header /> }} /> */}
+            <Stack.Screen name="HistorySale" component={HistorySale} options={{ headerTitle: () => <Header /> }} />
             <Stack.Screen name="Estoque" component={Estoque} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Financeiro" component={Financeiro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
