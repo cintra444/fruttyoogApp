@@ -16,6 +16,7 @@ import Gestor from  "../../screens/Admin/Gestor/Gestor";
 import BalancoMensal from "../../screens/Admin/BalancoMensal/BalancoMensal";
 import NewShop from "../../screens/Admin/Compras/NewShop/NewShop";
 import NewSale from "../../screens/Admin/Vendas/NewSale/NewSale";
+import HistoryShop from "../../screens/Admin/Compras/HistoryShop/HistoryShop";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -34,7 +35,7 @@ export function MyStack() {
             {/* cards dash */}
             <Stack.Screen name="Compras" component={Compras} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewShop" component={NewShop} options={{ headerTitle: () => <Header /> }} />
-            {/* <Stack.Screen name="HistoryShop" component={HistoryShop} options={{ headerTitle: () => <Header /> }} /> */}
+            <Stack.Screen name="HistoryShop" component={HistoryShop} options={{ headerTitle: () => <Header /> }} /> 
             <Stack.Screen name="Vendas" component={Vendas} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewSale" component={NewSale} options={{ headerTitle: () => <Header /> }} />
             {/* <Stack.Screen name="HistorySale" component={HistorySale} options={{ headerTitle: () => <Header /> }} /> */}
