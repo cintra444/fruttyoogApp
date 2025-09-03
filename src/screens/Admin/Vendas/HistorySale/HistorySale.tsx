@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Alert } from "react-native";
 import {
+  Title,
   Container,
   Section,
   Label,
@@ -103,6 +104,8 @@ const HistorySale: React.FC = () => {
 
   return (
     <Container>
+
+      <Title>Histórico de Vendas</Title>
       {/* Filtros */}
       <Section>
         <Label>Cliente</Label>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Alert } from "react-native";
 import axios from "axios";
-import { Container, Section, Label, Input, Button, ButtonText, Card, CardTitle, CardText } from "./styles";
+import { Title, Container, Section, Label, Input, Button, ButtonText, Card, CardTitle, CardText } from "./styles";
+
 
 
 interface Produto {
@@ -87,6 +88,7 @@ const Invoice: React.FC = ({ route, navigation }: any) => {
 
   return (
     <Container>
+        <Title>Notas Fiscais</Title>
       <Section>
         <Button onPress={gerarNota} bgColor="#4CAF50">
           <ButtonText>Gerar Nota</ButtonText>

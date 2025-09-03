@@ -3,6 +3,7 @@ import { Alert, ScrollView, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import {
+  Title,
   Container,
   Label,
   Input,
@@ -126,6 +127,8 @@ const NewSale: React.FC = () => {
 
   return (
     <Container>
+
+      <Title>Nova Venda</Title>
         <ScrollView>
       {/* Cliente */}
       <Section>

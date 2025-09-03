@@ -1,6 +1,12 @@
 import styled from "styled-components/native";
 
 
+export const Title = styled.Text`
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 24px;
+`;
+
 export const Container = styled.ScrollView`
   flex: 1;
   background-color: #f9f9f9;
