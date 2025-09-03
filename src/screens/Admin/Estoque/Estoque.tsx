@@ -7,14 +7,14 @@ import { Text } from 'react-native';
 
 const cards = [
     {
-        title: 'Produtos',
-        icon: 'cube-outline',
+        title: 'Estoque Atual',
+        icon: 'warehouse',
         color: '#4CAF50',
         onPress: () => {},
     },
     {
-        title: 'Categorias',
-        icon: 'shape-outline',
+        title: 'Detalhes do Produto',
+        icon: 'information-outline',
         color: '#2196F3',
         onPress: () => {}, 
     },

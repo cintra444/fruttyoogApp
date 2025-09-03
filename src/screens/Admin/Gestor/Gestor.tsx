@@ -7,21 +7,33 @@ import { useNavigation } from '@react-navigation/native';
 
 const cards = [
     {
-        title: 'Clientes',
+        title: 'Cadastar Clientes',
         icon: 'account-multiple',
         color: '#4CAF50',
         onPress: () => {},
     },
     {
-        title: 'Fornecedores',
+        title: 'Cadastar Fornecedores',
         icon: 'truck',
         color: '#2196F3',
         onPress: () => {}, 
     },
     {
-        title: 'Formas de Pagamento',
+        title: 'Cadastrar Formas de Pagamento',
         icon: 'credit-card-outline',
         color: '#FF9800',
+        onPress: () => {},
+    },
+    {
+        title: 'Cadastrar Produtos',
+        icon: 'cube-outline',
+        color: '#9C27B0',
+        onPress: () => {},
+    },
+    {
+        title: 'Cadastar Categorias',
+        icon: 'shape-outline',
+        color: '#F44336',
         onPress: () => {},
     },
 ];
