@@ -30,7 +30,7 @@ const cards = [
         title: 'Notas de venda',
         icon: 'file-document-outline',
         color: '#FF9800',
-        onPress: () => {},
+        onPress: () => navigation.navigate('Invoice'),
     },
 ];
 
