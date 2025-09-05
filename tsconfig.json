@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react",
+    "target": "esnext",
+    "module": "commonjs",
+    "sourceMap": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "baseUrl": "./"
+  },
+  "extends": "expo/tsconfig.base"
+}
