@@ -16,7 +16,7 @@ const cards = [
         title: 'Cadastar Clientes',
         icon: 'account-multiple',
         color: '#4CAF50',
-        onPress: () => {},
+        onPress: () => navigation.navigate('RegisterCustomers'),
     },
     {
         title: 'Cadastar Fornecedores',
