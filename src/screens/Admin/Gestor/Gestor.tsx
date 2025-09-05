@@ -4,6 +4,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from 'src/Navigation/types';
+
+type GestorScreenProps = StackNavigationProp<RootStackParamList, 'Gestor'>;
+const Gestor: React.FC = () => {
+  const navigation = useNavigation<GestorScreenProps>();
 
 const cards = [
     {
@@ -28,7 +34,7 @@ const cards = [
         title: 'Cadastrar Produtos',
         icon: 'cube-outline',
         color: '#9C27B0',
-        onPress: () => {},
+        onPress: () => navigation.navigate('RegisterProduct'),
     },
     {
         title: 'Cadastar Categorias',
@@ -37,8 +43,6 @@ const cards = [
         onPress: () => {},
     },
 ];
-const Gestor: React.FC = () => {
-  const navigation = useNavigation();
 
   return (
     <Container>
