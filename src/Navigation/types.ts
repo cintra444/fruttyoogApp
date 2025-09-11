@@ -22,4 +22,10 @@ export type RootStackParamList = {
     RegisterCustomers: undefined;
     NewCustomers: undefined;
     EditCustomers: undefined;
+    NewProduct: undefined;
+    EditProduct: undefined;
+    RegisterSuppliers: undefined;
+    NewSuppliers: undefined;
+    EditSuppliers: undefined;
+    
 };

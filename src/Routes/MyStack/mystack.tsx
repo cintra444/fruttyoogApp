@@ -23,6 +23,12 @@ import RegisterProduct from "../../screens/Admin/Gestor/RegisterProduct/Register
 import RegisterCustomers from "../../screens/Admin/Gestor/RegisterCustomers/RegisterCustomers";
 import NewCustomers from "../../screens/Admin/Gestor/RegisterCustomers/NewCustomers/NewCustomers";
 import EditCustomers from "../../screens/Admin/Gestor/RegisterCustomers/EditCustomers/EditCustomers";
+import NewProduct from "../../screens/Admin/Gestor/RegisterProduct/NewProduct/NewProduct";
+import EditProduct from "../../screens/Admin/Gestor/RegisterProduct/EditProduct/EditProduct";
+import RegisterSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/RegisterSuppliers";
+import NewSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/NewSuppliers/NewSuppliers";
+import EditSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/EditSuppliers/EditSuppliers";
+
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -54,10 +60,18 @@ export function MyStack() {
             <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
             {/* gestor */}
             <Stack.Screen name="Gestor" component={Gestor} options={{ headerTitle: () => <Header /> }}/> 
+            {/* produtos */}
             <Stack.Screen name="RegisterProduct" component={RegisterProduct} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="NewProduct" component={NewProduct} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="EditProduct" component={EditProduct} options={{ headerTitle: () => <Header /> }}/>
+            {/* clientes */}
             <Stack.Screen name="RegisterCustomers" component={RegisterCustomers} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewCustomers" component={NewCustomers} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="EditCustomers" component={EditCustomers} options={{ headerTitle: () => <Header /> }}/>
+            {/* fornecedores */}
+            <Stack.Screen name="RegisterSuppliers" component={RegisterSuppliers} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="NewSuppliers" component={NewSuppliers} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="EditSuppliers" component={EditSuppliers} options={{ headerTitle: () => <Header /> }}/>
             {/* <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/> */}
 
         </Stack.Navigator>

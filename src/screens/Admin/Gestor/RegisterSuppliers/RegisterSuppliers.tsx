@@ -7,23 +7,23 @@ import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
-type RegisterProductScreenProps = StackNavigationProp<RootStackParamList, "RegisterProduct">;
+type RegisterSuppliersScreenProps = StackNavigationProp<RootStackParamList, "RegisterSuppliers">;
 
-const RegisterProduct: React.FC = () => {
-  const navigation = useNavigation<RegisterProductScreenProps>();
+const RegisterSuppliers: React.FC = () => {
+  const navigation = useNavigation<RegisterSuppliersScreenProps>();
   
   const cards = [
     {
-      title: "Novo Produto",
-      icon: "plus-box",
+      title: "Novo Fornecedor",
+      icon: "account-plus",
       color: "#4CAF50",
-      onPress: () => navigation.navigate("NewProduct"),
+      onPress: () => navigation.navigate("NewSuppliers"),
     },
     {
       title: "Editar Produto",
-      icon: "pencil-box",
+      icon: "account-edit",
       color: "#2196F3",
-      onPress: () => navigation.navigate("EditProduct"),
+      onPress: () => navigation.navigate("EditSuppliers"),
     },
   ];
 
@@ -34,7 +34,7 @@ const RegisterProduct: React.FC = () => {
                     <Icon name="arrow-left" size={33} color="#000" />
                     <BackButtonText>Voltar</BackButtonText>
                   </BackButton>
-                  <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gerenciar Produtos</Text>
+                  <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gerenciar Fornecedores</Text>
     <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
       {cards.map((card) => (
         <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>
@@ -50,4 +50,4 @@ const RegisterProduct: React.FC = () => {
   );
 };
 
-export default RegisterProduct;
+export default RegisterSuppliers;
