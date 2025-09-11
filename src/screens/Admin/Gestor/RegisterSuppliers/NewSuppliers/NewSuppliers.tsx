@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Alert, ScrollView } from "react-native";
 import {
   Container,
+    Title,
   Section,
   Label,
   Input,
@@ -36,6 +37,7 @@ const NewSuppliers: React.FC = () => {
 
   return (
     <Container>
+        <Title>Novo Fornecedor</Title>
       <ScrollView>
         <Section>
           <Label>Nome Fantasia</Label>

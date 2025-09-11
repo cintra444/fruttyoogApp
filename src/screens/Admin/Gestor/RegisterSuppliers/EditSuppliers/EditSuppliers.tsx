@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Alert } from "react-native";
 import {
   Container,
+    Title,
   Section,
   Label,
   Input,
@@ -13,6 +14,7 @@ import {
   CardTitle,
 } from "./styles";
 import { GetFornecedor, PutFornecedor } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
+
 
 interface Supplier {
   id: number;
@@ -67,6 +69,7 @@ const EditSuppliers: React.FC = () => {
 
   return (
     <Container>
+        <Title>Editar Fornecedor</Title>
       {/* Lista horizontal */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
         <CardContainer>
