@@ -21,6 +21,9 @@ import HistorySale from "../../screens/Admin/Vendas/HistorySale/HistorySale";
 import Invoice from "../../screens/Admin/Vendas/Invoice/Invoice";
 import RegisterProduct from "../../screens/Admin/Gestor/RegisterProduct/RegisterProduct";
 import RegisterCustomers from "../../screens/Admin/Gestor/RegisterCustomers/RegisterCustomers";
+import NewCustomers from "../../screens/Admin/Gestor/RegisterCustomers/NewCustomers/NewCustomers";
+import EditCustomers from "../../screens/Admin/Gestor/RegisterCustomers/EditCustomers/EditCustomers";
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -53,6 +56,8 @@ export function MyStack() {
             <Stack.Screen name="Gestor" component={Gestor} options={{ headerTitle: () => <Header /> }}/> 
             <Stack.Screen name="RegisterProduct" component={RegisterProduct} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="RegisterCustomers" component={RegisterCustomers} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="NewCustomers" component={NewCustomers} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="EditCustomers" component={EditCustomers} options={{ headerTitle: () => <Header /> }}/>
             {/* <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/> */}
 
         </Stack.Navigator>

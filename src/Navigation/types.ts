@@ -20,4 +20,6 @@ export type RootStackParamList = {
     Invoice: undefined;
     RegisterProduct: undefined;
     RegisterCustomers: undefined;
+    NewCustomers: undefined;
+    EditCustomers: undefined;
 };

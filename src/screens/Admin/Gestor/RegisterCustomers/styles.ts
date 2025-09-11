@@ -6,6 +6,12 @@ export const Container = styled.View`
   padding: 20px;
 `;
 
+export const Title = styled.Text`
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+`;
+
 export const CardContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
