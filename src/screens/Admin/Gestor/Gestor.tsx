@@ -22,7 +22,7 @@ const cards = [
         title: 'Cadastar Fornecedores',
         icon: 'truck',
         color: '#2196F3',
-        onPress: () => {}, 
+        onPress: () => navigation.navigate('RegisterSuppliers'), 
     },
     {
         title: 'Cadastrar Formas de Pagamento',

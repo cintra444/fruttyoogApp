@@ -20,7 +20,7 @@ const RegisterSuppliers: React.FC = () => {
       onPress: () => navigation.navigate("NewSuppliers"),
     },
     {
-      title: "Editar Produto",
+      title: "Editar Fornecedor",
       icon: "account-edit",
       color: "#2196F3",
       onPress: () => navigation.navigate("EditSuppliers"),
