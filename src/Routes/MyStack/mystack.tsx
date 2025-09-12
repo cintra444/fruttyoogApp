@@ -34,6 +34,9 @@ import EditPaymentMethods from "../../screens/Admin/Gestor/RegisterPaymentMethod
 import RegisterCategories from "../../screens/Admin/Gestor/RegisterCategories/RegisterCategories";
 import NewCategory from "../../screens/Admin/Gestor/RegisterCategories/NewCategory/NewCategory";
 import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCategory/EditCategory";
+import CurrentStock from "../../screens/Admin/Estoque/CurrentStock/CurrentStock";
+import LowStock from "../../screens/Admin/Estoque/LowStock/LowStock";
+
 
 
 
@@ -61,7 +64,7 @@ export function MyStack() {
             <Stack.Screen name="HistorySale" component={HistorySale} options={{ headerTitle: () => <Header /> }} />
             <Stack.Screen name="Invoice" component={Invoice} options={{ headerTitle: () => <Header /> }} />
             {/* outras telas */}
-            <Stack.Screen name="Estoque" component={Estoque} options={{ headerTitle: () => <Header /> }}/>
+            
             <Stack.Screen name="Financeiro" component={Financeiro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
             {/* gestor */}
@@ -86,6 +89,10 @@ export function MyStack() {
             <Stack.Screen name="RegisterCategories" component={RegisterCategories} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewCategory" component={NewCategory} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="EditCategory" component={EditCategory} options={{ headerTitle: () => <Header /> }}/>
+            {/* estoque */}
+            <Stack.Screen name="Estoque" component={Estoque} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="CurrentStock" component={CurrentStock} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="LowStock" component={LowStock} options={{ headerTitle: () => <Header /> }}/>
             {/* <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/> */}
 
         </Stack.Navigator>

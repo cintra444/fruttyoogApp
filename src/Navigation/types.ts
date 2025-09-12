@@ -32,6 +32,8 @@ export type RootStackParamList = {
     EditPaymentMethods: undefined;
     RegisterCategories: undefined;
     NewCategory: undefined;
-    EditCategory: undefined; 
+    EditCategory: undefined;
+    CurrentStock: undefined;
+    LowStock: undefined; 
     
 };

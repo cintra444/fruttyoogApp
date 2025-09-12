@@ -108,7 +108,47 @@ interface PostUser {
 }
 
 
+//funcções do estoque - Get
+interface StockItem {
+    id: number;
+    nomeProduto: string;
+    categoria: string;
+    quantidade: number;
+}
+export const GetStock = async (): Promise<StockItem[] | void> => {
+    try {
+        const response = await api.get<StockItem[]>("/stock");
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+export const GetStockByProduct = async (productName: string): Promise<StockItem[] | void> => {
+    try {
+        const response = await api.get<StockItem[]>(`/stock/product/${productName}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
 
+export const GetStockByCategory = async (category: string): Promise<StockItem[] | void> => {
+    try {
+        const response = await api.get<StockItem[]>(`/stock/category/${category}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
+
+export const GetStockByQuantity = async (quantity: number): Promise<StockItem[] | void> => {
+    try {
+        const response = await api.get<StockItem[]>(`/stock/quantity/${quantity}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
 
 //funções do produto - Get, Post, Put, Delete
 interface Product {

@@ -4,23 +4,27 @@ import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from 'src/Navigation/types';
+
+type EstoqueScreenProps = StackNavigationProp<RootStackParamList, 'Estoque'>;
+const Estoque: React.FC = () => {
+  const navigation = useNavigation<EstoqueScreenProps>();
 
 const cards = [
     {
         title: 'Estoque Atual',
         icon: 'warehouse',
         color: '#4CAF50',
-        onPress: () => {},
+        onPress: () => navigation.navigate('CurrentStock'),
     },
     {
-        title: 'Detalhes do Produto',
-        icon: 'information-outline',
+        title: 'Estoque Crítico',
+        icon: 'alert-circle',
         color: '#2196F3',
-        onPress: () => {}, 
+        onPress: () => navigation.navigate('LowStock'), 
     },
 ];
-const Estoque: React.FC = () => {
-  const navigation = useNavigation();
 
   return (
     <Container>
