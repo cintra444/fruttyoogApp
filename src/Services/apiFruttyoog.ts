@@ -151,6 +151,11 @@ interface PostProduct {
     }
 };
 
+interface Imagem{
+    uri: string;
+}
+
+
 export const PostProduct = async (data: PostProduct): Promise<Product | void> => {
     try {
         const response = await api.post<Product>("/products", data);
@@ -522,51 +527,51 @@ export const GetFornecedorById = async (id: number): Promise<Fornecedor | void> 
 
 
 //funcao para forma de pagamento - Get, Post, Put, Delete
-interface FormaPagamento {
+interface PaymentMethods {
     id: number;
     tipoPagamento: string;
     prazoDias: number;
 }
 
-export const GetFormaPagamento = async (): Promise<FormaPagamento[] | void> => {
+export const GetPaymentMethods = async (): Promise<PaymentMethods[] | void> => {
     try {
-        const response = await api.get<FormaPagamento[]>("/formapagamento");
+        const response = await api.get<PaymentMethods[]>("/formapagamento");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
-    }
+}
 };
 
-interface PostFormaPagamento {
+interface PostPaymentMethods{
     tipoPagamento: string;
     prazoDias: number;
 }
 
-export const PostFormaPagamento = async (data: PostFormaPagamento): Promise<FormaPagamento | void> => {
+export const PostPaymentMethods = async (data: PostPaymentMethods): Promise<PaymentMethods | void> => {
     try {
-        const response = await api.post<FormaPagamento>("/formapagamento", data);
+        const response = await api.post<PaymentMethods>("/formapagamento", data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 };
 
-interface PutFormaPagamento {
+interface PutPaymentMethods {
     id: number;
     tipoPagamento: string;
     prazoDias: number;
 }
 
-export const PutFormaPagamento = async (data: PutFormaPagamento): Promise<FormaPagamento | void> => {
+export const PutPaymentMethods = async (data: PutPaymentMethods): Promise<PaymentMethods | void> => {
     try {
-        const response = await api.put<FormaPagamento>(`/formapagamento/${data.id}`, data);
+        const response = await api.put<PaymentMethods>(`/formapagamento/${data.id}`, data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 };
 
-export const DeleteFormaPagamento = async (id: number): Promise<void> => {
+export const DeletePaymentMethods = async (id: number): Promise<void> => {
     try {
         await api.delete(`/formapagamento/${id}`);
     } catch (error) {

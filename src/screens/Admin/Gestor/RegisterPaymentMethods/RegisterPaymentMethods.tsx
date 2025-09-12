@@ -7,41 +7,24 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from 'src/Navigation/types';
 
-type GestorScreenProps = StackNavigationProp<RootStackParamList, 'Gestor'>;
-const Gestor: React.FC = () => {
-  const navigation = useNavigation<GestorScreenProps>();
+type PaymentMethodsScreenProps = StackNavigationProp<RootStackParamList, 'RegisterPaymentMethods'>;
+const RegisterPaymentMethods: React.FC = () => {
+  const navigation = useNavigation<PaymentMethodsScreenProps>();
 
 const cards = [
     {
-        title: 'Cadastar Clientes',
-        icon: 'account-multiple',
-        color: '#4CAF50',
-        onPress: () => navigation.navigate('RegisterCustomers'),
-    },
-    {
-        title: 'Cadastar Fornecedores',
-        icon: 'truck',
-        color: '#2196F3',
-        onPress: () => navigation.navigate('RegisterSuppliers'), 
-    },
-    {
-        title: 'Cadastrar Formas de Pagamento',
+        title: 'Cadastar Metodos de Pagamento',
         icon: 'credit-card-outline',
-        color: '#FF9800',
-        onPress: () => navigation.navigate('RegisterPaymentMethods'),
+        color: '#4CAF50',
+        onPress: () => navigation.navigate('NewPaymentMethods'),
     },
     {
-        title: 'Cadastrar Produtos',
-        icon: 'cube-outline',
-        color: '#9C27B0',
-        onPress: () => navigation.navigate('RegisterProduct'),
+        title: 'Editar Metodos de Pagamento',
+        icon: 'credit-card-edit-outline',
+        color: '#2196F3',
+        onPress: () => navigation.navigate('EditPaymentMethods'), 
     },
-    {
-        title: 'Cadastar Categorias',
-        icon: 'shape-outline',
-        color: '#F44336',
-        onPress: () => navigation.navigate('RegisterCategories'),
-    },
+    
 ];
 
   return (
@@ -51,7 +34,7 @@ const cards = [
               <Icon name="arrow-left" size={33} color="#000" />
               <BackButtonText>Voltar</BackButtonText>
             </BackButton>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gestor</Text>
+            <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gerenciar Metodos de Pagamentos</Text>
       <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
         {cards.map((card) => (
           <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>
@@ -68,4 +51,4 @@ const cards = [
 
 
 
-export default Gestor;
+export default RegisterPaymentMethods;

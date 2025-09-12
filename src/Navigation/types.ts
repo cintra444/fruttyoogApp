@@ -27,5 +27,11 @@ export type RootStackParamList = {
     RegisterSuppliers: undefined;
     NewSuppliers: undefined;
     EditSuppliers: undefined;
+    RegisterPaymentMethods: undefined;
+    NewPaymentMethods: undefined;
+    EditPaymentMethods: undefined;
+    RegisterCategories: undefined;
+    NewCategory: undefined;
+    EditCategory: undefined; 
     
 };

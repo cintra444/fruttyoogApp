@@ -28,6 +28,12 @@ import EditProduct from "../../screens/Admin/Gestor/RegisterProduct/EditProduct/
 import RegisterSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/RegisterSuppliers";
 import NewSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/NewSuppliers/NewSuppliers";
 import EditSuppliers from "../../screens/Admin/Gestor/RegisterSuppliers/EditSuppliers/EditSuppliers";
+import RegisterPaymentMethods from "../../screens/Admin/Gestor/RegisterPaymentMethods/RegisterPaymentMethods";
+import NewPaymentMethods from "../../screens/Admin/Gestor/RegisterPaymentMethods/NewPaymentMethods/NewPaymentMethods";
+import EditPaymentMethods from "../../screens/Admin/Gestor/RegisterPaymentMethods/EditPaymentMethods/EditPaymentMethods";
+import RegisterCategories from "../../screens/Admin/Gestor/RegisterCategories/RegisterCategories";
+import NewCategory from "../../screens/Admin/Gestor/RegisterCategories/NewCategory/NewCategory";
+import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCategory/EditCategory";
 
 
 
@@ -72,6 +78,14 @@ export function MyStack() {
             <Stack.Screen name="RegisterSuppliers" component={RegisterSuppliers} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="NewSuppliers" component={NewSuppliers} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="EditSuppliers" component={EditSuppliers} options={{ headerTitle: () => <Header /> }}/>
+            {/*Metodos de pagamento */ }
+            <Stack.Screen name="RegisterPaymentMethods" component={RegisterPaymentMethods} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="NewPaymentMethods" component={NewPaymentMethods} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="EditPaymentMethods" component={EditPaymentMethods} options={{ headerTitle: () => <Header /> }}/> 
+            {/* categorias */}
+            <Stack.Screen name="RegisterCategories" component={RegisterCategories} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="NewCategory" component={NewCategory} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="EditCategory" component={EditCategory} options={{ headerTitle: () => <Header /> }}/>
             {/* <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/> */}
 
         </Stack.Navigator>
