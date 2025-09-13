@@ -9,12 +9,16 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RootStackParamList } from "src/Navigation/types";
 
+import { Title } from "../Auth/Login/styles";
+
 type DashboardStackParamList = {
   Compras: undefined;
   Vendas: undefined;
   Estoque: undefined;
   Financeiro: undefined;
   Relatorios: undefined;
+  Gestor: undefined;
+  BalancoMensal: undefined;
 };
 
 const cardMenu: {
@@ -85,6 +89,7 @@ const Dashboard: React.FC = () => {
 
   const handleCardPress = (item: typeof cardMenu[number]) => {
     navigation.navigate(item.screen);
+
   };
 
   const screemWidth = Dimensions.get("window").width; // Obtém a largura da tela
@@ -92,6 +97,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <ContainerDashboard>
+      
       <FlatList 
         data={cardMenu}
         keyExtractor={(item) => item.id}
@@ -101,7 +107,7 @@ const Dashboard: React.FC = () => {
         renderItem={({ item }) =>(
           <Card key={item.id} item={item} onPress={() => handleCardPress(item)} />
         )}
-      />
+        />
     </ContainerDashboard>
   );
 }

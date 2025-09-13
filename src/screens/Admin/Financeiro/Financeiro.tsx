@@ -4,29 +4,34 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from 'src/Navigation/types';
+
+type FinanceiroScreenProps = StackNavigationProp<RootStackParamList, 'Financeiro'>;
+
+const Financeiro: React.FC = () => {
+  const navigation = useNavigation<FinanceiroScreenProps>();
 
 const cards = [
     {
         title: 'Pagamentos',
         icon: 'credit-card',
         color: '#4CAF50',
-        onPress: () => {},
+        onPress: () => navigation.navigate('Payments'),
     },
     {
         title: 'Despesas',
         icon: 'cash-minus',
         color: '#2196F3',
-        onPress: () => {}, 
+        onPress: () => navigation.navigate('Expenses'), 
     },
     {
         title: 'Receitas',
         icon: 'receipt',
         color: '#FF9800',
-        onPress: () => {},
+        onPress: () => navigation.navigate('Revenues'),
     },
 ];
-const Financeiro: React.FC = () => {
-  const navigation = useNavigation();
 
   return (
     <Container>

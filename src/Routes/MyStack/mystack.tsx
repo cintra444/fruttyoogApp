@@ -37,6 +37,9 @@ import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCate
 import CurrentStock from "../../screens/Admin/Estoque/CurrentStock/CurrentStock";
 import LowStock from "../../screens/Admin/Estoque/LowStock/LowStock";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Payments from "src/screens/Admin/Financeiro/Payment/Payments";
+import Expenses from "src/screens/Admin/Financeiro/Expenses/Expenses";
+import Revenues from "src/screens/Admin/Financeiro/Revenues/Revenues";
 
 
 
@@ -66,8 +69,12 @@ export function MyStack() {
             <Stack.Screen name="HistorySale" component={HistorySale} options={{ headerTitle: () => <Header /> }} />
             <Stack.Screen name="Invoice" component={Invoice} options={{ headerTitle: () => <Header /> }} />
             {/* outras telas */}
-            
+            {/* financeiro */}            
             <Stack.Screen name="Financeiro" component={Financeiro} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Payments" component={Payments} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Expenses" component={Expenses} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Revenues" component={Revenues} options={{ headerTitle: () => <Header /> }}/>
+            {/* relatórios */}
             <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
             {/* gestor */}
             <Stack.Screen name="Gestor" component={Gestor} options={{ headerTitle: () => <Header /> }}/> 

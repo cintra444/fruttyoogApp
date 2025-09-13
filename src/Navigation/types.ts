@@ -11,6 +11,9 @@ export type RootStackParamList = {
     Vendas: undefined;
     Estoque: undefined;
     Financeiro: undefined;
+    Payments: undefined;
+    Expenses: undefined;
+    Revenues: undefined;
     Relatorios: undefined;
     Gestor: undefined;
     NewShop: undefined;
@@ -35,5 +38,6 @@ export type RootStackParamList = {
     EditCategory: undefined;
     CurrentStock: undefined;
     LowStock: undefined; 
+
     
 };
