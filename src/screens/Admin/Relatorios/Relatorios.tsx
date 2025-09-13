@@ -4,29 +4,33 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from 'src/Navigation/types';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RelatoriosScreenProps = StackNavigationProp<RootStackParamList, 'Relatorios'>;
+const Relatorios: React.FC = () => {
+  const navigation = useNavigation<RelatoriosScreenProps>();
 
 const cards = [
     {
         title: 'Relatorio de Vendas',
         icon: 'chart-bar',
         color: '#4CAF50',
-        onPress: () => {},
+        onPress: () => navigation.navigate('SalesReport'),
     },
     {
         title: 'Relatorio de Estoque',
         icon: 'archive',
         color: '#2196F3',
-        onPress: () => {}, 
+        onPress: () => navigation.navigate('StockReport'), 
     },
     {
         title: 'Relatorio Financeiro',
         icon: 'file-chart',
         color: '#FF9800',
-        onPress: () => {},
+        onPress: () => navigation.navigate('FinancialReport'),
     },
 ];
-const Relatorios: React.FC = () => {
-  const navigation = useNavigation();
 
   return (
     <Container>

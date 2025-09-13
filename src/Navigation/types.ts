@@ -15,6 +15,9 @@ export type RootStackParamList = {
     Expenses: undefined;
     Revenues: undefined;
     Relatorios: undefined;
+    SalesReport: undefined;
+    StockReport: undefined;
+    FinancialReport: undefined;
     Gestor: undefined;
     NewShop: undefined;
     HistoryShop: undefined;

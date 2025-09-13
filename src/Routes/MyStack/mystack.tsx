@@ -40,6 +40,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Payments from "src/screens/Admin/Financeiro/Payment/Payments";
 import Expenses from "src/screens/Admin/Financeiro/Expenses/Expenses";
 import Revenues from "src/screens/Admin/Financeiro/Revenues/Revenues";
+import SalesReport from "src/screens/Admin/Relatorios/SalesReport/SalesReport";
+import StockReport from "src/screens/Admin/Relatorios/StockReport/StockReport";
+import FinancialReport from "src/screens/Admin/Relatorios/FinancialReport/FinancialReport";
 
 
 
@@ -76,6 +79,9 @@ export function MyStack() {
             <Stack.Screen name="Revenues" component={Revenues} options={{ headerTitle: () => <Header /> }}/>
             {/* relatórios */}
             <Stack.Screen name="Relatorios" component={Relatorios} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="SalesReport" component={SalesReport} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="StockReport" component={StockReport} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="FinancialReport" component={FinancialReport} options={{ headerTitle: () => <Header /> }}/>
             {/* gestor */}
             <Stack.Screen name="Gestor" component={Gestor} options={{ headerTitle: () => <Header /> }}/> 
             {/* produtos */}

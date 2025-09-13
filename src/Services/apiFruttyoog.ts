@@ -1006,5 +1006,41 @@ export const RedefinirSenha = async (data: RedefinirSenha): Promise<void> => {
     }
 };
 
+//funcao para relatorios - get
+
+interface Report {
+    categoria: string;
+    produto: string;
+    quantidade: number;
+}
+export const GetSalesReport = async (): Promise<Report[] | void> => {
+    try {
+        const response = await api.get<Report[]>("/relatorios");
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+export const GetStockReport = async (): Promise<Report[] | void> => {
+    try {
+        const response = await api.get<Report[]>("/relatorios/estoque");        
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+export const GetFinancialReport = async (): Promise<Report[] | void> => {
+    try {
+        const response = await api.get<Report[]>("/relatorios/financeiro");        
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+
+
 
 export default api;
