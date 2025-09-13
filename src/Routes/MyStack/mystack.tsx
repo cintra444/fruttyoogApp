@@ -36,6 +36,7 @@ import NewCategory from "../../screens/Admin/Gestor/RegisterCategories/NewCatego
 import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCategory/EditCategory";
 import CurrentStock from "../../screens/Admin/Estoque/CurrentStock/CurrentStock";
 import LowStock from "../../screens/Admin/Estoque/LowStock/LowStock";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -45,6 +46,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export function MyStack() {
     return (
         <>
+        <SafeAreaView style={{ flex: 1 }}>
         {/* <NavigationContainer> */}
         <Stack.Navigator
         screenOptions={{ header: () => <Header />, 
@@ -97,6 +99,7 @@ export function MyStack() {
 
         </Stack.Navigator>
         <Footer/>
+        </SafeAreaView>
         </>
     );    
 }

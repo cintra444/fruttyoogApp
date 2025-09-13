@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'src/Navigation/types';
 import { FooterContainer, IconContainer } from './styles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface FooterItem {
     id: number;
@@ -24,6 +25,7 @@ const Footer = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     return (
+        <SafeAreaView edges={['bottom', 'left', 'right']}>
         <FooterContainer>
             {footerItems.map((item) => (
                 <IconContainer activeOpacity={0.8} key={item.id} onPress={() => navigation.navigate(item.route)}>
@@ -31,6 +33,8 @@ const Footer = () => {
                 </IconContainer>
             ))}
         </FooterContainer>
+        </SafeAreaView>
+        
     );
 };
 
