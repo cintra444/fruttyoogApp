@@ -18,7 +18,7 @@ type DashboardStackParamList = {
   Financeiro: undefined;
   Relatorios: undefined;
   Gestor: undefined;
-  BalancoMensal: undefined;
+  MonthlyBalance: undefined;
 };
 
 const cardMenu: {
@@ -80,7 +80,7 @@ const cardMenu: {
     title: "Balanço Mensal",
     icon: "bar-chart",
     description: "Balanço mensal da empresa",
-    screen: "BalancoMensal"
+    screen: "MonthlyBalance",
   }
 ];
 

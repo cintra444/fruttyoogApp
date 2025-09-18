@@ -977,21 +977,6 @@ export const DeleteDespesa = async (id: number): Promise<void> => {
     }
 };
 
-// funcao para balanco mensal - get
-
-interface BalancoMensal {
-  ano: number;
-    mes: number;
-}
-
-export const GetBalancoMensal = async (): Promise<BalancoMensal[] | void> => {
-    try {
-        const response = await api.get<BalancoMensal[]>("/balancomensal");
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
-};
 
 //funcao para redefinir senha
 interface RedefinirSenha {
@@ -1039,6 +1024,40 @@ export const GetFinancialReport = async (): Promise<Report[] | void> => {
         handleApiError(error as ApiError);
     }
 };
+
+//Balanco mensal
+
+interface Revenue {
+    id: number;
+    descricao: string;
+    valor: number;
+}
+
+interface Expense {
+    id: number;
+    descricao: string;
+    valor: number;
+}
+
+export const GetExpenses = async (): Promise<Expense[] | void> => {
+    try {
+        const response = await api.get<Expense[]>("/despesa");
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+export const GetRevenues = async (): Promise<Revenue[] | void> => {
+    try {
+        const response = await api.get<Revenue[]>("/venda");
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+
 
 
 

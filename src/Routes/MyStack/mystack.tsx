@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Navigation/types";
 import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
+import Logout from "src/screens/Auth/Logout/Logout";
 import Cadastro from "../../screens/Auth/Cadastro/Cadastro";
 import Dashboard from "../../screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
@@ -13,7 +14,6 @@ import Estoque from  "../../screens/Admin/Estoque/Estoque";
 import Financeiro from  "../../screens/Admin/Financeiro/Financeiro";
 import Relatorios from  "../../screens/Admin/Relatorios/Relatorios";
 import Gestor from  "../../screens/Admin/Gestor/Gestor";
-import BalancoMensal from "../../screens/Admin/BalancoMensal/BalancoMensal";
 import NewShop from "../../screens/Admin/Compras/NewShop/NewShop";
 import NewSale from "../../screens/Admin/Vendas/NewSale/NewSale";
 import HistoryShop from "../../screens/Admin/Compras/HistoryShop/HistoryShop";
@@ -43,6 +43,7 @@ import Revenues from "src/screens/Admin/Financeiro/Revenues/Revenues";
 import SalesReport from "src/screens/Admin/Relatorios/SalesReport/SalesReport";
 import StockReport from "src/screens/Admin/Relatorios/StockReport/StockReport";
 import FinancialReport from "src/screens/Admin/Relatorios/FinancialReport/FinancialReport";
+import MonthlyBalance from "../../screens/Admin/BalancoMensal/MonthlyBalance";
 
 
 
@@ -59,6 +60,7 @@ export function MyStack() {
         }}>
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Logout" component={Logout}  options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Register" component={Cadastro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
 
@@ -108,7 +110,7 @@ export function MyStack() {
             <Stack.Screen name="Estoque" component={Estoque} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="CurrentStock" component={CurrentStock} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="LowStock" component={LowStock} options={{ headerTitle: () => <Header /> }}/>
-            {/* <Stack.Screen name="BalancoMensal" component={BalancoMensal} options={{ headerTitle: () => <Header /> }}/> */}
+            <Stack.Screen name="MonthlyBalance" component={MonthlyBalance} options={{ headerTitle: () => <Header /> }}/> 
 
         </Stack.Navigator>
         <Footer/>
