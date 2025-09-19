@@ -1,30 +1,58 @@
-import styled from "styled-components/native";
+import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView.attrs({
-  contentContainerStyle: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-})`
+export const Container = styled.View`
   flex: 1;
-  background-color: #f5f5f5;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 20px;
 `;
 
-export const FormWrapper = styled.View`
-  width: 100%;
-  max-width: 400px;
-  padding: 16px;
-  background-color: #fff;
-  border-radius: 12px;
-  elevation: 2;
+export const Logo = styled.Image`
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
 `;
 
-export const Title = styled.Text`
+export const WelcomeText = styled.Text`
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 24px;
   color: #333;
+  margin-bottom: 10px;
   text-align: center;
+`;
+
+export const QuestionText = styled.Text`
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center;
+`;
+
+export const Input = styled.TextInput`
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 0 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border-width: 1px;
+  border-color: #ccc;
+`;
+
+export const Button = styled.TouchableOpacity`
+  width: 100%;
+  height: 50px;
+  background-color: #4caf50;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const ButtonText = styled.Text`
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
 `;

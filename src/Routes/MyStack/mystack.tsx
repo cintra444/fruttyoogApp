@@ -4,6 +4,8 @@ import { RootStackParamList } from "../../Navigation/types";
 import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
 import Logout from "src/screens/Auth/Logout/Logout";
+import Settings from "src/screens/Settings/settings";
+import Refresh from "src/screens/Refresh/Refresh";
 import Cadastro from "../../screens/Auth/Cadastro/Cadastro";
 import Dashboard from "../../screens/Admin/Dashboard";
 import Header from '../../components/Header/Header';
@@ -61,6 +63,8 @@ export function MyStack() {
             <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
             <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Logout" component={Logout}  options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Settings" component={Settings} options={{ headerTitle: () => <Header /> }}/>
+            <Stack.Screen name="Refresh" component={Refresh} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Register" component={Cadastro} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Dashboard" component={Dashboard} options={{ headerShown: false }}/>
 
