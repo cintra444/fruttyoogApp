@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'src/Navigation/types';
-import { Container, Logo, WelcomeText, QuestionText, Button, ButtonText } from './styles';
+import { Container, Logo, WelcomeText, QuestionText, Button, ButtonText, AdminButton, AdminButtonText } from './styles';
 import { useApp } from '../../contexts/AppContext'; // seu context
 
 const Home: React.FC = () => {
@@ -30,16 +30,16 @@ const Home: React.FC = () => {
             ) : (
                 <>
                 <Button onPress={() => handleLogout(navigation)}>
-                    <ButtonText>Logout</ButtonText>
+                    <ButtonText>Sair</ButtonText>
                 </Button>
                
                 <Button onPress={() => navigation.navigate('Register')}>
-                    <ButtonText>Cadastro</ButtonText>
+                    <ButtonText>Cadastrar</ButtonText>
                 </Button>
             
-                <Button onPress={() => navigation.navigate('Dashboard')}>
-                    <ButtonText>Administrador </ButtonText>
-                </Button>
+                <AdminButton onPress={() => navigation.navigate('Dashboard')}>
+                    <AdminButtonText>Administrador </AdminButtonText>
+                </AdminButton>
             
                 </>
             )}

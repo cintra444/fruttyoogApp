@@ -47,4 +47,18 @@ export const ButtonText = styled.Text`
     font-weight: bold;
     font-size: 24px;
 `;
+
+export const AdminButton = styled.TouchableOpacity`
+    background-color: #FFA500;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 80%;
+    align-items: center;
+`;
+export const AdminButtonText = styled.Text`
+    color: #fff;    
+    font-weight: bold;
+    font-size: 24px;
+`;
    
