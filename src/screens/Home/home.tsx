@@ -28,17 +28,21 @@ const Home: React.FC = () => {
                     <ButtonText>Login</ButtonText>
                 </Button>
             ) : (
+                <>
                 <Button onPress={() => handleLogout(navigation)}>
                     <ButtonText>Logout</ButtonText>
                 </Button>
-            )}
-
-            {user?.isAdmin && (
+               
                 <Button onPress={() => navigation.navigate('Register')}>
                     <ButtonText>Cadastro</ButtonText>
                 </Button>
+            
+                <Button onPress={() => navigation.navigate('Dashboard')}>
+                    <ButtonText>Administrador </ButtonText>
+                </Button>
+            
+                </>
             )}
-
             {/* <Text style={{ marginTop: 20, fontSize: 16 }}>Navegação entre telas (para dev):</Text>
             <View style={{ height: 10 }} />
             {screens.map((screen) => (

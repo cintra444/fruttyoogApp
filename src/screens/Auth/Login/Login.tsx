@@ -34,8 +34,12 @@ const Login: React.FC = () => {
           isAdmin,
         });
 
-        // Redirecionar para dashboard ou home
-        navigation.navigate('Dashboard');
+        //reset para limpar histórico e definir tela inicial
+        navigation.reset({
+          index: 0,
+          routes: [{ name: isAdmin ? 'Dashboard' : 'Home' }],
+        });
+
       } else {
         Alert.alert('Erro', 'Credenciais inválidas');
       }

@@ -1,6 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../Navigation/types";
+import { useApp } from "src/contexts/AppContext";
 import Home from "../../screens/Home/Home";
 import Login from "../../screens/Auth/Login/Login";
 import Logout from "src/screens/Auth/Logout/Logout";
@@ -53,6 +54,7 @@ import MonthlyBalance from "../../screens/Admin/BalancoMensal/MonthlyBalance";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function MyStack() {
+    const { user } = useApp();
     return (
         <>
         <SafeAreaView style={{ flex: 1 }}>
@@ -60,8 +62,13 @@ export function MyStack() {
         <Stack.Navigator
         screenOptions={{ header: () => <Header />, 
         }}>
-            <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={Login}  options={{ headerTitle: () => <Header /> }}/>
+            {!user ? (
+                <Stack.Screen name="Login" 
+                component={Login} 
+                options={{ headerShown: false }} />
+            ) : (
+                <>
+            <Stack.Screen name="Home" component={Home} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Logout" component={Logout}  options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Settings" component={Settings} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="Refresh" component={Refresh} options={{ headerTitle: () => <Header /> }}/>
@@ -115,7 +122,8 @@ export function MyStack() {
             <Stack.Screen name="CurrentStock" component={CurrentStock} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="LowStock" component={LowStock} options={{ headerTitle: () => <Header /> }}/>
             <Stack.Screen name="MonthlyBalance" component={MonthlyBalance} options={{ headerTitle: () => <Header /> }}/> 
-
+                </>
+            )}
         </Stack.Navigator>
         <Footer/>
         </SafeAreaView>
