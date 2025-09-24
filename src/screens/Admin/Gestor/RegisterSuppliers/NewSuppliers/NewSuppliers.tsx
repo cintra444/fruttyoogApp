@@ -3,16 +3,22 @@ import React, { useState } from "react";
 import { Alert, ScrollView } from "react-native";
 import {
   Container,
-    Title,
   Section,
   Label,
   Input,
   Button,
   ButtonText,
 } from "./styles";
+import { Text } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { BackButton, BackButtonText } from "../../../../Admin/Gestor/styles";
 import { PostFornecedor } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
 
 const NewSuppliers: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [nomeFantasia, setNomeFantasia] = useState("");
   const [vendedor, setVendedor] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -37,7 +43,14 @@ const NewSuppliers: React.FC = () => {
 
   return (
     <Container>
-        <Title>Novo Fornecedor</Title>
+        {/* Botão de voltar */}
+                                <BackButton onPress={() => navigation.goBack()}>
+                                  <Icon name="arrow-left" size={33} color="#000" />
+                                  <BackButtonText>Voltar</BackButtonText>
+                                </BackButton>
+                                <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Cadastrar Fornecedor</Text>
+                  
+              
       <ScrollView>
         <Section>
           <Label>Nome Fantasia</Label>
