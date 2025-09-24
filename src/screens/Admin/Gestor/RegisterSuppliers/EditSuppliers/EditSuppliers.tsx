@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, Alert } from "react-native";
 import {
   Container,
-    Title,
+  Title,
   Section,
   Label,
   Input,
@@ -12,14 +12,15 @@ import {
   CardContainer,
   CardTouchable,
   CardTitle,
+  DeleteButton,
+  DeleteButtonText,
 } from "./styles";
-import { GetFornecedor, PutFornecedor } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
-
+import { GetFornecedor, PutFornecedor, DeleteFornecedor } from "../../../../../Services/apiFruttyoog";
 
 interface Supplier {
   id: number;
   nomeFantasia: string;
-  vendedor: string;
+  nomeContato: string;
   telefone: string;
 }
 
@@ -31,28 +32,37 @@ const EditSuppliers: React.FC = () => {
   const [vendedor, setVendedor] = useState("");
   const [telefone, setTelefone] = useState("");
 
-{/*}  useEffect(() => {
+  // Carregar fornecedores
+  useEffect(() => {
     const loadSuppliers = async () => {
       try {
         const data = await GetFornecedor();
-        setSuppliers(data);
-      } catch {
+        console.log("Fornecedores carregados:", data);
+        if (data) setSuppliers(data);
+      } catch (error) {
+        console.log(error);
         Alert.alert("Erro", "Não foi possível carregar os fornecedores");
       }
     };
     loadSuppliers();
   }, []);
-  */}
 
+  // Selecionar fornecedor
   const selectSupplier = (supplier: Supplier) => {
     setSelectedSupplier(supplier);
     setNomeFantasia(supplier.nomeFantasia);
-    setVendedor(supplier.vendedor);
+    setVendedor(supplier.nomeContato);
     setTelefone(supplier.telefone);
   };
 
+  // Atualizar fornecedor
   const updateSupplier = async () => {
     if (!selectedSupplier) return;
+
+    if (!nomeFantasia || !vendedor || !telefone) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
 
     try {
       await PutFornecedor({
@@ -61,45 +71,96 @@ const EditSuppliers: React.FC = () => {
         nomeContato: vendedor,
         telefone,
       });
+
+      // Atualiza a lista localmente
+      setSuppliers((prev) =>
+        prev.map((sup) =>
+          sup.id === selectedSupplier.id
+            ? { ...sup, nomeFantasia, nomeContato: vendedor, telefone }
+            : sup
+        )
+      );
+
       Alert.alert("Sucesso", "Fornecedor atualizado!");
-    } catch {
+    } catch (error) {
+      console.log(error);
       Alert.alert("Erro", "Não foi possível atualizar o fornecedor");
     }
   };
 
+  // Deletar fornecedor
+  const deleteSupplier = async () => {
+    if (!selectedSupplier) return;
+
+    Alert.alert(
+      "Confirmar exclusão",
+      `Deseja realmente deletar o fornecedor ${selectedSupplier.nomeFantasia}?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Deletar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await DeleteFornecedor(selectedSupplier.id);
+              setSuppliers((prev) => prev.filter((sup) => sup.id !== selectedSupplier.id));
+              setSelectedSupplier(null);
+              Alert.alert("Sucesso", "Fornecedor deletado!");
+            } catch (error) {
+              console.log(error);
+              Alert.alert("Erro", "Não foi possível deletar o fornecedor");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <Container>
-        <Title>Editar Fornecedor</Title>
-      {/* Lista horizontal */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
+      <Title>Editar Fornecedor</Title>
+
+      {/* Lista horizontal de fornecedores */}
+      <ScrollView style={{ marginBottom: 20 }}>
         <CardContainer>
-          {suppliers.length === 0 && <CardTitle>Nenhum fornecedor cadastrado</CardTitle>}
-          {suppliers.map((sup) => (
-            <CardTouchable key={sup.id} onPress={() => selectSupplier(sup)}>
-              <CardTitle>{sup.nomeFantasia}</CardTitle>
-            </CardTouchable>
-          ))}
+          {suppliers.length === 0 ? (
+            <CardTitle>Nenhum fornecedor cadastrado</CardTitle>
+          ) : (
+            suppliers.map((sup) => (
+              <CardTouchable key={sup.id} onPress={() => selectSupplier(sup)}>
+                <CardTitle>{sup.nomeFantasia}</CardTitle>
+              </CardTouchable>
+            ))
+          )}
         </CardContainer>
       </ScrollView>
 
-      {/* Formulário */}
+      {/* Formulário de edição */}
       {selectedSupplier && (
         <ScrollView>
           <Section>
             <Label>Nome Fantasia</Label>
             <Input value={nomeFantasia} onChangeText={setNomeFantasia} />
+
             <Label>Vendedor</Label>
             <Input value={vendedor} onChangeText={setVendedor} />
+
             <Label>Telefone</Label>
             <Input value={telefone} onChangeText={setTelefone} keyboardType="phone-pad" />
           </Section>
+
           <Button onPress={updateSupplier}>
             <ButtonText>Atualizar</ButtonText>
           </Button>
+          {/* Botão de exclusão */}
+          <DeleteButton onPress={deleteSupplier}>
+            <DeleteButtonText>Deletar Fornecedor</DeleteButtonText>
+          </DeleteButton>
         </ScrollView>
       )}
     </Container>
   );
 };
+
 
 export default EditSuppliers;

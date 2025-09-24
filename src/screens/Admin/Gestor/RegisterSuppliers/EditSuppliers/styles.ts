@@ -62,3 +62,16 @@ export const CardTitle = styled.Text`
   font-weight: bold;
   color: #333;
 `;
+
+export const DeleteButton = styled.TouchableOpacity`
+  background-color: #ff4444;
+  padding: 12px;
+  border-radius: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+export const DeleteButtonText = styled.Text`
+   color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+`;

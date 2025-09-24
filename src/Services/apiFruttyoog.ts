@@ -556,6 +556,12 @@ export const DeleteFornecedor = async (id: number): Promise<void> => {
     }
 };
 
+interface GetFornecedorById {
+    id: number;    
+    nomeFantasia: string;
+    nomeContato: string;
+    telefone: string;
+}
 export const GetFornecedorById = async (id: number): Promise<Fornecedor | void> => {
     try {
         const response = await api.get<Fornecedor>(`/fornecedor/${id}`);
