@@ -721,11 +721,6 @@ interface Endereco {
     idCliente: number;
 }
 
-interface FormaPagamento {
-    id: number;
-    tipoPagamento: string;
-    prazoDias: number;
-}
 interface Cliente {
     id: number;
     codigoCliente: string;
@@ -755,9 +750,9 @@ interface PostCliente {
     dataNascimento: string;
     telefone: string;
     email: string;
-    endereco: Endereco;
+    endereco: {cep: string; complemento: string;};
     tipoCliente: string;
-    formaPagamento: FormaPagamento;
+    
 }
 
 export const PostCliente = async (data: PostCliente): Promise<Cliente | void> => {
@@ -779,7 +774,7 @@ interface PutCliente {
     email: string;
     endereco: Endereco;
     tipoCliente: string;
-    formaPagamento: FormaPagamento;
+  
 }
 
 export const PutCliente = async (data: PutCliente): Promise<Cliente | void> => {
