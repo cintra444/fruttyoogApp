@@ -28,17 +28,32 @@ const tipoClienteOptions = [
   "OUTROS",
 ];
 
+const tipoPagamentoOptions = [
+  "DINHEIRO",
+    "PIX",
+    "BOLETO",
+    "TRANSFERENCIA",
+    "CHEQUE",
+    "DEBITO",
+    "CREDITO",
+    "FIADO",
+    "A_PRAZO",
+    "OUTROS",
+];
+
 const NewCustomers: React.FC = () => {
 
+  const [codigoCliente, setCodigoCliente] = useState("");
   const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [codigoCliente, setCodigoCliente] = useState("");
-  const [dataNascimento, setDataNascimento] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [referencia, setReferencia] = useState("");
   const [tipoCliente, setTipoCliente] = useState("");
-  const [cep, setCep] = useState("");
-  const [complemento, setComplemento] = useState("");
+  const [tipoPagamento, setTipoPagamento] = useState("");
+  
 
   //----mascaras ----//
   const formatarData = (value: string) => {
@@ -71,16 +86,7 @@ const NewCustomers: React.FC = () => {
     }
   };
 
-  const formatarCep = (value: string) => {
-    // Remove tudo que não é dígito
-    let cleaned = value.replace(/\D/g, "");
-    if(cleaned.length > 8) cleaned = cleaned.slice(0,8);
-    if (cleaned.length > 5) {
-      setCep(`${cleaned.slice(0, 5)}-${cleaned.slice(5)}`);
-    } else {
-      setCep(cleaned);
-    }
-  };
+
 
   const formatarTelefone = (value: string) => {
     // Remove tudo que não é dígito
@@ -100,50 +106,40 @@ const NewCustomers: React.FC = () => {
     }
   };
 
-  const salvarCliente = async () => {
+  // ---- Converter "dd/MM/yyyy" para "yyyy-MM-dd" ---- //
+  const formatarParaISO = (data: string) => {
+    if (!data) return "";
+    const partes = data.split(/[/-]/);
+    if (partes.length !== 3) return "";
+    const [dia, mes, ano] = partes;
+    return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+  };
 
+  const salvarCliente = async () => {
     if (!nome || !telefone || !email) {
       Alert.alert("Erro", "Por favor, preencha todos os campos obrigatórios.");
       return;
     }
+
     try {
-      let dataFormatada = "";
-      if(dataNascimento){
-        const [dia, mes, ano] = dataNascimento.split("/");
-        if(dia && mes && ano){
-          dataFormatada = `${ano}-${mes}-${dia}`;
-        }
-      }
-
-      let cepFormatado = "";
-      if(cep){
-        const [parte1, parte2] = cep.split("-");
-        if(parte1 && parte2){
-          cepFormatado = `${parte1.padStart(5, '0')}-${parte2.padStart(3, '0')}`;
-        }
-      }
-
-      let telefoneFormatado = "";
-      if(telefone){
-        const [parte1, parte2, parte3] = telefone.split("-");
-        if(parte1 && parte2 && parte3){
-          telefoneFormatado = `(${parte1.padStart(2, '0')}) ${parte2.padStart(5, '0')}-${parte3.padStart(4, '0')}`;
-        }
-      }
+      const dataFormatada = formatarParaISO(dataNascimento);
+      const telefoneFormatado = telefone.replace(/\D/g, "");
+      const cpfFormatado = cpf.replace(/\D/g, "");
 
       const response = await PostCliente({
+        id: 0,
+        codigoCliente,
         nome,
-        telefone: telefoneFormatado.replace(/\D/g, "") || "",
-        email,
-        cpf: cpf.replace(/\D/g, "") || "",
-        codigoCliente: codigoCliente,
+        cpf: cpfFormatado,
         dataNascimento: dataFormatada || "",
+        telefone: telefoneFormatado || "",
+        email,
+        endereco,
+        referencia,
         tipoCliente,
-        endereco: { cep: cep.replace(/\D/g, "") || "", 
-        complemento: complemento || "" },        
+        tipoPagamento,
       });
 
-      // Supondo que PostCliente retorna um objeto Cliente, não uma resposta HTTP
       if (response) {
         Alert.alert("Sucesso", "Cliente cadastrado!");
         limparFormulario();
@@ -156,24 +152,18 @@ const NewCustomers: React.FC = () => {
     }
   };
 
-  const formatDataToLocalDate = (data: string) => {
-    if(!data) return "";
-    const [ano, mes, dia] = data.split("/");
-    if(!dia || !mes || !ano) return "";
-    return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0') }`; // Formata para "YYYY-MM-DD"}/${mes}/${ano}`;
-  }
-
       // limpar formulário após salvar
   const limparFormulario = () => {
+      setCodigoCliente("");
       setNome("");
+      setCpf("");
+      setDataNascimento("");
       setTelefone("");
       setEmail("");
-      setCpf("");
-      setCodigoCliente("");
-      setDataNascimento("");
+      setEndereco("");
+      setReferencia("");
       setTipoCliente("");
-      setCep("");
-      setComplemento("");
+      setTipoPagamento("");
   };
 
   return (
@@ -190,28 +180,33 @@ const NewCustomers: React.FC = () => {
       >
       
       <Section>
+        <Label>Código Cliente</Label>
+        <Input value={codigoCliente} onChangeText={setCodigoCliente} />
+
         <Label>Nome</Label>
         <Input value={nome} onChangeText={setNome} />
 
-        <Label>Telefone</Label>
-        <Input value={telefone} onChangeText={setTelefone} keyboardType="phone-pad"/>
-
-        <Label>Email</Label>
-        <Input value={email} onChangeText={setEmail}  keyboardType="email-address"/>
-
         <Label>CPF</Label>
         <Input value={cpf} onChangeText={setCpf} keyboardType="numeric" />
-
-        <Label>Código Cliente</Label>
-        <Input value={codigoCliente} onChangeText={setCodigoCliente} />
 
         <Label>Data Nascimento</Label>
         <Input
           value={dataNascimento}
           onChangeText={setDataNascimento}
           placeholder="DD/MM/AAAA"
-          keyboardType="numeric"
+          keyboardType="numeric" 
         />
+        <Label>Telefone</Label>
+        <Input value={telefone} onChangeText={setTelefone} keyboardType="phone-pad"/>
+
+        <Label>Email</Label>
+        <Input value={email} onChangeText={setEmail}  keyboardType="email-address"/>
+
+        <Label>Endereço</Label>
+        <Input value={endereco} onChangeText={setEndereco} />
+
+        <Label>Referência</Label>
+        <Input value={referencia} onChangeText={setReferencia} />        
 
         <Label>Tipo Cliente</Label>
         <Picker
@@ -229,11 +224,21 @@ const NewCustomers: React.FC = () => {
           ))}
           </Picker>
 
-        <Label>CEP</Label>
-        <Input value={cep} onChangeText={setCep}  keyboardType="numeric"/>
-
-        <Label>Complemento</Label>
-        <Input value={complemento} onChangeText={setComplemento} />
+        <Label>Tipo Pagamento</Label>
+        <Picker
+          selectedValue={tipoPagamento}
+          onValueChange={(itemValue) => setTipoPagamento(itemValue)}
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+        >
+          <Picker.Item label="Selecione o tipo" value="" />
+          {tipoPagamentoOptions.map((option) => (
+            <Picker.Item key={option} label={option} value={option} />  
+          ))}
+        </Picker>
       </Section>
 
       <Button onPress={salvarCliente}>

@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //configurando a base url da api
 const api = axios.create({
-  baseURL: "http://10.0.0.103:8080",
+  baseURL: "http://192.168.1.8:8080",
   headers: {
      "Content-Type": "application/json",
    },
@@ -410,7 +410,7 @@ interface Cliente {
   nome: string;
   cpf: string;
   dataNascimento: string;
-  endereco: Endereco;
+  endereco: string
   telefone: string;
   email: string;
   tipoCliente: string;
@@ -709,18 +709,6 @@ export const GetEndereco = async (): Promise<Endereco[] | void> => {
 
 //funcao para cliente - Get, Post, Put, Delete
 
-interface Endereco {
-    id: number;
-    cep: string;
-    logradouro: string;
-    complemento: string;
-    bairro: string;
-    localidade: string;
-    uf: string;
-    numero: string;
-    idCliente: number;
-}
-
 interface Cliente {
     id: number;
     codigoCliente: string;
@@ -729,9 +717,10 @@ interface Cliente {
     dataNascimento: string;
     telefone: string;
     email: string;
-    endereco: Endereco;
+    endereco: string;
+    referencia: string;
     tipoCliente: string;
-    formaPagamento: FormaPagamento;
+    tipoPagamento: string;
 }
 
 export const GetCliente = async (): Promise<Cliente[] | void> => {
@@ -744,15 +733,17 @@ export const GetCliente = async (): Promise<Cliente[] | void> => {
 };
 
 interface PostCliente {
+    id?: number;
     codigoCliente: string;
     nome: string;
     cpf: string;
     dataNascimento: string;
     telefone: string;
     email: string;
-    endereco: {cep: string; complemento: string;};
+    endereco: string;
+    referencia: string;
     tipoCliente: string;
-    
+    tipoPagamento: string;
 }
 
 export const PostCliente = async (data: PostCliente): Promise<Cliente | void> => {
@@ -772,8 +763,10 @@ interface PutCliente {
     dataNascimento: string;
     telefone: string;
     email: string;
-    endereco: Endereco;
+    endereco: string;
+    referencia: string;
     tipoCliente: string;
+    tipoPagamento: string;
   
 }
 
