@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
+import { Alert, KeyboardAvoidingView, ScrollView, Platform, Text } from "react-native";
 import {
   Container,
   Title,
@@ -9,7 +9,12 @@ import {
   Button,
   ButtonText,
 } from "./styles";
-import { PostCliente } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho conforme seu projeto
+import { PostCliente } from "../../../../../Services/apiFruttyoog"; 
+import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
 import { Picker } from "@react-native-picker/picker";
 
 const tipoClienteOptions = [
@@ -42,6 +47,8 @@ const tipoPagamentoOptions = [
 ];
 
 const NewCustomers: React.FC = () => {
+  // Navegação
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [codigoCliente, setCodigoCliente] = useState("");
   const [nome, setNome] = useState("");
@@ -173,7 +180,14 @@ const NewCustomers: React.FC = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={80}
       >
-      <Title>Novo Cliente</Title>
+      {/* Botão de voltar */}
+                                    <BackButton onPress={() => navigation.goBack()}>
+                                      <Icon name="arrow-left" size={33} color="#000" />
+                                      <BackButtonText>Voltar</BackButtonText>
+                                    </BackButton>
+                                    <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Novo Cliente</Text>
+                
+              
       <ScrollView
         contentContainerStyle={{ paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
