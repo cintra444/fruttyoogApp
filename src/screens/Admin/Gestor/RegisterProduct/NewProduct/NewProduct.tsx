@@ -11,8 +11,25 @@ import {
   Button,
   ButtonText,
 } from "./styles";
-import { PostProduct } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho da sua api
+import { PostProdutos } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho da sua api
+import api from "../../../../../Services/apiFruttyoog";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Picker } from "@react-native-picker/picker";
+
+const tipoUnidadeOption = [
+    "UNIDADE",
+    "CAIXA",
+    "LITRO",
+    "POTE_VIDRO",
+    "POTE_PLASTICO",
+    "PACOTE",
+    "EMBALAGEM",
+    "CAIXA_PLASTICA",
+    "DUZIA",
+    "KG",
+    "GRAMA",
+    "OUTRO"
+];
 
 const NewProduct: React.FC = () => {
   // Formulário novo produto
@@ -26,7 +43,7 @@ const NewProduct: React.FC = () => {
   const [imagem, setImagem] = useState<string | null>(null);
 
   
-
+// Permissão para usar a câmera
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -50,25 +67,7 @@ const NewProduct: React.FC = () => {
     }
   };
 
-  const selectImage = async () => {
-    if (Platform.OS === 'android') {
-      const hasPermission = await requestCameraPermission();
-      if (!hasPermission) {
-        Alert.alert('Permissão para usar a câmera negada');
-        return;
-      }
-    }
-    launchCamera({ mediaType: 'photo' }, (response) => {
-      if (response.didCancel) {
-        console.log('Usuário cancelou a seleção de imagem');
-      } else if (response.errorCode) {
-        console.log('Erro: ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        setImagem(response.assets[0].uri || null);
-      }
-    });
-  };
-
+  // Seleção de imagem da galeria
   const selectImageLibrary = async () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
       if (response.didCancel) {
@@ -81,7 +80,27 @@ const NewProduct: React.FC = () => {
     });
   };
 
+  // Seleção de imagem da câmera
+  const selectImageCamera = async () => {
+    if (Platform.OS === 'android') {
+      const hasPermission = await requestCameraPermission();
+      if (!hasPermission) {
+        Alert.alert('Permissão para usar a câmera negada');
+        return;
+      }
+    }
+    launchCamera({ mediaType: 'photo' }, (response) => {
+      if (response.didCancel) {
+        console.log('Usuário cancelou a foto');
+      } else if (response.errorCode) {
+        console.log('Erro: ', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        setImagem(response.assets[0].uri || null);
+      }
+    });
+  };
 
+// Função para adicionar produto com imagem
   const handleAddProduct = async () => {
   if (!name || !descricao || !precoCusto || !precoVenda || !qtdeEstoque || !codigoProduto || !tipoUnidade) {
     Alert.alert("Erro", "Preencha todos os campos");
@@ -89,25 +108,34 @@ const NewProduct: React.FC = () => {
   }
 
   try {
+    const produto = {
+      name,
+      descricao,
+      precoCusto: parseFloat(precoCusto),
+      precoVenda: parseFloat(precoVenda),
+      qtdeEstoque: parseInt(qtdeEstoque),
+      codigoProduto,
+      tipoUnidade
+    };
+
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('descricao', descricao);
-    formData.append('precoCusto', precoCusto);
-    formData.append('precoVenda', precoVenda);
-    formData.append('qtdeEstoque', qtdeEstoque);
-    formData.append('codigoProduto', codigoProduto);
-    formData.append('tipoUnidade', tipoUnidade);
+    formData.append('produto', JSON.stringify(produto));
     
     if (imagem) {
-      formData.append('imagem', {
+      formData.append('file', {
         uri: imagem,
         name: `photo_${Date.now()}.jpg`,
         type: 'image/jpeg'
       } as any);
     }
 
-    await PostProduct(formData as any);
-    Alert.alert("Sucesso", "Produto cadastrado!");
+    await api.post("/produtos/upload", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    Alert.alert("Sucesso", "Produto cadastrado com sucesso");
+
     // resetar formulário
     setName("");  
     setDescricao("");  
@@ -117,7 +145,8 @@ const NewProduct: React.FC = () => {
     setCodigoProduto("");  
     setTipoUnidade("");
     setImagem(null);
-  } catch {
+  } catch (error: any) {
+    console.error(error);
     Alert.alert("Erro", "Não foi possível cadastrar o produto");
   }
 };
@@ -147,19 +176,34 @@ const NewProduct: React.FC = () => {
           <Input value={codigoProduto} onChangeText={setCodigoProduto} />
 
           <Label>Tipo de Unidade</Label>
-          <Input value={tipoUnidade} onChangeText={setTipoUnidade} />
+          <Picker
+            selectedValue={tipoUnidade}
+            onValueChange={(itemValue) => setTipoUnidade(itemValue)}
+            style={{
+            backgroundColor: "#fff",
+            borderRadius: 5,
+            marginBottom: 15,
+          }}
+          >
+            <Picker.Item label="Selecione o tipo" value="" />
+            {tipoUnidadeOption.map((option) => (
+              <Picker.Item key={option} label={option} value={option} />
+            ))}
+          </Picker>
+          
 
           <Label>Imagem</Label>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginBottom: 10 }}>
             <TouchableOpacity onPress={selectImageLibrary} style={{ marginRight: 10 }}>
               <Icon name="image" size={40} color="#005006" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={selectImage}>
+            <TouchableOpacity onPress={selectImageCamera}>
               <Icon name="camera" size={40} color="#005006" />
             </TouchableOpacity>
           </View>
+
           {imagem && (
-            <Image source={{ uri: imagem }} style={{ width: 200, height: 200, marginTop: 10, alignSelf: 'center' }} />
+            <Image source={{ uri: imagem }} style={{ width: 200, height: 200, marginTop: 10, alignSelf: 'center', borderRadius: 10}} />
           )}
             
         </Section>

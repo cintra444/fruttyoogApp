@@ -151,7 +151,7 @@ export const GetStockByQuantity = async (quantity: number): Promise<StockItem[] 
 }
 
 //funções do produto - Get, Post, Put, Delete
-interface Product {
+interface Produtos {
     id: number;
     name: string;
     descricao: string;
@@ -167,16 +167,16 @@ interface Product {
     }
 };
 
-export const GetProducts = async (): Promise<Product[] | void> => {
+export const GetProducts = async (): Promise<Produtos[] | void> => {
     try {
-        const response = await api.get<Product[]>("/products");
+        const response = await api.get<Produtos[]>("/produtos");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 };
 
-interface PostProduct {
+interface PostProdutos {
     name: string;
     descricao: string;
     codigoProduto: string;
@@ -195,17 +195,40 @@ interface Imagem{
     uri: string;
 }
 
+// Função para upload de produto com imagem
+export const uploadProduto = async (produto: any, imagemUri?: string) => {
+  const formData = new FormData();
 
-export const PostProduct = async (data: PostProduct): Promise<Product | void> => {
+  // Envia o produto como JSON string
+  formData.append("produto", JSON.stringify(produto));
+
+  // Envia o arquivo (se houver imagem)
+  if (imagemUri) {
+    formData.append("file", {
+      uri: imagemUri,
+      name: `produto_${Date.now()}.jpg`,
+      type: "image/jpeg",
+    } as any);
+  }
+
+  const response = await api.post("/produtos/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};
+export const PostProdutos = async (data: PostProdutos): Promise<Produtos | void> => {
     try {
-        const response = await api.post<Product>("/products", data);
+        const response = await api.post<Produtos>("/produtos", data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }       
 }
 
-interface PutProduct {
+interface PutProdutos {
     id: number;
     name: string;
     descricao: string;
@@ -221,35 +244,35 @@ interface PutProduct {
     }
 };
 
-export const PutProduct = async (data: PutProduct): Promise<Product | void> => {
+export const PutProdutos = async (data: PutProdutos): Promise<Produtos | void> => {
     try {
-        const response = await api.put<Product>(`/products/${data.id}`, data);
+        const response = await api.put<Produtos>(`/produtos/${data.id}`, data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }       
 }
 
-export const DeleteProduct = async (id: number): Promise<void> => {
+export const DeleteProdutos = async (id: number): Promise<void> => {
     try {
-        await api.delete(`/products/${id}`);
+        await api.delete(`/produtos/${id}`);
     } catch (error) {
         handleApiError(error as ApiError);
     }
 }
 
-export const GetProductById = async (id: number): Promise<Product | void> => {
+export const GetProductById = async (id: number): Promise<Produtos | void> => {
     try {
-        const response = await api.get<Product>(`/products/${id}`);
+        const response = await api.get<Produtos>(`/produtos/${id}`);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 }
 
-export const GetProductByName = async (name: string): Promise<Product[] | void> => {
+export const GetProductByName = async (name: string): Promise<Produtos[] | void> => {
     try {
-        const response = await api.get<Product[]>(`/products/name/${name}`);
+        const response = await api.get<Produtos[]>(`/produtos/name/${name}`);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
