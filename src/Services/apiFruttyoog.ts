@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //configurando a base url da api
 const api = axios.create({
-  baseURL: "http://192.168.1.8:8080",
+  baseURL: "http://192.168.1.5:8080",
   headers: {
      "Content-Type": "application/json",
    },
@@ -182,43 +182,14 @@ interface PostProdutos {
     codigoProduto: string;
     precoCusto: number;
     precoVenda: number;
-    imagem: string;
     tipoUnidade: string;
     qtdeEstoque: number;
     categoria: {
-        id: number;
-        nomeCategoria: string;
+        categoriasId: number;
     }
+    
 };
 
-interface Imagem{
-    uri: string;
-}
-
-// Função para upload de produto com imagem
-export const uploadProduto = async (produto: any, imagemUri?: string) => {
-  const formData = new FormData();
-
-  // Envia o produto como JSON string
-  formData.append("produto", JSON.stringify(produto));
-
-  // Envia o arquivo (se houver imagem)
-  if (imagemUri) {
-    formData.append("file", {
-      uri: imagemUri,
-      name: `produto_${Date.now()}.jpg`,
-      type: "image/jpeg",
-    } as any);
-  }
-
-  const response = await api.post("/produtos/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return response.data;
-};
 export const PostProdutos = async (data: PostProdutos): Promise<Produtos | void> => {
     try {
         const response = await api.post<Produtos>("/produtos", data);
