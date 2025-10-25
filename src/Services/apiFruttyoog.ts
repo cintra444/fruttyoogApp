@@ -151,6 +151,11 @@ export const GetStockByQuantity = async (quantity: number): Promise<StockItem[] 
 }
 
 //funções do produto - Get, Post, Put, Delete
+interface Categoria{
+    id: number;
+    nome: string;
+}
+
 interface Produtos {
     id: number;
     name: string;
@@ -158,13 +163,10 @@ interface Produtos {
     codigoProduto: string;
     precoCusto: number;
     precoVenda: number;
-    imagem: string;
     tipoUnidade: string;
     qtdeEstoque: number; 
-    categoria: {
-        id: number;
-        nomeCategoria: string;
-    }
+    categoria: Categoria;
+       
 };
 
 export const GetProducts = async (): Promise<Produtos[] | void> => {
@@ -185,9 +187,8 @@ interface PostProdutos {
     tipoUnidade: string;
     qtdeEstoque: number;
     categoria: {
-        categoriasId: number;
+       id: number;
     }
-    
 };
 
 export const PostProdutos = async (data: PostProdutos): Promise<Produtos | void> => {
@@ -206,12 +207,10 @@ interface PutProdutos {
     codigoProduto: string;
     precoCusto: number;
     precoVenda: number;
-    imagem: string;
     tipoUnidade: string;
     qtdeEstoque: number;
     categoria: {
         id: number;
-        nomeCategoria: string;
     }
 };
 

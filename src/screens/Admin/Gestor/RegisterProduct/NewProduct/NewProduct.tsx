@@ -1,6 +1,6 @@
 // NewProduct.tsx
 import React, { useEffect, useState } from "react";
-import { ScrollView, Alert,View, PermissionsAndroid, Platform, Image, TouchableOpacity } from "react-native";
+import { ScrollView, Alert,View, PermissionsAndroid, Platform, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import {
   Container,
@@ -30,6 +30,11 @@ const tipoUnidadeOption = [
     "OUTRO"
 ];
 
+interface Categoria {
+  id: number;
+  nome: string;
+}
+
 const NewProduct: React.FC = () => {
   // Formulário novo produto
   const [name, setName] = useState("");
@@ -39,8 +44,10 @@ const NewProduct: React.FC = () => {
   const [qtdeEstoque, setQtdeEstoque] = useState("");
   const [codigoProduto, setCodigoProduto] = useState("");
   const [tipoUnidade, setTipoUnidade] = useState("");
-  const [categorias, setCategorias] = useState<any[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [selectedCategoriaId, setSelectedCategoriaId] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
 useEffect(() => {
     loadCategorias();
@@ -48,11 +55,20 @@ useEffect(() => {
 
   const loadCategorias = async () => {
     try {
+      setLoading(true);
       const response = await api.get("/categorias");
-      setCategorias(response.data);
+
+      if( response.data && Array.isArray(response.data)){
+        setCategorias(response.data);
+      } else {
+        setError("Nenhuma categoria encontrada");
+      }
+
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
       Alert.alert("Erro", "Não foi possível carregar as categorias");
+    } finally {
+      setLoading(false);
     }
 
   };
@@ -126,6 +142,11 @@ const handleAddProduct = async () => {
           placeholder="Digite o código do produto" />
 
           <Label>Categoria</Label>
+          {loading ? (
+            <ActivityIndicator size="small" color="#005006" />
+          ) : error ? (
+            <Label style={{ color: 'red' }}>{error}</Label>
+          ):(
           <Picker
             selectedValue={selectedCategoriaId}
             onValueChange={(itemValue) => setSelectedCategoriaId(itemValue)}
@@ -135,11 +156,15 @@ const handleAddProduct = async () => {
             marginBottom: 15,
           }}          >
             <Picker.Item label="Selecione a categoria" value="" />
-            {categorias.map((categoria: any) => (
-              <Picker.Item key={categoria.id} label={categoria.name} value={String(categoria.id)} />
+            {categorias.map((categoria) => (
+              <Picker.Item 
+                key={categoria.id} 
+                label={categoria.nome} 
+                value={categoria.id ? categoria.id.toString() : ""} 
+              />
             ))}
           </Picker>
-
+          )}
           <Label>Tipo de Unidade</Label>
           <Picker
             selectedValue={tipoUnidade}

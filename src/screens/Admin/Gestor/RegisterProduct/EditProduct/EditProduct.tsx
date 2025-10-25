@@ -12,8 +12,11 @@ import {
   CardContainer,
   CardTouchable,
   CardTitle,
+  DeleteButton,
+  DeleteButtonText,
 } from "./styles";
-import { GetProducts, PutProduct } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho da sua api
+import { GetProducts, PutProdutos } from "../../../../../Services/apiFruttyoog"; 
+import { Picker } from "@react-native-picker/picker";
 
 interface Product {
   id: number;
@@ -24,12 +27,45 @@ interface Product {
   qtdeEstoque: number;
   codigoProduto: string;
   tipoUnidade: string;
-  imagem?: string;
+  categoria: {
+    id: number;
+    nome: string;
+  };
 }
+
+const tipoUnidadeOption = [
+  "UNIDADE", "CAIXA", "LITRO", "POTE_VIDRO", "POTE_PLASTICO", 
+  "PACOTE", "EMBALAGEM", "CAIXA_PLASTICA", "DUZIA", "KG", "GRAMA", "OUTRO"
+];
 
 const EditProduct: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const deleteProduct = () => {
+    Alert.alert(
+      "Confirmar exclusão",
+      "Tem certeza que deseja excluir este produto?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        { 
+          text: "Excluir", 
+          onPress: async () => {
+            if (!selectedProduct) return;
+            try {
+              
+              const updatedProducts = products.filter(p => p.id !== selectedProduct.id);
+              setProducts(updatedProducts);
+              setSelectedProduct(null);
+              Alert.alert("Sucesso", "Produto deletado com sucesso!");
+            } catch (error) {
+              Alert.alert("Erro", "Não foi possível deletar o produto");
+            }
+          }
+        }
+      ]
+    );
+  };
 
   const [name, setName] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -65,9 +101,22 @@ const EditProduct: React.FC = () => {
   const updateProduct = async () => {
     if (!selectedProduct) return;
 
+    if (
+      !name ||
+      !descricao ||
+      !precoCusto ||
+      !precoVenda ||
+      !qtdeEstoque ||
+      !codigoProduto ||
+      !tipoUnidade
+    ) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
     try {
-      await PutProduct({
-        ...selectedProduct,
+      await PutProdutos({
+        id: selectedProduct.id,
         name,
         descricao,
         precoCusto: Number(precoCusto),
@@ -75,9 +124,17 @@ const EditProduct: React.FC = () => {
         qtdeEstoque: Number(qtdeEstoque),
         codigoProduto,
         tipoUnidade,
+        categoria: {
+          id: selectedProduct.categoria.id,
+        },
       });
       Alert.alert("Sucesso", "Produto atualizado!");
+
+      const data = await GetProducts();
+      if(data) setProducts(data);
+
     } catch {
+      console.log("Erro ao atualizar produto");
       Alert.alert("Erro", "Não foi possível atualizar o produto");
     }
   };
@@ -92,8 +149,11 @@ const EditProduct: React.FC = () => {
             <CardTitle>Nenhum produto cadastrado ainda</CardTitle>
           )}
           {products.map((prod) => (
-            <CardTouchable key={prod.id} onPress={() => selectProduct(prod)}>
-              <CardTitle>{prod.name}</CardTitle>
+            <CardTouchable key={prod.id} onPress={() => selectProduct(prod)}
+              >
+              <CardTitle
+                >
+                  {prod.name}</CardTitle>
             </CardTouchable>
           ))}
         </CardContainer>
@@ -122,12 +182,34 @@ const EditProduct: React.FC = () => {
             <Input value={codigoProduto} onChangeText={setCodigoProduto} />
 
             <Label>Tipo de Unidade</Label>
-            <Input value={tipoUnidade} onChangeText={setTipoUnidade} />
+            <Picker
+              selectedValue={tipoUnidade}
+              onValueChange={(itemValue) => setTipoUnidade(itemValue)}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 5,
+                marginBottom: 15,
+              }}
+            >
+              <Picker.Item label="Selecione o tipo de unidade" value="" />
+              {tipoUnidadeOption.map((option) => (
+                <Picker.Item key={option} label={option} value={option} />
+              ))}
+            </Picker>
+              <Label>Categoria Atual</Label>
+            <Input 
+              value={selectedProduct.categoria.nome} 
+              editable={false}
+              style={{ backgroundColor: '#f0f0f0' }}
+            />
           </Section>
 
           <Button onPress={updateProduct}>
             <ButtonText>Atualizar</ButtonText>
           </Button>
+          <DeleteButton onPress={deleteProduct}>
+            <DeleteButtonText>Deletar Produto</DeleteButtonText>
+          </DeleteButton>
         </ScrollView>
       )}
     </Container>
