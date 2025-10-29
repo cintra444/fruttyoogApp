@@ -856,12 +856,12 @@ export const DeleteCompra = async (id: number): Promise<void> => {
 
 interface Categoria {
     id: number;
-    nomeCategoria: string;
+    nome: string;
 }
 
 export const GetCategoria = async (): Promise<Categoria[] | void> => {
     try {
-        const response = await api.get<Categoria[]>("/categoria");
+        const response = await api.get<Categoria[]>("/categorias");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -869,26 +869,34 @@ export const GetCategoria = async (): Promise<Categoria[] | void> => {
 };
 
 interface PostCategoria {
-    nomeCategoria: string;
+    nome: string;
 }
 
 export const PostCategoria = async (data: PostCategoria): Promise<Categoria | void> => {
     try {
-        const response = await api.post<Categoria>("/categoria", data);
+        console.log("📤 Enviando dados:", data);
+        console.log("🔗 Endpoint:", "/categorias");
+        const response = await api.post<Categoria>("/categorias", data);
+        console.log("✅ Resposta:", response.data);
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
+        console.error("❌ Erro completo:", {
+            message: error.message,
+            status: error.response?.status,
+            data: error.response?.data
+        });
         handleApiError(error as ApiError);
     }
 };
 
 interface PutCategoria {
     id: number;
-    nomeCategoria: string;
+    nome: string;
 }   
 
 export const PutCategoria = async (data: PutCategoria): Promise<Categoria | void> => {
     try {
-        const response = await api.put<Categoria>(`/categoria/${data.id}`, data);
+        const response = await api.put<Categoria>(`/categorias/${data.id}`, data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -897,7 +905,7 @@ export const PutCategoria = async (data: PutCategoria): Promise<Categoria | void
 
 export const DeleteCategoria = async (id: number): Promise<void> => {
     try {
-        await api.delete(`/categoria/${id}`);
+        await api.delete(`/categorias/${id}`);
     } catch (error) {
         handleApiError(error as ApiError);
     }

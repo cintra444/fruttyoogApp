@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, Text } from "react-native";
 import {
   Container,
   Title,
@@ -9,20 +9,27 @@ import {
   Button,
   ButtonText,
 } from "./styles";
-import { PostCategoria } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
+import { PostCategoria } from "../../../../../Services/apiFruttyoog"; 
+import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
 
 const NewCategory: React.FC = () => {
-  const [nomeCategoria, setNomeCategoria] = useState("");
+  // Navegação
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [nome, setNome] = useState("");
 
   const handleSave = async () => {
-    if (!nomeCategoria) {
+    if (!nome) {
       Alert.alert("Atenção", "Informe o nome da categoria");
       return;
     }
     try {
-      await PostCategoria({ nomeCategoria });
+      await PostCategoria({ nome });
       Alert.alert("Sucesso", "Categoria cadastrada!");
-      setNomeCategoria("");
+      setNome("");
     } catch {
       Alert.alert("Erro", "Não foi possível cadastrar");
     }
@@ -30,13 +37,20 @@ const NewCategory: React.FC = () => {
 
   return (
     <Container>
-      <Title>Cadastrar Categoria</Title>
+      {/* Botão de voltar */}
+                                          <BackButton onPress={() => navigation.goBack()}>
+                                            <Icon name="arrow-left" size={33} color="#000" />
+                                            <BackButtonText>Voltar</BackButtonText>
+                                          </BackButton>
+                                          <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Nova Categoria</Text>
+                      
+             
 
       <Section>
         <Label>Nome da Categoria</Label>
         <Input
-          value={nomeCategoria}
-          onChangeText={setNomeCategoria}
+          value={nome}
+          onChangeText={setNome}
           placeholder="Ex: Queijo, Doce, Biscoito..."
         />
       </Section>

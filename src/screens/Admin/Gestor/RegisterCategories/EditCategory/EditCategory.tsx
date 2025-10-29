@@ -1,22 +1,30 @@
+// EditCategory.tsx - ESTILO SIMPLIFICADO
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList } from "react-native";
+import { ScrollView, Alert, Text } from "react-native";
 import {
   Container,
   Title,
-  CategoryItem,
-  CategoryText,
   Section,
   Label,
   Input,
   Button,
   ButtonText,
-  ActionsContainer,
+  CardContainer,
+  CardTouchable,
+  CardTitle,
+  DeleteButton,
+  DeleteButtonText,
 } from "./styles";
 import {
   GetCategoria,
   PutCategoria,
   DeleteCategoria,
-} from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
+} from "../../../../../Services/apiFruttyoog";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
+import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface Category {
   id: number;
@@ -24,9 +32,13 @@ interface Category {
 }
 
 const EditCategory: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [nomeCategoria, setNomeCategoria] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+  const [nome, setNome] = useState("");
 
   useEffect(() => {
     loadCategories();
@@ -36,88 +48,152 @@ const EditCategory: React.FC = () => {
     try {
       const res = await GetCategoria();
       if (res) {
-        const updateCategories = res.map((categoria: any) => ({
-            id: categoria.id,
-            nome: categoria.nomeCategoria,
+        const updatedCategories = res.map((categoria: any) => ({
+          id: categoria.id,
+          nome: categoria.nome || categoria.nomeCategoria,
         }));
-        setCategories(updateCategories);
+        setCategories(updatedCategories);
       }
-    } catch {
-      Alert.alert("Erro", "Não foi possível carregar categorias");
-    }
-  };
-
-  const handleUpdate = async () => {
-    if (!selectedId) {
-      Alert.alert("Atenção", "Selecione uma categoria para editar");
-      return;
-    }
-    try {
-      await PutCategoria({ id: selectedId, nomeCategoria: nomeCategoria });
-      Alert.alert("Sucesso", "Categoria atualizada!");
-      setSelectedId(null);
-      setNomeCategoria("");
-      loadCategories();
-    } catch {
-      Alert.alert("Erro", "Não foi possível atualizar");
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await DeleteCategoria(id);
-      Alert.alert("Sucesso", "Categoria excluída!");
-      loadCategories();
-    } catch {
-      Alert.alert("Erro", "Não foi possível excluir");
+    } catch (error) {
+      console.error("Erro ao carregar categorias:", error);
+      Alert.alert("Erro", "Não foi possível carregar as categorias");
     }
   };
 
   const selectCategory = (category: Category) => {
-    setSelectedId(category.id);
-    setNomeCategoria(category.nome);
+    setSelectedCategory(category);
+    setNome(category.nome);
+  };
+
+  const deleteCategory = () => {
+    if (!selectedCategory) return;
+
+    Alert.alert(
+      "Confirmar exclusão",
+      "Tem certeza que deseja excluir esta categoria?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          onPress: async () => {
+            try {
+              await DeleteCategoria(selectedCategory.id);
+
+              // Atualiza a lista localmente
+              const updatedCategories = categories.filter(
+                (cat) => cat.id !== selectedCategory.id
+              );
+              setCategories(updatedCategories);
+              setSelectedCategory(null);
+              setNome("");
+
+              Alert.alert("Sucesso", "Categoria deletada com sucesso!");
+            } catch (error) {
+              console.error("Erro ao deletar categoria:", error);
+              Alert.alert("Erro", "Não foi possível deletar a categoria");
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const updateCategory = async () => {
+    if (!selectedCategory) return;
+
+    if (!nome.trim()) {
+      Alert.alert("Atenção", "Informe o nome da categoria");
+      return;
+    }
+
+    try {
+      await PutCategoria({
+        id: selectedCategory.id,
+        nome: nome,
+      });
+      Alert.alert("Sucesso", "Categoria atualizada!");
+
+      // Recarregar a lista
+      const data = await GetCategoria();
+      if (data) {
+        const updatedCategories = data.map((categoria: any) => ({
+          id: categoria.id,
+          nome: categoria.nome || categoria.nomeCategoria,
+        }));
+        setCategories(updatedCategories);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar categoria:", error);
+      Alert.alert("Erro", "Não foi possível atualizar a categoria");
+    }
   };
 
   return (
     <Container>
-      <Title>Editar Categorias</Title>
+      {/* Botão de voltar */}
+      <BackButton onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={33} color="#000" />
+        <BackButtonText>Voltar</BackButtonText>
+      </BackButton>
 
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <CategoryItem
-            onPress={() => selectCategory(item)}
-            selected={item.id === selectedId}
-          >
-            <CategoryText>{item.nome}</CategoryText>
-            <ActionsContainer>
-              <Button onPress={() => selectCategory(item)} bgColor="#2196F3">
-                <ButtonText>Editar</ButtonText>
-              </Button>
-              <Button onPress={() => handleDelete(item.id)} bgColor="#E53935">
-                <ButtonText>Excluir</ButtonText>
-              </Button>
-            </ActionsContainer>
-          </CategoryItem>
-        )}
-      />
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Editar Categorias
+      </Text>
 
-      {selectedId && (
-        <>
+      {/* Lista horizontal de categorias */}
+      <ScrollView style={{ marginBottom: 20 }}>
+        <CardContainer>
+          {categories.length === 0 && (
+            <CardTitle>Nenhuma categoria cadastrada ainda</CardTitle>
+          )}
+          {categories.map((cat) => (
+            <CardTouchable
+              key={cat.id}
+              onPress={() => selectCategory(cat)}
+              style={{
+                backgroundColor:
+                  selectedCategory?.id === cat.id ? "#005006" : "#fff",
+              }}
+            >
+              <CardTitle
+                style={{
+                  color: selectedCategory?.id === cat.id ? "#fff" : "#005006",
+                }}
+              >
+                {cat.nome}
+              </CardTitle>
+            </CardTouchable>
+          ))}
+        </CardContainer>
+      </ScrollView>
+
+      {/* Formulário de edição */}
+      {selectedCategory && (
+        <ScrollView>
           <Section>
             <Label>Nome da Categoria</Label>
             <Input
-              value={nomeCategoria}
-              onChangeText={setNomeCategoria}
-              placeholder="Ex: Queijo, Doce, Biscoito..."
+              value={nome}
+              onChangeText={setNome}
+              placeholder="Nome da categoria"
             />
           </Section>
 
-          <Button onPress={handleUpdate} bgColor="#2196F3">
-            <ButtonText>Atualizar</ButtonText>
+          <Button onPress={updateCategory}>
+            <ButtonText>Atualizar Categoria</ButtonText>
           </Button>
-        </>
+
+          <DeleteButton onPress={deleteCategory}>
+            <DeleteButtonText>Deletar Categoria</DeleteButtonText>
+          </DeleteButton>
+        </ScrollView>
       )}
     </Container>
   );
