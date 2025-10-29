@@ -1,6 +1,6 @@
 // EditProduct.tsx
 import React, { useEffect, useState } from "react";
-import { ScrollView, Alert } from "react-native";
+import { ScrollView, Alert, Text } from "react-native";
 import {
   Container,
   Title,
@@ -17,6 +17,11 @@ import {
 } from "./styles";
 import { GetProducts, PutProdutos } from "../../../../../Services/apiFruttyoog"; 
 import { Picker } from "@react-native-picker/picker";
+import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
 
 interface Product {
   id: number;
@@ -39,6 +44,9 @@ const tipoUnidadeOption = [
 ];
 
 const EditProduct: React.FC = () => {
+  // Navegação
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -141,9 +149,16 @@ const EditProduct: React.FC = () => {
 
   return (
     <Container>
-        <Title>Editar Produto</Title>
+       {/* Botão de voltar */}
+                                     <BackButton onPress={() => navigation.goBack()}>
+                                       <Icon name="arrow-left" size={33} color="#000" />
+                                       <BackButtonText>Voltar</BackButtonText>
+                                     </BackButton>
+                                     <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Editar Produtos</Text>
+                 
+               
       {/* Lista horizontal de produtos */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }}>
+      <ScrollView  style={{ marginBottom: 20 }}>
         <CardContainer>
           {products.length === 0 && (
             <CardTitle>Nenhum produto cadastrado ainda</CardTitle>

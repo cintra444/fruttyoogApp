@@ -1,6 +1,6 @@
 // NewProduct.tsx
 import React, { useEffect, useState } from "react";
-import { ScrollView, Alert,View, PermissionsAndroid, Platform, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { ScrollView, Alert,Text, ActivityIndicator } from "react-native";
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import {
   Container,
@@ -14,6 +14,10 @@ import {
 import api from "../../../../../Services/apiFruttyoog"; // ajuste o caminho da sua api
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Picker } from "@react-native-picker/picker";
+import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
 
 const tipoUnidadeOption = [
     "UNIDADE",
@@ -35,7 +39,14 @@ interface Categoria {
   nome: string;
 }
 
+interface Fornecedor {
+  id: number;
+  nomeFantasia: string;
+}
+
 const NewProduct: React.FC = () => {
+  // Navegação
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   // Formulário novo produto
   const [name, setName] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -48,6 +59,36 @@ const NewProduct: React.FC = () => {
   const [selectedCategoriaId, setSelectedCategoriaId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
+  const [selectedFornecedorId, setSelectedFornecedorId] = useState("");
+
+
+useEffect(() => {
+    loadFornecedores();
+  }, []);
+
+    const loadFornecedores = async () => {
+  try {
+    console.log("🔄 Buscando fornecedores...");
+    const response = await api.get("/fornecedor");
+    console.log("📦 Resposta da API - Fornecedores:", response.data);
+    console.log("📊 Status:", response.status);
+    
+    if (response.data && Array.isArray(response.data)) {
+      setFornecedores(response.data);
+      console.log(`✅ ${response.data.length} fornecedores carregados`);
+    } else {
+      console.log("❌ Resposta não é um array ou está vazia:", response.data);
+      setFornecedores([]);
+    }
+  } catch (error: any) {
+    console.error("❌ Erro ao carregar fornecedores:", error);
+    console.log("🔗 URL tentada:", "/fornecedor");
+    console.log("📋 Mensagem de erro:", error.message);
+    console.log("🔍 Response error:", error.response?.data);
+    setFornecedores([]);
+  }
+};
 
 useEffect(() => {
     loadCategorias();
@@ -89,8 +130,12 @@ const handleAddProduct = async () => {
       tipoUnidade,
       categoria: {
         id: parseInt(selectedCategoriaId, 10),
-      }
+      },
+      fornecedor: selectedFornecedorId ? { 
+        id: parseInt(selectedFornecedorId, 10) 
+      } : undefined,
     };
+
     await api.post("/produtos", produto);
     Alert.alert("Sucesso", "Produto cadastrado com sucesso!");
 
@@ -114,7 +159,14 @@ const handleAddProduct = async () => {
 
   return (
     <Container>
-      <Title>Novo Produto</Title>
+     {/* Botão de voltar */}
+                                   <BackButton onPress={() => navigation.goBack()}>
+                                     <Icon name="arrow-left" size={33} color="#000" />
+                                     <BackButtonText>Voltar</BackButtonText>
+                                   </BackButton>
+                                   <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Novo Produto</Text>
+               
+             
       <ScrollView>
         <Section>
           <Label>Nome</Label>
@@ -179,7 +231,26 @@ const handleAddProduct = async () => {
             {tipoUnidadeOption.map((option) => (
               <Picker.Item key={option} label={option} value={option} />
             ))}
-          </Picker>            
+          </Picker>   
+          <Label>Fornecedor (Opcional)</Label>
+          <Picker
+            selectedValue={selectedFornecedorId}
+            onValueChange={(itemValue) => setSelectedFornecedorId(itemValue)}
+            style={{
+            backgroundColor: "#fff",
+            borderRadius: 5,
+            marginBottom: 15,
+            }}         
+          >
+            <Picker.Item label="Selecione o fornecedor" value="" />
+            {fornecedores.map((fornecedor: any) => (
+              <Picker.Item 
+                key={fornecedor.id} 
+                label={fornecedor.nomeFantasia} 
+                value={fornecedor.id ? fornecedor.id.toString() : ""} 
+              />
+            ))}
+          </Picker>
         </Section>
 
         <Button onPress={handleAddProduct}>
