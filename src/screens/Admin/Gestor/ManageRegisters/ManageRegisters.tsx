@@ -14,40 +14,37 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 
-type GestorScreenProps = StackNavigationProp<RootStackParamList, "Gestor">;
-const Gestor: React.FC = () => {
-  const navigation = useNavigation<GestorScreenProps>();
+type ManageRegistersScreenProps = StackNavigationProp<
+  RootStackParamList,
+  "ManageRegisters"
+>;
+const RegisterPaymentMethods: React.FC = () => {
+  const navigation = useNavigation<ManageRegistersScreenProps>();
 
   const cards = [
     {
-      title: "Cadastar Clientes",
+      title: "Clientes cadastrados",
       icon: "account-multiple",
       color: "#4CAF50",
-      onPress: () => navigation.navigate("RegisterCustomers"),
+      onPress: () => navigation.navigate("ClientList"),
     },
     {
-      title: "Cadastar Fornecedores",
+      title: "Fornecedores cadastrados",
       icon: "truck",
       color: "#2196F3",
-      onPress: () => navigation.navigate("RegisterSuppliers"),
+      onPress: () => navigation.navigate("SupplierList"),
     },
     {
-      title: "Cadastrar Produtos",
-      icon: "cube-outline",
+      title: "Produtos cadastrados",
+      icon: "package-variant",
       color: "#9C27B0",
-      onPress: () => navigation.navigate("RegisterProduct"),
+      onPress: () => navigation.navigate("ProductList"),
     },
     {
-      title: "Cadastar Categorias",
-      icon: "shape-outline",
+      title: "Categorias cadastradas",
+      icon: "tag-multiple",
       color: "#F44336",
-      onPress: () => navigation.navigate("RegisterCategories"),
-    },
-    {
-      title: "Gerenciar Cadastros",
-      icon: "format-list-bulleted",
-      color: "#FF9800",
-      onPress: () => navigation.navigate("ManageRegisters"),
+      onPress: () => navigation.navigate("CategoryList"),
     },
   ];
 
@@ -66,7 +63,7 @@ const Gestor: React.FC = () => {
           marginVertical: 20,
         }}
       >
-        Gestor
+        Gerenciar Cadastros
       </Text>
       <ScrollView
         contentContainerStyle={{
@@ -93,4 +90,4 @@ const Gestor: React.FC = () => {
   );
 };
 
-export default Gestor;
+export default RegisterPaymentMethods;

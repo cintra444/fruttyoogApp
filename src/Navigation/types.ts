@@ -42,6 +42,9 @@ export type RootStackParamList = {
     CurrentStock: undefined;
     LowStock: undefined; 
     MonthlyBalance: undefined;
-
-    
+    ManageRegisters: undefined;
+    ClientList: undefined;
+    SupplierList: undefined;
+    ProductList: undefined;
+    CategoryList: undefined;    
 };
