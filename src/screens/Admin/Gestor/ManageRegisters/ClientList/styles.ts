@@ -91,3 +91,15 @@ export const ListText = styled.Text`
   font-size: 16px;
   margin-bottom: 2px;
 `;
+export const BackButton = styled.TouchableOpacity`
+flex-direction: row;
+align-items: center;
+margin-top: 20px;
+margin-left: 10px;
+`;
+export const BackButtonText = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: #007bff;
+  margin-left: 8px;
+`;

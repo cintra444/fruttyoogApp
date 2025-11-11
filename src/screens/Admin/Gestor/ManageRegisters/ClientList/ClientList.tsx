@@ -8,10 +8,8 @@ import {
   Label,
   ListItem,
   ListText,
-  DeleteButton,
-  DeleteButtonText,
-  CardTouchable,
-  CardTitle,
+  BackButton,
+  BackButtonText,
 } from "./styles";
 import {
   GetCliente,
@@ -21,7 +19,6 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { BackButton, BackButtonText } from "../../styles";
 
 interface Client {
   id: number;
@@ -54,30 +51,6 @@ const ClientList: React.FC = () => {
     }
   };
 
-  const handleDelete = async (clientId: number, clientName: string) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Tem certeza que deseja excluir o cliente "${clientName}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await DeleteCliente(clientId);
-              Alert.alert("Sucesso", "Cliente excluído com sucesso!");
-              loadClients();
-            } catch (error) {
-              console.error("Erro ao excluir cliente:", error);
-              Alert.alert("Erro", "Não foi possível excluir o cliente");
-            }
-          },
-        },
-      ]
-    );
-  };
-
   return (
     <Container>
       <BackButton onPress={() => navigation.goBack()}>
@@ -85,7 +58,16 @@ const ClientList: React.FC = () => {
         <BackButtonText>Voltar</BackButtonText>
       </BackButton>
 
-      <Title>Clientes Cadastrados</Title>
+      <Title
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Clientes Cadastrados
+      </Title>
 
       {loading ? (
         <Text style={{ textAlign: "center", padding: 20 }}>
@@ -119,32 +101,6 @@ const ClientList: React.FC = () => {
                       Endereço: {client.endereco}
                     </ListText>
                   )}
-                </View>
-
-                <View style={{ alignItems: "flex-end" }}>
-                  <CardTouchable
-                    onPress={() => client}
-                    style={{
-                      backgroundColor: "#2196F3",
-                      padding: 8,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      minWidth: 80,
-                    }}
-                  >
-                    <CardTitle style={{ fontSize: 12, color: "#fff" }}>
-                      Editar
-                    </CardTitle>
-                  </CardTouchable>
-
-                  <DeleteButton
-                    onPress={() => handleDelete(client.id, client.nome)}
-                    style={{ padding: 8, minWidth: 80 }}
-                  >
-                    <DeleteButtonText style={{ fontSize: 12 }}>
-                      Excluir
-                    </DeleteButtonText>
-                  </DeleteButton>
                 </View>
               </ListItem>
             ))}

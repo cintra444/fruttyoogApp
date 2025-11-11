@@ -57,29 +57,29 @@ const CategoryList: React.FC = () => {
     }
   };
 
-  const handleDelete = async (categoryId: number, categoryName: string) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Tem certeza que deseja excluir a categoria "${categoryName}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await DeleteCategoria(categoryId);
-              Alert.alert("Sucesso", "Categoria excluída com sucesso!");
-              loadCategories();
-            } catch (error) {
-              console.error("Erro ao excluir categoria:", error);
-              Alert.alert("Erro", "Não foi possível excluir a categoria");
-            }
-          },
-        },
-      ]
-    );
-  };
+  // const handleDelete = async (categoryId: number, categoryName: string) => {
+  //   Alert.alert(
+  //     "Confirmar Exclusão",
+  //     `Tem certeza que deseja excluir a categoria "${categoryName}"?`,
+  //     [
+  //       { text: "Cancelar", style: "cancel" },
+  //       {
+  //         text: "Excluir",
+  //         style: "destructive",
+  //         onPress: async () => {
+  //           try {
+  //             await DeleteCategoria(categoryId);
+  //             Alert.alert("Sucesso", "Categoria excluída com sucesso!");
+  //             loadCategories();
+  //           } catch (error) {
+  //             console.error("Erro ao excluir categoria:", error);
+  //             Alert.alert("Erro", "Não foi possível excluir a categoria");
+  //           }
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   return (
     <Container>
@@ -88,7 +88,16 @@ const CategoryList: React.FC = () => {
         <BackButtonText>Voltar</BackButtonText>
       </BackButton>
 
-      <Title>Categorias Cadastradas</Title>
+      <Title
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Categorias Cadastradas
+      </Title>
 
       {loading ? (
         <Text style={{ textAlign: "center", padding: 20 }}>
@@ -111,32 +120,6 @@ const CategoryList: React.FC = () => {
                   <ListText style={{ fontWeight: "bold", fontSize: 16 }}>
                     {category.nome}
                   </ListText>
-                </View>
-
-                <View style={{ alignItems: "flex-end" }}>
-                  <CardTouchable
-                    onPress={() => category}
-                    style={{
-                      backgroundColor: "#2196F3",
-                      padding: 8,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      minWidth: 80,
-                    }}
-                  >
-                    <CardTitle style={{ fontSize: 12, color: "#fff" }}>
-                      Editar
-                    </CardTitle>
-                  </CardTouchable>
-
-                  <DeleteButton
-                    onPress={() => handleDelete(category.id, category.nome)}
-                    style={{ padding: 8, minWidth: 80 }}
-                  >
-                    <DeleteButtonText style={{ fontSize: 12 }}>
-                      Excluir
-                    </DeleteButtonText>
-                  </DeleteButton>
                 </View>
               </ListItem>
             ))}

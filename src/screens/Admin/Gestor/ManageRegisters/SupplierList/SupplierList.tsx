@@ -53,29 +53,29 @@ const SupplierList: React.FC = () => {
     }
   };
 
-  const handleDelete = async (supplierId: number, supplierName: string) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Tem certeza que deseja excluir o fornecedor "${supplierName}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await DeleteFornecedor(supplierId);
-              Alert.alert("Sucesso", "Fornecedor excluído com sucesso!");
-              loadSuppliers();
-            } catch (error) {
-              console.error("Erro ao excluir fornecedor:", error);
-              Alert.alert("Erro", "Não foi possível excluir o fornecedor");
-            }
-          },
-        },
-      ]
-    );
-  };
+  // const handleDelete = async (supplierId: number, supplierName: string) => {
+  //   Alert.alert(
+  //     "Confirmar Exclusão",
+  //     `Tem certeza que deseja excluir o fornecedor "${supplierName}"?`,
+  //     [
+  //       { text: "Cancelar", style: "cancel" },
+  //       {
+  //         text: "Excluir",
+  //         style: "destructive",
+  //         onPress: async () => {
+  //           try {
+  //             await DeleteFornecedor(supplierId);
+  //             Alert.alert("Sucesso", "Fornecedor excluído com sucesso!");
+  //             loadSuppliers();
+  //           } catch (error) {
+  //             console.error("Erro ao excluir fornecedor:", error);
+  //             Alert.alert("Erro", "Não foi possível excluir o fornecedor");
+  //           }
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   return (
     <Container>
@@ -84,7 +84,16 @@ const SupplierList: React.FC = () => {
         <BackButtonText>Voltar</BackButtonText>
       </BackButton>
 
-      <Title>Fornecedores Cadastrados</Title>
+      <Title
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Fornecedores Cadastrados
+      </Title>
 
       {loading ? (
         <Text style={{ textAlign: "center", padding: 20 }}>
@@ -113,34 +122,6 @@ const SupplierList: React.FC = () => {
                   <ListText style={{ color: "#666", fontSize: 14 }}>
                     Telefone: {supplier.telefone}
                   </ListText>
-                </View>
-
-                <View style={{ alignItems: "flex-end" }}>
-                  <CardTouchable
-                    onPress={() => supplier}
-                    style={{
-                      backgroundColor: "#2196F3",
-                      padding: 8,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      minWidth: 80,
-                    }}
-                  >
-                    <CardTitle style={{ fontSize: 12, color: "#fff" }}>
-                      Editar
-                    </CardTitle>
-                  </CardTouchable>
-
-                  <DeleteButton
-                    onPress={() =>
-                      handleDelete(supplier.id, supplier.nomeFantasia)
-                    }
-                    style={{ padding: 8, minWidth: 80 }}
-                  >
-                    <DeleteButtonText style={{ fontSize: 12 }}>
-                      Excluir
-                    </DeleteButtonText>
-                  </DeleteButton>
                 </View>
               </ListItem>
             ))}

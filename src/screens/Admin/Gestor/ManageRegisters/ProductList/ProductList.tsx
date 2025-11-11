@@ -61,29 +61,29 @@ const ProductList: React.FC = () => {
     }
   };
 
-  const handleDelete = async (productId: number, productName: string) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      `Tem certeza que deseja excluir o produto "${productName}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await DeleteProdutos(productId);
-              Alert.alert("Sucesso", "Produto excluído com sucesso!");
-              loadProducts();
-            } catch (error) {
-              console.error("Erro ao excluir produto:", error);
-              Alert.alert("Erro", "Não foi possível excluir o produto");
-            }
-          },
-        },
-      ]
-    );
-  };
+  // const handleDelete = async (productId: number, productName: string) => {
+  //   Alert.alert(
+  //     "Confirmar Exclusão",
+  //     `Tem certeza que deseja excluir o produto "${productName}"?`,
+  //     [
+  //       { text: "Cancelar", style: "cancel" },
+  //       {
+  //         text: "Excluir",
+  //         style: "destructive",
+  //         onPress: async () => {
+  //           try {
+  //             await DeleteProdutos(productId);
+  //             Alert.alert("Sucesso", "Produto excluído com sucesso!");
+  //             loadProducts();
+  //           } catch (error) {
+  //             console.error("Erro ao excluir produto:", error);
+  //             Alert.alert("Erro", "Não foi possível excluir o produto");
+  //           }
+  //         },
+  //       },
+  //     ]
+  //   );
+  // };
 
   return (
     <Container>
@@ -92,7 +92,16 @@ const ProductList: React.FC = () => {
         <BackButtonText>Voltar</BackButtonText>
       </BackButton>
 
-      <Title>Produtos Cadastrados</Title>
+      <Title
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Produtos Cadastrados
+      </Title>
 
       {loading ? (
         <Text style={{ textAlign: "center", padding: 20 }}>
@@ -139,32 +148,6 @@ const ProductList: React.FC = () => {
                       {product.descricao}
                     </ListText>
                   )}
-                </View>
-
-                <View style={{ alignItems: "flex-end" }}>
-                  <CardTouchable
-                    onPress={() => product}
-                    style={{
-                      backgroundColor: "#2196F3",
-                      padding: 8,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      minWidth: 80,
-                    }}
-                  >
-                    <CardTitle style={{ fontSize: 12, color: "#fff" }}>
-                      Editar
-                    </CardTitle>
-                  </CardTouchable>
-
-                  <DeleteButton
-                    onPress={() => handleDelete(product.id, product.name)}
-                    style={{ padding: 8, minWidth: 80 }}
-                  >
-                    <DeleteButtonText style={{ fontSize: 12 }}>
-                      Excluir
-                    </DeleteButtonText>
-                  </DeleteButton>
                 </View>
               </ListItem>
             ))}
