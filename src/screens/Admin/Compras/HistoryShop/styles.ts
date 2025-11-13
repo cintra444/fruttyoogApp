@@ -100,3 +100,73 @@ export const CloseText = styled.Text`
   font-size: 16px;
   font-weight: bold;
 `;
+export const FilterRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+export const DateButton = styled.TouchableOpacity`
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 5px;
+`;
+
+export const DateButtonText = styled.Text`
+  color: #495057;
+  font-size: 16px;
+`;
+
+export const StatsContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+`;
+
+export const StatItem = styled.View`
+  align-items: center;
+  flex: 1;
+`;
+
+export const StatLabel = styled.Text`
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+`;
+
+export const StatValue = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const DetailItem = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
+`;
+
+export const DetailLabel = styled.Text`
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+`;
+
+export const DetailValue = styled.Text`
+  color: #666;
+  flex: 2;
+  text-align: right;
+`;
+
+export const SearchInput = styled(Input)`
+  background-color: #fff;
+  border-color: #007bff;
+`;
