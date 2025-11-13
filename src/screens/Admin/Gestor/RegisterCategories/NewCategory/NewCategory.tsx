@@ -9,7 +9,7 @@ import {
   Button,
   ButtonText,
 } from "./styles";
-import { PostCategoria } from "../../../../../Services/apiFruttyoog"; 
+import { PostCategoria } from "../../../../../Services/apiFruttyoog";
 import { BackButton, BackButtonText } from "../../../Gestor/styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
@@ -38,13 +38,20 @@ const NewCategory: React.FC = () => {
   return (
     <Container>
       {/* Botão de voltar */}
-                                          <BackButton onPress={() => navigation.goBack()}>
-                                            <Icon name="arrow-left" size={33} color="#000" />
-                                            <BackButtonText>Voltar</BackButtonText>
-                                          </BackButton>
-                                          <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Nova Categoria</Text>
-                      
-             
+      <BackButton onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={33} color="#000" />
+        <BackButtonText>Voltar</BackButtonText>
+      </BackButton>
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginVertical: 20,
+        }}
+      >
+        Nova Categoria
+      </Text>
 
       <Section>
         <Label>Nome da Categoria</Label>
