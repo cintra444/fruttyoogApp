@@ -107,3 +107,60 @@ export const BackButtonText = styled.Text`
   color: #007bff;
   margin-left: 8px;
 `;
+export const PriceInputContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const PriceInput = styled(StyledInput)`
+  flex: 1;
+  margin-right: 10px;
+`;
+
+export const PriceButton = styled.TouchableOpacity`
+  background-color: #28a745;
+  padding: 10px 15px;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const PriceButtonText = styled.Text`
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+`;
+
+export const ReferencePrice = styled.Text`
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 5px;
+  font-style: italic;
+`;
+
+export const UpdateReferenceCheckbox = styled.View`
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+`;
+
+export const CheckboxLabel = styled.Text`
+  font-size: 14px;
+  color: #333;
+  flex: 1;
+`;
+export const Column = styled.View`
+  flex: 1;
+  margin-right: 10px;
+`;
+
+export const FormRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  
+  &:last-child {
+    margin-right: 0;
+  }
+`;

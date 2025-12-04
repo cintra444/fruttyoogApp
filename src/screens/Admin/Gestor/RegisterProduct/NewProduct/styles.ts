@@ -44,3 +44,32 @@ export const ButtonText = styled.Text`
   font-size: 16px;
   font-weight: bold;
 `;
+export const FormRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+`;
+
+export const PriceInfo = styled.View`
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+`;
+
+export const PriceLabel = styled.Text`
+  font-size: 12px;
+  color: #666;
+`;
+
+export const PriceValue = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const InfoText = styled.Text`
+  font-size: 11px;
+  color: #6c757d;
+  margin-top: 2px;
+`;
