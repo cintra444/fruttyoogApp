@@ -1,9 +1,10 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const API_URL = "https://milly-unreclusive-nonpreventively.ngrok-free.dev";
 //configurando a base url da api
 const api = axios.create({
-  baseURL: "http://192.168.1.2:8080",
+  baseURL: API_URL || "http://192.168.1.8:8080" ,
   headers: {
      "Content-Type": "application/json",
    },
@@ -713,7 +714,6 @@ interface Cliente {
     endereco: string;
     referencia: string;
     tipoCliente: string;
-    tipoPagamento: string;
 }
 
 export const GetCliente = async (): Promise<Cliente[] | void> => {
@@ -736,7 +736,6 @@ interface PostCliente {
     endereco: string;
     referencia: string;
     tipoCliente: string;
-    tipoPagamento: string;
 }
 
 export const PostCliente = async (data: PostCliente): Promise<Cliente | void> => {
@@ -759,7 +758,6 @@ interface PutCliente {
     endereco: string;
     referencia: string;
     tipoCliente: string;
-    tipoPagamento: string;
   
 }
 
