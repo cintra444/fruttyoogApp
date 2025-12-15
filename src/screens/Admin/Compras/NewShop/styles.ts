@@ -164,3 +164,45 @@ export const FormRow = styled.View`
     margin-right: 0;
   }
 `;
+export const InfoCard = styled.View`
+  background-color: #e3f2fd;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border-left-width: 4px;
+  border-left-color: #2196f3;
+`;
+
+export const InfoCardText = styled.Text`
+  color: #1565c0;
+  font-size: 14px;
+`;
+export const LoadingContainer = styled.View`
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const LoadingText = styled.Text`
+  font-size: 16px;
+  color: #666;
+  margin-top: 10px;
+`;
+export const CardContainer = styled.View`
+  flex-direction: column;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+`;
+export const CardTouchable = styled.TouchableOpacity`
+  padding: 15px 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
+  background-color: #fff;
+`;
+export const CardTitle = styled.Text`
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+`;

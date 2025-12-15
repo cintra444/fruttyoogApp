@@ -73,3 +73,22 @@ export const InfoText = styled.Text`
   color: #6c757d;
   margin-top: 2px;
 `;
+export const CardContainer = styled.View`
+  flex-direction: column;
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+`;
+export const CardTouchable = styled.TouchableOpacity`
+  padding: 15px 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
+  background-color: #fff;
+`;
+
+export const CardTitle = styled.Text`
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 5px;
+`;

@@ -32,16 +32,16 @@ const Gestor: React.FC = () => {
       onPress: () => navigation.navigate("RegisterSuppliers"),
     },
     {
-      title: "Cadastrar Produtos",
-      icon: "cube-outline",
-      color: "#9C27B0",
-      onPress: () => navigation.navigate("RegisterProduct"),
-    },
-    {
       title: "Cadastar Categorias",
       icon: "shape-outline",
       color: "#F44336",
       onPress: () => navigation.navigate("RegisterCategories"),
+    },
+    {
+      title: "Cadastrar Produtos",
+      icon: "cube-outline",
+      color: "#9C27B0",
+      onPress: () => navigation.navigate("RegisterProduct"),
     },
     {
       title: "Gerenciar Cadastros",
