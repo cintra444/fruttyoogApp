@@ -159,14 +159,16 @@ interface Categoria{
 
 interface Produtos {
     id: number;
-    name: string;
+    nome: string;
     descricao: string;
     codigoProduto: string;
     precoCusto: number;
     precoVenda: number;
     tipoUnidade: string;
     qtdeEstoque: number; 
-    categoria: Categoria;
+    categoria: {
+        id: number
+    };
        
 };
 
@@ -180,7 +182,7 @@ export const GetProducts = async (): Promise<Produtos[] | void> => {
 };
 
 interface PostProdutos {
-    name: string;
+    nome: string;
     descricao: string;
     codigoProduto: string;
     precoCusto: number;
@@ -203,7 +205,7 @@ export const PostProdutos = async (data: PostProdutos): Promise<Produtos | void>
 
 interface PutProdutos {
     id: number;
-    name: string;
+    nome: string;
     descricao: string;
     codigoProduto: string;
     precoCusto: number;

@@ -19,7 +19,14 @@ export type RootStackParamList = {
     StockReport: undefined;
     FinancialReport: undefined;
     Gestor: undefined;
-    NewShop: undefined;
+    NewShop: {
+    novoProdutoId?: number;
+    fornecedorId?: number;
+  };
+  
+  NewProduct: {
+    fornecedorId?: number;
+  };
     HistoryShop: undefined;
     NewSale: undefined;
     HistorySale: undefined;
@@ -28,7 +35,7 @@ export type RootStackParamList = {
     RegisterCustomers: undefined;
     NewCustomers: undefined;
     EditCustomers: undefined;
-    NewProduct: undefined;
+
     EditProduct: undefined;
     RegisterSuppliers: undefined;
     NewSuppliers: undefined;

@@ -1,45 +1,14 @@
-// NewProduct.tsx
 import React, { useEffect, useState } from "react";
 import { ScrollView, Alert, Text, ActivityIndicator, View } from "react-native";
-import {
-  Container,
-  Section,
-  Label,
-  Input,
-  Button,
-  ButtonText,
-  FormRow,
-  PriceInfo,
-  PriceLabel,
-  PriceValue,
-  InfoText,
-  CardContainer,
-  CardTouchable,
-  CardTitle,
-} from "./styles";
-import api from "../../../../../Services/apiFruttyoog"; // ajuste o caminho da sua api
+import { Container, Section, Label, Input, Button, ButtonText } from "./styles";
+import { BackButton, BackButtonText } from "../../styles";
+import api from "../../../../../Services/apiFruttyoog";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Picker } from "@react-native-picker/picker";
-import { BackButton, BackButtonText } from "../../../Gestor/styles";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
-import { parse } from "@babel/core";
-
-const tipoUnidadeOption = [
-  "UNIDADE",
-  "CAIXA",
-  "LITRO",
-  "POTE_VIDRO",
-  "POTE_PLASTICO",
-  "PACOTE",
-  "EMBALAGEM",
-  "CAIXA_PLASTICA",
-  "DUZIA",
-  "KG",
-  "GRAMA",
-  "OUTRO",
-];
+import { UNIT_TYPES } from "src/constants/unitTypes";
 
 interface Categoria {
   id: number;
@@ -51,42 +20,40 @@ interface Fornecedor {
   nomeFantasia: string;
 }
 
-interface Produto {
-  id: number;
-  nome: string;
-  descricao: string;
-  precoVenda: number;
-  precoCustoReferencia?: number;
-  codigoProduto: string;
-  tipoUnidade: string;
-  categoria: Categoria;
-  fornecedor?: Fornecedor;
+interface NewProductRouteParams {
+  fornecedorId?: number;
 }
 
 const NewProduct: React.FC = () => {
-  // Navegação
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
+  const params = route.params as NewProductRouteParams | undefined;
+  const fornecedorId = params?.fornecedorId as number | undefined;
 
-  // Formulário novo produto
-  const [name, setName] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [precoVenda, setPrecoVenda] = useState("");
-  const [precoCustoReferencia, setPrecoCustoReferencia] = useState("");
-  const [codigoProduto, setCodigoProduto] = useState("");
-  const [tipoUnidade, setTipoUnidade] = useState("");
+  // formulario
+  const [nome, setNome] = useState(""); // prod_nome
+  const [descricao, setDescricao] = useState(""); // prod_descricao
+  const [codigoProduto, setCodigoProduto] = useState(""); // prod_codigo
+  const [precoCusto, setPrecoCusto] = useState(""); // prod_preco_custo_referencia
+  const [precoVenda, setPrecoVenda] = useState(""); // prod_preco_venda
+  const [tipoUnidade, setTipoUnidade] = useState("UNIDADE"); // prod_tipo_unidade
+  const [qtdeEstoque, setQtdeEstoque] = useState("0"); // prod_qtde_estoque
 
-  //para consultas
+  // Dados para selects
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
   const [selectedCategoriaId, setSelectedCategoriaId] = useState<string>("");
-  const [selectedFornecedorId, setSelectedFornecedorId] = useState("");
+  const [selectedFornecedorId, setSelectedFornecedorId] = useState(
+    fornecedorId ? fornecedorId.toString() : ""
+  );
   const [loading, setLoading] = useState(true);
-
-  const [produtosRecentes, setProdutosRecentes] = useState<Produto[]>([]);
 
   useEffect(() => {
     loadInitialData();
-    loadProdutosRecentes();
+
+    if (fornecedorId) {
+      console.log("Fornecedor pré-selecionado:", fornecedorId);
+    }
   }, []);
 
   const loadInitialData = async () => {
@@ -94,8 +61,8 @@ const NewProduct: React.FC = () => {
     try {
       await Promise.all([loadCategorias(), loadFornecedores()]);
     } catch (error) {
-      console.error("Erro ao carregar dados", error);
-      Alert.alert("Erro", "Não foi possível carregar os dados necessarios");
+      console.error("Erro ao carregar dados:", error);
+      Alert.alert("Erro", "Não foi possível carregar os dados necessários");
     } finally {
       setLoading(false);
     }
@@ -106,136 +73,113 @@ const NewProduct: React.FC = () => {
       const response = await api.get("/categorias");
       if (response.data && Array.isArray(response.data)) {
         setCategorias(response.data);
+
+        if (response.data.length > 0 && !selectedCategoriaId) {
+          setSelectedCategoriaId(response.data[0].id.toString());
+        }
       }
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
       Alert.alert("Erro", "Não foi possível carregar as categorias");
     }
   };
+
   const loadFornecedores = async () => {
     try {
       const response = await api.get("/fornecedor");
-
       if (response.data && Array.isArray(response.data)) {
         setFornecedores(response.data);
-      }
-    } catch (error: any) {
-      console.error("❌ Erro ao carregar fornecedores:", error);
-      Alert.alert("Erro", "Erro ao carregar fornecedores.");
-    }
-  };
 
-  const loadProdutosRecentes = async () => {
-    try {
-      const response = await api.get("/produtos?limit=5");
-      if (response.data && Array.isArray(response.data)) {
-        setProdutosRecentes(response.data);
+        if (fornecedorId && !selectedFornecedorId) {
+          const fornecedorExiste = response.data.some(
+            (f) => f.id === fornecedorId
+          );
+          if (fornecedorExiste) {
+            setSelectedFornecedorId(fornecedorId.toString());
+          }
+        }
       }
     } catch (error) {
-      console.error("Erro ao carregar produtos recentes:", error);
-      Alert.alert("Erro", "Erro ao carregar produtos recentes.");
+      console.error("Erro ao carregar fornecedores:", error);
+      Alert.alert("Erro", "Não foi possível carregar os fornecedores");
     }
-  };
-
-  const validateForm = () => {
-    if (!name.trim()) {
-      Alert.alert("Erro", "O Nome do produto é obrigatório.");
-      return false;
-    }
-    if (!descricao.trim()) {
-      Alert.alert("Erro", "A Descrição do produto é obrigatória.");
-      return false;
-    }
-    if (!precoVenda || parseFloat(precoVenda) <= 0) {
-      Alert.alert("Erro", "O Preço de Venda deve ser maior que zero.");
-      return false;
-    }
-    if (!codigoProduto.trim()) {
-      Alert.alert("Erro", "O Código do produto é obrigatório.");
-      return false;
-    }
-    if (!tipoUnidade.trim()) {
-      Alert.alert("Erro", "O Tipo de Unidade é obrigatório.");
-      return false;
-    }
-    if (!selectedCategoriaId) {
-      Alert.alert("Erro", "A Categoria do produto é obrigatória.");
-      return false;
-    }
-    return true;
   };
 
   const handleAddProduct = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
     try {
+      // ✅ CORREÇÃO: Estrutura padronizada
       const produtoData = {
-        name: name.trim(),
-        descricao: descricao.trim(),
-        precoVenda: parseFloat(precoVenda),
-        precoCustoReferencia: precoCustoReferencia
-          ? parseFloat(precoCustoReferencia)
-          : null,
+        nome: nome.trim(),
+        descricao: descricao.trim() || null,
         codigoProduto: codigoProduto.trim(),
-        tipoUnidade,
-        categoria: {
-          id: parseInt(selectedCategoriaId, 10),
-        },
+        precoCusto: precoCusto ? parseFloat(precoCusto) : 0, // Nome padronizado
+        precoVenda: precoVenda ? parseFloat(precoVenda) : 0,
+        tipoUnidade: tipoUnidade || "UNIDADE", // Valor padrão
+        qtdeEstoque: qtdeEstoque ? parseInt(qtdeEstoque) : 0,
+        categoria: selectedCategoriaId
+          ? {
+              id: parseInt(selectedCategoriaId, 10),
+            }
+          : null,
         fornecedor: selectedFornecedorId
           ? {
               id: parseInt(selectedFornecedorId, 10),
             }
-          : undefined,
+          : null,
       };
-      qtdeEstoque: 0;
-
-      console.log("Dados do produto a serem enviados:", produtoData);
-
+      console.log("🔍 Objeto montado:", produtoData);
+      console.log("📤 Enviando produto:", JSON.stringify(produtoData, null, 2));
+      console.log("🔐 Headers da requisição:", api.defaults.headers);
       const response = await api.post("/produtos", produtoData);
 
-      Alert.alert("Sucesso", "Produto cadastrado com sucesso!", [
+      Alert.alert("Sucesso", `Produto "${nome}" cadastrado com sucesso!`, [
         {
           text: "OK",
           onPress: () => {
-            // resetar formulário
-            setName("");
+            // Limpar formulário
+            setNome("");
             setDescricao("");
-            setPrecoVenda("");
-            setPrecoCustoReferencia("");
             setCodigoProduto("");
-            setTipoUnidade("");
+            setPrecoCusto("");
+            setPrecoVenda("");
+            setTipoUnidade("UNIDADE");
+            setQtdeEstoque("0");
             setSelectedCategoriaId("");
             setSelectedFornecedorId("");
-
-            // atualizar produtos recentes
-            if (response.data) {
-              setProdutosRecentes((prev) => [
-                response.data,
-                ...prev.slice(0, 4),
-              ]);
-            }
+          },
+        },
+        {
+          text: "Usar em nova compra",
+          onPress: () => {
+            navigation.navigate("NewShop", {
+              novoProdutoId: response.data.id,
+              fornecedorId: selectedFornecedorId
+                ? parseInt(selectedFornecedorId)
+                : undefined,
+            });
           },
         },
       ]);
     } catch (error: any) {
-      console.error("Erro ao cadastrar produto:", error);
-      const errorMessage =
-        error.response?.data?.message || "Não foi possível cadastrar o produto";
-      Alert.alert("Erro", errorMessage);
-    }
-  };
+      // ✅ Adicionado ": any" para tipagem do error
+      console.error("❌ Erro ao cadastrar produto:", error);
 
-  const selectProdutoRecente = (produto: Produto) => {
-    setName(produto.nome);
-    setDescricao(produto.descricao || "");
-    setPrecoVenda(produto.precoVenda?.toString() || "");
-    setPrecoCustoReferencia(produto.precoCustoReferencia?.toString() || "");
-    setCodigoProduto(produto.codigoProduto);
-    setTipoUnidade(produto.tipoUnidade);
-    setSelectedCategoriaId(produto.categoria.id?.toString() || "");
-    setSelectedFornecedorId(produto.fornecedor?.id?.toString() || "");
+      let errorMessage = "Não foi possível cadastrar o produto";
+
+      if (error.response?.data) {
+        if (typeof error.response.data === "string") {
+          errorMessage = error.response.data;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      Alert.alert("Erro", errorMessage);
+    } // ✅ Fechamento da função handleAddProduct estava faltando aqui
   };
 
   return (
@@ -245,6 +189,7 @@ const NewProduct: React.FC = () => {
         <Icon name="arrow-left" size={33} color="#000" />
         <BackButtonText>Voltar</BackButtonText>
       </BackButton>
+
       <Text
         style={{
           fontSize: 24,
@@ -256,170 +201,115 @@ const NewProduct: React.FC = () => {
         Novo Produto
       </Text>
 
-      {/* Seção: Produtos Recentes (referência) */}
-      {produtosRecentes.length > 0 && (
-        <View style={{ marginBottom: 20 }}>
-          <Label>Produtos Recentes (Clique para copiar dados):</Label>
-          <CardContainer
-            style={{
-              maxHeight: 150,
-              flexDirection: "column",
-            }}
-          >
-            <ScrollView
-              showsVerticalScrollIndicator={true}
-              contentContainerStyle={{ paddingBottom: 5 }}
-            >
-              {produtosRecentes.map((produto) => (
-                <CardTouchable
-                  key={produto.id}
-                  onPress={() => selectProdutoRecente(produto)}
-                  style={{
-                    marginBottom: 8,
-                    backgroundColor: "#f0f0f0",
-                    borderWidth: 1,
-                    borderColor: "#ddd",
-                  }}
-                >
-                  <CardTitle style={{ fontWeight: "500" }}>
-                    {produto.nome}
-                  </CardTitle>
-                  <Text style={{ fontSize: 12, color: "#666" }}>
-                    {produto.codigoProduto} • {produto.categoria?.nome}
-                  </Text>
-                </CardTouchable>
-              ))}
-            </ScrollView>
-          </CardContainer>
-        </View>
-      )}
-
       <ScrollView>
         <Section>
-          {/* Nome e Código */}
-          <FormRow>
-            <View style={{ flex: 1, marginRight: 10 }}>
-              <Label>Nome do Produto *</Label>
-              <Input
-                value={name}
-                onChangeText={setName}
-                placeholder="Ex: Maçã Fuji"
-                autoCapitalize="words"
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Label>Código *</Label>
-              <Input
-                value={codigoProduto}
-                onChangeText={setCodigoProduto}
-                placeholder="Ex: PROD001"
-                autoCapitalize="characters"
-              />
-            </View>
-          </FormRow>
+          {/* 1. Nome do Produto */}
+          <Label>Nome do Produto</Label>
+          <Input
+            value={nome}
+            onChangeText={setNome}
+            placeholder="Ex: Maçã Fuji"
+            autoCapitalize="words"
+          />
 
-          {/* Descrição */}
-          <Label>Descrição *</Label>
+          {/* 2. Descrição */}
+          <Label>Descrição</Label>
           <Input
             value={descricao}
             onChangeText={setDescricao}
-            placeholder="Descreva o produto (tamanho, marca, características...)"
+            placeholder="Descreva o produto"
             multiline
             numberOfLines={3}
-            style={{ height: 80 }}
+            style={{ height: 80, textAlignVertical: "top" }}
           />
 
-          {/* Preços */}
-          <Label>Preços</Label>
-          <FormRow>
-            <View style={{ flex: 1, marginRight: 10 }}>
-              <PriceInfo>
-                <PriceLabel>Preço de Venda *</PriceLabel>
-                <PriceValue>
-                  {precoVenda
-                    ? `R$ ${parseFloat(precoVenda).toFixed(2)}`
-                    : "R$ 0,00"}
-                </PriceValue>
-              </PriceInfo>
-              <Input
-                value={precoVenda}
-                onChangeText={setPrecoVenda}
-                keyboardType="numeric"
-                placeholder="0.00"
-              />
-              <InfoText>Preço que será vendido ao cliente</InfoText>
-            </View>
+          {/* 3. Código do Produto */}
+          <Label>Código do Produto</Label>
+          <Input
+            value={codigoProduto}
+            onChangeText={setCodigoProduto}
+            placeholder="Ex: FRUT001"
+            autoCapitalize="characters"
+          />
 
-            <View style={{ flex: 1 }}>
-              <PriceInfo>
-                <PriceLabel>Preço de Custo Ref.</PriceLabel>
-                <PriceValue>
-                  {precoCustoReferencia
-                    ? `R$ ${parseFloat(precoCustoReferencia).toFixed(2)}`
-                    : "R$ --"}
-                </PriceValue>
-              </PriceInfo>
-              <Input
-                value={precoCustoReferencia}
-                onChangeText={setPrecoCustoReferencia}
-                keyboardType="numeric"
-                placeholder="0.00 (opcional)"
-              />
-              <InfoText>Referência para futuras compras</InfoText>
-            </View>
-          </FormRow>
+          {/* 4. Preço de Custo Referência */}
+          <Label>Preço de Custo Referência</Label>
+          <Input
+            value={precoCusto}
+            onChangeText={setPrecoCusto}
+            keyboardType="numeric"
+            placeholder="0.00"
+          />
+          <Text style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
+            Este será o preço sugerido nas compras
+          </Text>
 
-          {/* Unidade e Categoria */}
-          <FormRow>
-            <View style={{ flex: 1, marginRight: 10 }}>
-              <Label>Tipo de Unidade *</Label>
-              <Picker
-                selectedValue={tipoUnidade}
-                onValueChange={setTipoUnidade}
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                }}
-              >
-                <Picker.Item label="Selecione a unidade..." value="" />
-                {tipoUnidadeOption.map((option) => (
-                  <Picker.Item key={option} label={option} value={option} />
-                ))}
-              </Picker>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Label>Categoria *</Label>
-              {loading ? (
-                <ActivityIndicator size="small" color="#6200ee" />
-              ) : (
-                <Picker
-                  selectedValue={selectedCategoriaId}
-                  onValueChange={setSelectedCategoriaId}
-                  style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 8,
-                    borderWidth: 1,
-                    borderColor: "#ccc",
-                  }}
-                >
-                  <Picker.Item label="Selecione a categoria..." value="" />
-                  {categorias.map((categoria) => (
-                    <Picker.Item
-                      key={categoria.id}
-                      label={categoria.nome}
-                      value={categoria.id.toString()}
-                    />
-                  ))}
-                </Picker>
-              )}
-            </View>
-          </FormRow>
+          {/* 5. Preço de Venda */}
+          <Label>Preço de Venda</Label>
+          <Input
+            value={precoVenda}
+            onChangeText={setPrecoVenda}
+            keyboardType="numeric"
+            placeholder="0.00"
+          />
 
-          {/* Fornecedor Principal */}
-          <Label>Fornecedor Principal (Opcional)</Label>
-          <InfoText>Aparecerá como sugestão nas compras futuras</InfoText>
+          {/* 6. Tipo de Unidade */}
+          <Label>Tipo de Unidade</Label>
+          <Picker
+            selectedValue={tipoUnidade}
+            onValueChange={setTipoUnidade}
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: "#ccc",
+              marginBottom: 15,
+            }}
+          >
+            <Picker.Item label="Selecione a unidade..." value="" />
+            {UNIT_TYPES.map((option) => (
+              <Picker.Item key={option} label={option} value={option} />
+            ))}
+          </Picker>
+
+          {/* 7. Quantidade em Estoque */}
+          <Label>Quantidade em Estoque</Label>
+          <Input
+            value={qtdeEstoque}
+            onChangeText={setQtdeEstoque}
+            keyboardType="numeric"
+            placeholder="0"
+          />
+
+          {/* 8. Categoria */}
+          <Label>Categoria</Label>
+          {loading ? (
+            <ActivityIndicator size="small" color="#6200ee" />
+          ) : (
+            <Picker
+              selectedValue={selectedCategoriaId}
+              onValueChange={setSelectedCategoriaId}
+              style={{
+                backgroundColor: "#fff",
+                borderRadius: 8,
+                borderWidth: 1,
+                borderColor: "#ccc",
+                marginBottom: 15,
+              }}
+            >
+              <Picker.Item label="Selecione a categoria..." value="" />
+              {categorias.map((categoria) => (
+                <Picker.Item
+                  key={categoria.id}
+                  label={categoria.nome}
+                  value={categoria.id.toString()}
+                />
+              ))}
+            </Picker>
+          )}
+
+          {/* 9. Fornecedor Principal */}
+          <Label>Fornecedor Principal</Label>
           <Picker
             selectedValue={selectedFornecedorId}
             onValueChange={setSelectedFornecedorId}
@@ -428,7 +318,7 @@ const NewProduct: React.FC = () => {
               borderRadius: 8,
               borderWidth: 1,
               borderColor: "#ccc",
-              marginBottom: 15,
+              marginBottom: 25,
             }}
           >
             <Picker.Item label="Sem fornecedor específico" value="" />
@@ -440,26 +330,49 @@ const NewProduct: React.FC = () => {
               />
             ))}
           </Picker>
-
-          {/* Observação sobre estoque */}
-          <InfoText
-            style={{
-              backgroundColor: "#e3f2fd",
-              padding: 10,
-              borderRadius: 8,
-              marginTop: 10,
-              color: "#1565c0",
-            }}
-          >
-            💡 <Text style={{ fontWeight: "bold" }}>Atenção:</Text> O estoque
-            será gerenciado automaticamente através das compras. Ao cadastrar
-            uma compra no sistema, o estoque será atualizado.
-          </InfoText>
         </Section>
 
-        <Button onPress={handleAddProduct}>
-          <ButtonText>Cadastrar Produto</ButtonText>
-        </Button>
+        {/* Botões de Ação */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
+          <Button
+            onPress={handleAddProduct}
+            style={{ flex: 1, marginRight: 10, backgroundColor: "#4CAF50" }}
+          >
+            <ButtonText>Cadastrar Produto</ButtonText>
+          </Button>
+
+          <Button
+            onPress={() => navigation.goBack()}
+            style={{ flex: 1, marginLeft: 10, backgroundColor: "#757575" }}
+          >
+            <ButtonText>Cancelar</ButtonText>
+          </Button>
+        </View>
+
+        {/* Informação de integração */}
+        {fornecedorId && (
+          <View
+            style={{
+              backgroundColor: "#E3F2FD",
+              padding: 12,
+              borderRadius: 8,
+              marginBottom: 20,
+              borderLeftWidth: 4,
+              borderLeftColor: "#2196F3",
+            }}
+          >
+            <Text style={{ color: "#0D47A1", fontSize: 14 }}>
+              <Icon name="information-outline" size={16} color="#2196F3" /> Este
+              produto será associado ao fornecedor selecionado na compra
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </Container>
   );

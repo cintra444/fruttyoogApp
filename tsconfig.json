@@ -3,11 +3,11 @@
     "strict": true,
     "jsx": "react",
     "target": "esnext",
-    "module": "commonjs",
+    "module": "Node16",
     "sourceMap": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "baseUrl": "./"
   },
   "extends": "expo/tsconfig.base"

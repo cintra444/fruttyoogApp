@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import api from "src/Services/apiFruttyoog";
 import {
   Container,
@@ -45,6 +45,9 @@ import {
 } from "./styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Picker } from "@react-native-picker/picker";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "src/Navigation/types";
+import { UNIT_TYPES } from "src/constants/unitTypes";
 
 type Fornecedor = {
   id: number;
@@ -89,6 +92,8 @@ type ItemCompra = {
 
 const NewShop: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const [novoProdutoId, setNovoProdutoId] = useState<number | null>(null);
 
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
   const [produtos, setProdutos] = useState<Produto[]>([]);
@@ -121,6 +126,20 @@ const NewShop: React.FC = () => {
       total: 0,
     },
   ]);
+
+  //verificar se há novo produto vindo da navegação
+  useEffect(() => {
+    const params = route.params as { novoProdutoId?: number } | undefined;
+    if (params?.novoProdutoId) {
+      const produtoId = params.novoProdutoId;
+      setNovoProdutoId(produtoId);
+
+      //se selecionar fornecedor, recarregar produtos
+      if (selectedFornecedor) {
+        carregarProdutosFornecedor(selectedFornecedor);
+      }
+    }
+  }, [route.params]);
 
   // Carregar fornecedores ao montar o componente
   useEffect(() => {
@@ -169,6 +188,7 @@ const NewShop: React.FC = () => {
     }
   }, [selectedFornecedor]);
 
+  //carregar produtos do fornecedor
   const carregarProdutosFornecedor = async (fornecedorId: number) => {
     try {
       setLoading((prev) => ({ ...prev, produtos: true }));
@@ -296,11 +316,6 @@ const NewShop: React.FC = () => {
       return false;
     }
 
-    if (!selectedTipoCompra) {
-      Alert.alert("Atenção", "Selecione o tipo de compra.");
-      return false;
-    }
-
     if (itens.length === 0) {
       Alert.alert("Atenção", "Adicione pelo menos um item à compra.");
       return false;
@@ -314,24 +329,9 @@ const NewShop: React.FC = () => {
         );
         return true;
       }
-      if (item.quantidade <= 0) {
-        Alert.alert("Atenção", `Quantidade inválida no item ${index + 1}.`);
-        return true;
-      }
-      if (item.precoUnitarioReal <= 0) {
-        Alert.alert("Atenção", `Preço unitário inválido no item ${index + 1}.`);
-        return true;
-      }
       return false;
     });
-
     if (itemInvalido) return false;
-
-    if (valorTotalNota <= 0) {
-      Alert.alert("Atenção", "O valor total da nota deve ser maior que zero.");
-      return false;
-    }
-
     return true;
   };
 
@@ -342,23 +342,25 @@ const NewShop: React.FC = () => {
       const compraData = {
         fornecedorId: selectedFornecedor,
         tipoCompra: selectedTipoCompra,
-        tipoPagamento: selectedTipoPagamento,
         dataCompra,
-        dataPagamento: dataPagamento || null,
-        prazoPagamento: prazoPagamento ? parseInt(prazoPagamento) : null,
-        observacoes: observacoes.trim() || null,
         valorNota: valorTotalNota,
+        tipoPagamento: selectedTipoPagamento,
+        prazoPagamento: prazoPagamento ? parseInt(prazoPagamento) : 0,
+        observacoes: observacoes.trim() || null,
+        dataPagamento: dataPagamento || null,
         atualizarReferencias,
         itens: itens.map((item) => ({
           produtoId: item.produtoId,
           quantidade: item.quantidade,
           precoUnitarioReal: item.precoUnitarioReal,
-          precoReferencia: item.precoReferencia,
           total: item.total,
+          precoReferencia: item.precoReferencia,
+          usarComoReferencia:
+            atualizarReferencias && item.precoUnitarioReal > 0,
         })),
       };
 
-      console.log("📤 Enviando compra:", compraData);
+      console.log("📤 Enviando compra:", JSON.stringify(compraData, null, 2));
 
       setLoading((prev) => ({ ...prev, produtos: true }));
       const response = await api.post("/compra", compraData);
@@ -387,6 +389,7 @@ const NewShop: React.FC = () => {
             setPrazoPagamento("");
             setObservacoes("");
             setAtualizarReferencias(false);
+            setNovoProdutoId(null);
           },
         },
       ]);
@@ -402,15 +405,46 @@ const NewShop: React.FC = () => {
     }
   };
 
+  //navegar para tela cadastro de produto
+  const navegarParaNovoProduto = () => {
+    (navigation as any).navigate("NewProduct", {
+      fornecedorId: selectedFornecedor,
+    });
+  };
   // Renderiza produtos disponíveis em cards
   const renderProdutosDisponiveis = () => {
     if (!selectedFornecedor || produtos.length === 0) return null;
 
     return (
       <View style={{ marginBottom: 20 }}>
-        <Label style={{ marginBottom: 10 }}>
-          Produtos disponíveis deste fornecedor:
-        </Label>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <Label style={{ marginBottom: 10 }}>
+            Produtos disponíveis deste fornecedor:
+          </Label>
+
+          <TouchableOpacity
+            onPress={navegarParaNovoProduto}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#4CAF50",
+              paddingHorizontal: 12,
+              paddingVertical: 6,
+              borderRadius: 6,
+            }}
+          ></TouchableOpacity>
+          <Icon name="plus" size={16} color="white" />
+          <Text style={{ color: "white", marginLeft: 5, fontWeight: "500" }}>
+            Novo Produto
+          </Text>
+        </View>
 
         <CardContainer style={{ maxHeight: 200 }}>
           <ScrollView
@@ -447,6 +481,10 @@ const NewShop: React.FC = () => {
                             tipoUnidade: produto.tipounidade,
                           },
                         ]);
+                        //limpar indicador de produto novo
+                        if (produto.id === novoProdutoId) {
+                          setNovoProdutoId(null);
+                        }
                       }
                     }}
                     style={{
@@ -456,14 +494,40 @@ const NewShop: React.FC = () => {
                       opacity: jaAdicionado ? 0.7 : 1,
                     }}
                   >
-                    <CardTitle
-                      style={{
-                        fontWeight: "600",
-                        color: jaAdicionado ? "#2e7d32" : "#333",
-                      }}
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      {produto.nome}
-                    </CardTitle>
+                      <CardTitle
+                        style={{
+                          fontWeight: "600",
+                          color: jaAdicionado ? "#2e7d32" : "#333",
+                          flex: 1,
+                        }}
+                      >
+                        {produto.nome}
+                      </CardTitle>
+                      {produto.id === novoProdutoId && (
+                        <View
+                          style={{
+                            backgroundColor: "#ff9800",
+                            paddingHorizontal: 6,
+                            borderRadius: 4,
+                            marginLeft: 5,
+                            paddingVertical: 2,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: 10,
+                              fontWeight: "500",
+                            }}
+                          >
+                            Novo
+                          </Text>
+                        </View>
+                      )}
+                    </View>
 
                     <View
                       style={{
@@ -474,7 +538,6 @@ const NewShop: React.FC = () => {
                       <Text style={{ fontSize: 12, color: "#666" }}>
                         {produto.categoria?.nome || "Sem categoria"}
                       </Text>
-
                       {produto.precoCustoReferencia && (
                         <Text
                           style={{
@@ -509,8 +572,8 @@ const NewShop: React.FC = () => {
                         <Text
                           style={{
                             fontSize: 11,
-                            color: "#4caf50",
                             marginLeft: 5,
+                            color: "#4caf50",
                           }}
                         >
                           Já adicionado à compra
@@ -523,7 +586,6 @@ const NewShop: React.FC = () => {
             )}
           </ScrollView>
         </CardContainer>
-
         <InfoCard style={{ marginTop: 10 }}>
           <InfoCardText>
             💡 Clique em um produto para adicioná-lo automaticamente à compra
@@ -639,6 +701,30 @@ const NewShop: React.FC = () => {
             </Text>
           </View>
         )}
+        {atualizarReferencias && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#e8f5e9",
+              padding: 10,
+              borderRadius: 6,
+              marginTop: 10,
+            }}
+          >
+            <Icon name="information-outline" size={18} color="#2e7d32" />
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#2e7d32",
+                marginLeft: 8,
+                flex: 1,
+              }}
+            >
+              Os preços de referência serão atualizados com esta compra
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -659,7 +745,7 @@ const NewShop: React.FC = () => {
 
           {/* Fornecedor */}
           <FormGroup>
-            <Label>Fornecedor *</Label>
+            <Label>Fornecedor </Label>
             {loading.fornecedores ? (
               <View style={{ padding: 15, alignItems: "center" }}>
                 <ActivityIndicator size="small" color="#6200ee" />
@@ -704,7 +790,8 @@ const NewShop: React.FC = () => {
             <StyledInput
               value={dataCompra}
               onChangeText={setDataCompra}
-              placeholder="AAAA-MM-DD"
+              placeholder="DD/MM/AAAA"
+              keyboardType="numeric"
             />
           </FormGroup>
         </View>
@@ -903,7 +990,8 @@ const NewShop: React.FC = () => {
               <StyledInput
                 value={dataPagamento}
                 onChangeText={setDataPagamento}
-                placeholder="AAAA-MM-DD"
+                placeholder="DD/MM/AAAA"
+                keyboardType="numeric"
               />
             </Column>
             <Column style={{ flex: 1 }}>
