@@ -782,62 +782,93 @@ export const DeleteCliente = async (id: number): Promise<void> => {
 
 //funcao para compra - Get, Post, Put, Delete
 
-interface Compra {
+interface ItemCompraRequest {
+    produtoId: number;
+    quantidade: number;
+    precoUnitarioReal: number;
+    precoReferencia?: number;
+    usarComoReferencia?: boolean;
+}
+
+interface PagamentoCompraRequest {
+    tipo: string;
+    valor: number;
+    descricao?: string;
+}
+interface CompraRequest {
+    fornecedorId: number;
+    tipoCompra: string;
+    dataCompra: string;
+    valorNota: number;
+    tipoPagamento: string;
+    prazoPagamento: number;
+    observacoes?: string;
+    dataPagamento?: string;
+    atualizarReferencia?: boolean;
+    itens: ItemCompraRequest[];
+    pagamentos: PagamentoCompraRequest[];
+}
+
+interface CompraResponse {
     id: number;
     fornecedorId: number;
     tipoCompra: string;
     dataCompra: string;
-    valorTotal: number;
+    valorNota: number;
     tipoPagamento: string;
-    diasPrazo: number;
-    produtoId: number;
-    quantidade: number;
+    prazoPagamento: number;
+    observacoes?: string;
+    dataPagamento?: string;
+    itens: ItemCompraResponse[];
+    pagamentos: PagamentoCompraResponse[];
 }
-
-export const GetCompra = async (): Promise<Compra[] | void> => {
+interface ItemCompraResponse {
+    id: number;
+    produtoId: number;
+    produtoNome?: string;
+    quantidade: number;
+    precoUnitarioReal: number;
+    subTotal: number;
+    precoReferencia?: number;
+}
+interface PagamentoCompraResponse {
+    id: number;
+    tipo: string;
+    valor: number;
+    descricao?: string;
+}
+export const GetCompra = async (): Promise<CompraResponse[] | void> => {
     try {
-        const response = await api.get<Compra[]>("/compra");
+        const response = await api.get<CompraResponse[]>("/compra");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 };
 
-interface PostCompra {
-    fornecedorId: number;
-    tipoCompra: string;
-    dataCompra: string;
-    valorTotal: number;
-    tipoPagamento: string;
-    diasPrazo: number;
-    produtoId: number;
-    quantidade: number;
-}
-
-export const PostCompra = async (data: PostCompra): Promise<Compra | void> => {
+export const GetCompraById = async (id: number): Promise<CompraResponse | void> => {
     try {
-        const response = await api.post<Compra>("/compra", data);
+        const response = await api.get<CompraResponse>(`/compra/${id}`);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
     }
 };
 
-interface PutCompra {
-    id: number;
-    fornecedorId: number;
-    tipoCompra: string;
-    dataCompra: string;
-    valorTotal: number;
-    tipoPagamento: string;
-    diasPrazo: number;
-    produtoId: number;
-    quantidade: number;
-}
-
-export const PutCompra = async (data: PutCompra): Promise<Compra | void> => {
+export const PostCompra = async (data: CompraRequest): Promise<CompraResponse | void> => {
     try {
-        const response = await api.put<Compra>(`/compra/${data.id}`, data);
+        console.log("📤 Enviando dados para API:", JSON.stringify(data, null, 2));
+        const response = await api.post<CompraResponse>("/compra", data);
+        console.log("📥 Resposta da API:", response.data);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+};
+
+export const PutCompra = async (id: number, data: CompraRequest): Promise<CompraResponse | void> => {
+    try {
+        const response = await api.put<CompraResponse>(`/compra/${id}`, data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -851,6 +882,15 @@ export const DeleteCompra = async (id: number): Promise<void> => {
         handleApiError(error as ApiError);
     }
 };
+
+export const GetCompraByFornecedorId = async (fornecedorId: number): Promise<CompraResponse[] | void> => {
+    try {
+        const response = await api.get<CompraResponse[]>(`/compra/fornecedor/${fornecedorId}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
 
 //funcao para categoria - Get, Post, Put, Delete
 
