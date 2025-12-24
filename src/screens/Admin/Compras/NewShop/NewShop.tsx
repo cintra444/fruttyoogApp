@@ -584,15 +584,24 @@ const NewShop: React.FC = () => {
 
     const itemInvalido = itens.some((item, index) => {
       if (item.produtoId) {
-        const qtd = parseFloat(item.quantidade) || 0;
-        const precoUnitarioReal = parseFloat(item.precoUnitarioReal) || 0;
-        if (qtd <= 0) {
+        if (!item.quantidade || item.quantidade.trim() === "") {
+          Alert.alert(
+            "Atenção",
+            `Informe uma quantidade para "${item.produtoNome || `Item ${index + 1}`}".`
+          );
+          return true;
+        }
+
+        const quantidade = parseFloat(item.quantidade) || 0;
+        if (quantidade <= 0) {
           Alert.alert(
             "Atenção",
             `Informe uma quantidade maior que zero para "${item.produtoNome}".`
           );
           return true;
         }
+
+        const precoUnitarioReal = parseFloat(item.precoUnitarioReal) || 0;
 
         if (precoUnitarioReal <= 0) {
           Alert.alert(

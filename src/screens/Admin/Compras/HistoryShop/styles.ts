@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Picker } from "@react-native-picker/picker";
 
 export const Title = styled.Text`
   font-size: 22px;
@@ -169,4 +170,65 @@ export const DetailValue = styled.Text`
 export const SearchInput = styled(Input)`
   background-color: #fff;
   border-color: #007bff;
+`;
+
+export const FilterContainer = styled.View`
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: #dee2e6;
+`;
+
+export const QuickFilterButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border-width: 1px;
+  border-color: #6200ee;
+  margin-right: 8px;
+`;
+
+export const QuickFilterText = styled.Text`
+  color: #6200ee;
+  margin-left: 5px;
+  font-size: 12px;
+  font-weight: 500;
+`;
+
+export const FilterSection = styled.View`
+  margin-bottom: 20px;
+`;
+
+export const FilterHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+export const FilterToggle = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+export const StyledPicker = styled(Picker)`
+  background-color: #fff;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: #ccc;
+  margin-bottom: 15px;
+`;
+
+export const DateInput = styled(Input)`
+  height: 45px;
+  padding: 10px;
+  font-size: 14px;
+`;
+
+export const QuickFilterContainer = styled.View`
+  height: 50px;
+  margin-bottom: 15px;
 `;
