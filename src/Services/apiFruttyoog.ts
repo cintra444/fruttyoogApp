@@ -450,6 +450,8 @@ interface NotaVenda {
   dataVencimento: string;
 }
 
+
+
 export const PostNotaVenda = async (data: NotaVenda): Promise<NotaVenda | void> => {
   try {
     const response = await api.post<NotaVenda>("/notavenda", data);
@@ -458,6 +460,8 @@ export const PostNotaVenda = async (data: NotaVenda): Promise<NotaVenda | void> 
     handleApiError(error as ApiError);
   }
 };
+
+
 
 //funcoes para a imagem - put, post e get
 interface Imagem {
@@ -622,68 +626,197 @@ export const DeletePaymentMethods = async (id: number): Promise<void> => {
 };
 
 //funcao para venda - Get, Post, Put, Delete
-interface Venda {
+// Interfaces para venda
+interface ItemVendaRequest {
+  produtoId: number;
+  quantidade: number;
+  valorUnitario: number;
+}
+
+interface PagamentoRequest {
+  formaPagamento: string;
+  valor: number;
+  status: string;
+  dataPagamento?: string;
+}
+
+interface NovaVendaRequest {
+  clienteId: number;
+  usuarioId: number;
+  dataVenda?: string;
+  itens: ItemVendaRequest[];
+  pagamentos: PagamentoRequest[];
+  notaVendaId?: number;
+}
+
+interface VendaResponse {
+  id: number;
+  dataVenda: string;
+  valorTotal: number;
+  valorTotalPago: number;
+  saldoDevedor: number;
+  cliente: {
     id: number;
-    dataVenda: string;
-    valorTotal: number;
-    clienteid: number;
-    usuarioId: number;
-    itemVendas: ItemVenda[];
-    pagamentos: Payment[];
+    nome: string;
+  };
+  itens: Array<{
+    produto: {
+      id: number;
+      nome: string;
+    };
+    quantidade: number;
+    valorUnitario: number;
+    subTotal: number;
+  }>;
+  pagamentos: Array<{
+    formaPagamento: string;
+    valor: number;
+    status: string;
+    dataPagamento?: string;
+  }>;
 }
 
-export const GetVenda = async (): Promise<Venda[] | void> => {
-    try {
-        const response = await api.get<Venda[]>("/venda");
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
+const mapearFormaPagamento = (formaPagamento: string): string => {
+  const mapeamento: Record<string, string> = {
+    'DINHEIRO': 'DINHEIRO',
+    'Cartão de Crédito': 'CREDITO',
+    'Cartão de Débito': 'DEBITO',
+    'PIX': 'PIX',
+    'FIADO': 'FIADO',
+    'CHEQUE': 'CHEQUE',
+    'A PRAZO': 'A_PRAZO',
+    'TRANSFERENCIA': 'TRANSFERENCIA',
+    'BOLETO': 'BOLETO',
+    'OUTROS': 'OUTROS',
+    // Adicione mais mapeamentos conforme necessário
+  };
+  
+  // Primeiro tenta encontrar exato
+  if (mapeamento[formaPagamento]) {
+    return mapeamento[formaPagamento];
+  }
+  
+  // Se não encontrar, tenta case insensitive
+  const formaUpper = formaPagamento.toUpperCase();
+  for (const [key, value] of Object.entries(mapeamento)) {
+    if (key.toUpperCase() === formaUpper) {
+      return value;
     }
+  }
+  
+  // Fallback para FIADO se não encontrar
+  console.warn(`Forma de pagamento "${formaPagamento}" não mapeada, usando FIADO como fallback`);
+  return 'FIADO';
 };
 
-interface PostVenda {
-    dataVenda: string;
-    valorTotal: number;
-    clienteid: number;
-    usuarioId: number;
-    itemVendas: ItemVenda[];
-    pagamentos: Payment[];
+// Função para criar nova venda
+// Atualize a interface NovaVendaRequest para incluir notaVendaId
+interface NovaVendaRequest {
+  clienteId: number;
+  usuarioId: number;
+  dataVenda?: string;
+  itens: ItemVendaRequest[];
+  pagamentos: PagamentoRequest[];
+  notaVendaId?: number; // Adicione este campo
 }
 
-export const PostVenda = async (data: PostVenda): Promise<Venda | void> => {
-    try {
-        const response = await api.post<Venda>("/venda", data);
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
+// Atualize a função PostVenda
+export const PostVenda = async (data: NovaVendaRequest): Promise<VendaResponse | void> => {
+  try {
+    // Primeiro, criar a nota de venda se necessário
+    let notaVendaId: number | undefined;
+    
+    // Se você tem um endpoint separado para nota de venda, use-o primeiro
+    // Caso contrário, envie tudo para /vendas
+    
+    console.log("📤 Enviando venda para /vendas:", JSON.stringify(data, null, 2));
+    const response = await api.post<VendaResponse>("/vendas", data);
+    console.log("✅ Venda criada:", response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error("❌ Erro ao criar venda:", {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data
+    });
+    
+    // Se der erro 500, pode ser que precise usar /notavenda
+    if (error.response?.status === 500) {
+      console.log("⚠️ Tentando criar via /notavenda...");
+      try {
+        // Tentar formato alternativo para /notavenda
+        const notaVendaData = {
+          dataVenda: data.dataVenda || new Date().toISOString(),
+          valorTotal: data.itens.reduce((acc, item) => 
+            acc + (item.valorUnitario * item.quantidade), 0),
+          cliente: { id: data.clienteId },
+          itemVendas: data.itens.map(item => ({
+            produto: { id: item.produtoId },
+            quantidade: item.quantidade,
+            valorUnitario: item.valorUnitario,
+            subTotal: item.valorUnitario * item.quantidade
+          })),
+          formaPagamento: data.pagamentos[0]?.formaPagamento ? 
+            { tipoPagamento: data.pagamentos[0].formaPagamento } : 
+            { tipoPagamento: 'DINHEIRO' }
+        };
+        
+        console.log("📤 Enviando para /notavenda:", JSON.stringify(notaVendaData, null, 2));
+        const notaResponse = await api.post("/notavenda", notaVendaData);
+        console.log("✅ Nota de venda criada:", notaResponse.data);
+        return notaResponse.data;
+      } catch (notaError: any) {
+        console.error("❌ Erro ao criar nota de venda:", notaError);
+        handleApiError(notaError as ApiError);
+        throw notaError;
+      }
     }
+    
+    handleApiError(error as ApiError);
+    throw error;
+  }
 };
 
-interface PutVenda {
-    id: number;
-    dataVenda: string;
-    valorTotal: number;
-    clienteid: number;
-    usuarioId: number;
-    itemVendas: ItemVenda[];
-    pagamentos: Payment[];
-}
-
-export const PutVenda = async (data: PutVenda): Promise<Venda | void> => {
-    try {
-        const response = await api.put<Venda>(`/venda/${data.id}`, data);
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
+// Função para buscar venda por ID
+export const GetVendaById = async (id: number): Promise<VendaResponse | void> => {
+  try {
+    const response = await api.get<VendaResponse>(`/vendas/${id}`);
+    return response.data;
+  } catch (error) {
+    handleApiError(error as ApiError);
+    throw error;
+  }
 };
 
-export const DeleteVenda = async (id: number): Promise<void> => {
-    try {
-        await api.delete(`/venda/${id}`);
-    } catch (error) {
-        handleApiError(error as ApiError);
-    }
+// Função para listar todas as vendas
+export const GetVendas = async (): Promise<VendaResponse[] | void> => {
+  try {
+    const response = await api.get<VendaResponse[]>("/vendas");
+    return response.data;
+  } catch (error) {
+    handleApiError(error as ApiError);
+  }
+};
+
+// Função para adicionar pagamento a uma venda existente
+export const PostPagamentoVenda = async (vendaId: number, pagamento: PagamentoRequest): Promise<VendaResponse | void> => {
+  try {
+    const response = await api.post<VendaResponse>(`/vendas/${vendaId}/pagamentos`, pagamento);
+    return response.data;
+  } catch (error) {
+    handleApiError(error as ApiError);
+    throw error;
+  }
+};
+
+// Função para buscar formas de pagamento
+export const GetFormasPagamento = async (): Promise<Array<{id: number, descricao: string}> | void> => {
+  try {
+    const response = await api.get("/formapagamento");
+    return response.data;
+  } catch (error) {
+    handleApiError(error as ApiError);
+  }
 };
 
 //funcao para endereço - Get

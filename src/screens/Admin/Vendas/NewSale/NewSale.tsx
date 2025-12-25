@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, Text } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  Text,
+  Modal,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Title,
   Container,
@@ -15,8 +23,26 @@ import {
   ProductText,
   RemoveButton,
   RemoveText,
+  ModalContainer,
+  ModalContent,
+  PaymentRow,
+  PaymentInput,
+  CloseButton,
+  CloseButtonText,
+  PaymentSection,
+  PaymentItem,
+  PaymentItemText,
+  PaymentRemoveButton,
+  PaymentRemoveText,
+  TotalText,
+  SubtotalText,
 } from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import {
+  GetCliente,
+  GetProducts,
+  GetFormasPagamento,
+  PostVenda,
+} from "../../../../Services/apiFruttyoog";
 
 // Tipos
 type Cliente = {
@@ -27,10 +53,11 @@ type Cliente = {
 type Produto = {
   id: number;
   nome: string;
-  preco: number;
+  precoVenda: number;
+  qtdeEstoque: number;
 };
 
-type Pagamento = {
+type FormaPagamento = {
   id: number;
   descricao: string;
 };
@@ -40,7 +67,28 @@ type ProdutoSelecionado = {
   nome: string;
   preco: number;
   quantidade: number;
+  estoque: number;
 };
+
+type PagamentoSelecionado = {
+  id?: number;
+  formaPagamento: string;
+  valor: string;
+  status: "PAGO" | "PENDENTE";
+  dataPagamento?: string;
+};
+
+type TipoPagamentoEnum =
+  | "DINHEIRO"
+  | "CHEQUE"
+  | "DEBITO"
+  | "A_PRAZO"
+  | "TRANSFERENCIA"
+  | "OUTROS"
+  | "FIADO"
+  | "BOLETO"
+  | "CREDITO"
+  | "PIX";
 
 const NewSale: React.FC = () => {
   const navigation = useNavigation();
@@ -48,47 +96,143 @@ const NewSale: React.FC = () => {
   // Estados da API
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [produtos, setProdutos] = useState<Produto[]>([]);
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
+  const [formasPagamento, setFormasPagamento] = useState<FormaPagamento[]>([]);
+  const [usuarioId, setUsuarioId] = useState<number | null>(null);
 
   // Estados do formulário
-  const [clienteSelecionado, setClienteSelecionado] = useState<number | null>(null);
-  const [produtoSelecionado, setProdutoSelecionado] = useState<number | null>(null);
+  const [clienteSelecionado, setClienteSelecionado] = useState<number | null>(
+    null
+  );
+  const [produtoSelecionado, setProdutoSelecionado] = useState<number | null>(
+    null
+  );
   const [quantidade, setQuantidade] = useState<string>("1");
-  const [produtosSelecionados, setProdutosSelecionados] = useState<ProdutoSelecionado[]>([]);
-  const [pagamentoSelecionado, setPagamentoSelecionado] = useState<number | null>(null);
-  const [parcelas, setParcelas] = useState<string>("1");
+  const [produtosSelecionados, setProdutosSelecionados] = useState<
+    ProdutoSelecionado[]
+  >([]);
+  const [pagamentosSelecionados, setPagamentosSelecionados] = useState<
+    PagamentoSelecionado[]
+  >([]);
 
-  // Buscar dados da API
+  // Estados para modal de pagamento
+  const [modalPagamentoVisible, setModalPagamentoVisible] = useState(false);
+  const [pagamentoAtual, setPagamentoAtual] = useState<PagamentoSelecionado>({
+    formaPagamento: "",
+    valor: "",
+    status: "PAGO",
+  });
+
+  // Carregar dados iniciais
   useEffect(() => {
-    axios.get("http://localhost:8080/clientes").then((res) => setClientes(res.data));
-    axios.get("http://localhost:8080/produtos").then((res) => setProdutos(res.data));
-    axios.get("http://localhost:8080/pagamentos").then((res) => setPagamentos(res.data));
+    carregarDados();
+    carregarUsuarioId();
   }, []);
+
+  const carregarUsuarioId = async () => {
+    try {
+      // Aqui você pode pegar o ID do usuário do AsyncStorage ou do contexto de autenticação
+      const userData = await AsyncStorage.getItem("userData");
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUsuarioId(user.id);
+      } else {
+        // Fallback para usuário padrão (ajuste conforme sua lógica)
+        setUsuarioId(1);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar usuário:", error);
+      setUsuarioId(1);
+    }
+  };
+
+  const carregarDados = async () => {
+    try {
+      // Carregar clientes
+      const clientesData = await GetCliente();
+      if (clientesData) {
+        setClientes(clientesData);
+      }
+
+      // Carregar produtos
+      const produtosData = await GetProducts();
+      if (produtosData) {
+        setProdutos(produtosData);
+      }
+
+      // Carregar formas de pagamento
+      const formasData = await GetFormasPagamento();
+      if (formasData) {
+        setFormasPagamento(formasData);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+      Alert.alert("Erro", "Não foi possível carregar os dados iniciais");
+    }
+  };
 
   // Adicionar produto ao carrinho
   const handleAddProduto = () => {
     if (!produtoSelecionado) {
-      Alert.alert("Selecione um produto!");
+      Alert.alert("Erro", "Selecione um produto!");
       return;
     }
+
     const produto = produtos.find((p) => p.id === produtoSelecionado);
-    if (!produto) return;
+    if (!produto) {
+      Alert.alert("Erro", "Produto não encontrado!");
+      return;
+    }
+
+    const quantidadeNum = parseInt(quantidade) || 1;
+
+    if (quantidadeNum <= 0) {
+      Alert.alert("Erro", "Quantidade deve ser maior que zero!");
+      return;
+    }
+
+    // Verificar estoque
+    if (quantidadeNum > produto.qtdeEstoque) {
+      Alert.alert(
+        "Estoque insuficiente",
+        `${produto.nome}\nDisponível: ${produto.qtdeEstoque} unidades\nSolicitado: ${quantidadeNum}`
+      );
+      return;
+    }
 
     const jaExiste = produtosSelecionados.find((p) => p.id === produto.id);
+
     if (jaExiste) {
-      Alert.alert("Esse produto já foi adicionado.");
-      return;
+      // Verificar se a nova quantidade total excede o estoque
+      const novaQuantidadeTotal = jaExiste.quantidade + quantidadeNum;
+      if (novaQuantidadeTotal > produto.qtdeEstoque) {
+        Alert.alert(
+          "Estoque insuficiente",
+          `Quantidade total excede o estoque disponível!\nDisponível: ${produto.qtdeEstoque}\nTotal após adição: ${novaQuantidadeTotal}`
+        );
+        return;
+      }
+
+      // Atualizar quantidade se já existe
+      setProdutosSelecionados((prev) =>
+        prev.map((p) =>
+          p.id === produto.id
+            ? { ...p, quantidade: p.quantidade + quantidadeNum }
+            : p
+        )
+      );
+    } else {
+      setProdutosSelecionados((prev) => [
+        ...prev,
+        {
+          id: produto.id,
+          nome: produto.nome,
+          preco: produto.precoVenda,
+          quantidade: quantidadeNum,
+          estoque: produto.qtdeEstoque,
+        },
+      ]);
     }
 
-    setProdutosSelecionados((prev) => [
-      ...prev,
-      {
-        id: produto.id,
-        nome: produto.nome,
-        preco: produto.preco,
-        quantidade: parseInt(quantidade) || 1,
-      },
-    ]);
     setProdutoSelecionado(null);
     setQuantidade("1");
   };
@@ -98,126 +242,476 @@ const NewSale: React.FC = () => {
     setProdutosSelecionados((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Calcular total
-  const calcularTotal = () =>
+  // Calcular total dos produtos
+  const calcularTotalProdutos = () =>
     produtosSelecionados.reduce((acc, p) => acc + p.preco * p.quantidade, 0);
 
-  // Finalizar venda
-  const handleFinalizarVenda = () => {
-    if (!clienteSelecionado || produtosSelecionados.length === 0 || !pagamentoSelecionado) {
-      Alert.alert("Preencha todos os campos obrigatórios!");
+  // Calcular total já pago
+  const calcularTotalPago = () =>
+    pagamentosSelecionados
+      .filter((p) => p.status === "PAGO")
+      .reduce((acc, p) => acc + parseFloat(p.valor || "0"), 0);
+
+  // Calcular saldo devedor
+  const calcularSaldoDevedor = () => {
+    const total = calcularTotalProdutos();
+    const pago = calcularTotalPago();
+    return total - pago;
+  };
+
+  // Adicionar pagamento
+  const handleAddPagamento = () => {
+    if (!pagamentoAtual.formaPagamento) {
+      Alert.alert("Erro", "Selecione uma forma de pagamento!");
       return;
     }
 
-    const venda = {
-      clienteId: clienteSelecionado,
-      produtos: produtosSelecionados.map((p) => ({
-        id: p.id,
-        quantidade: p.quantidade,
-      })),
-      pagamentoId: pagamentoSelecionado,
-      parcelas: pagamentoSelecionado === 2 ? parseInt(parcelas) || 1 : 1, // Exemplo: 2 = "A prazo"
-      total: calcularTotal(),
+    if (!pagamentoAtual.valor || parseFloat(pagamentoAtual.valor) <= 0) {
+      Alert.alert("Erro", "Digite um valor válido!");
+      return;
+    }
+
+    const formaPagamentoMapeada = mapearFormaPagamentoParaBackend(
+      pagamentoAtual.formaPagamento
+    );
+
+    const novoPagamento: PagamentoSelecionado = {
+      ...pagamentoAtual,
+      id: Date.now(),
+      formaPagamento: formaPagamentoMapeada,
+      dataPagamento:
+        pagamentoAtual.status === "PAGO"
+          ? new Date().toISOString().split("T")[0]
+          : undefined,
     };
 
-    console.log("Venda gerada:", venda);
-    Alert.alert("Venda registrada com sucesso!");
-    navigation.goBack();
+    setPagamentosSelecionados((prev) => [...prev, novoPagamento]);
+    setPagamentoAtual({ formaPagamento: "", valor: "", status: "PAGO" });
+    setModalPagamentoVisible(false);
+  };
+
+  const mapearFormaPagamentoParaBackend = (formaPagamento: string) => {
+    const mapeamento: Record<string, string> = {
+      Dinheiro: "DINHEIRO",
+      "Cartão de Crédito": "CREDITO",
+      "Cartão de Débito": "DEBITO",
+      PIX: "PIX",
+      Fiado: "FIADO",
+      Cheque: "CHEQUE",
+      "A Prazo": "A_PRAZO",
+      Transferência: "TRANSFERENCIA",
+      Boleto: "BOLETO",
+      Outros: "OUTROS",
+    };
+    return mapeamento[formaPagamento] || "DINHEIRO";
+  };
+
+  // Remover pagamento
+  const handleRemovePagamento = (id: number) => {
+    setPagamentosSelecionados((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  // Validar venda antes de enviar
+  const validarVenda = () => {
+    if (!clienteSelecionado) {
+      return "Selecione um cliente!";
+    }
+
+    if (produtosSelecionados.length === 0) {
+      return "Adicione pelo menos um produto!";
+    }
+
+    if (!usuarioId) {
+      return "Usuário não identificado!";
+    }
+
+    const totalVenda = calcularTotalProdutos();
+    const totalPago = calcularTotalPago();
+
+    if (totalPago > totalVenda) {
+      return "O valor pago não pode ser maior que o total da venda!";
+    }
+
+    return null;
+  };
+
+  // Finalizar venda
+  const handleFinalizarVenda = async () => {
+    const erro = validarVenda();
+    if (erro) {
+      Alert.alert("Erro", erro);
+      return;
+    }
+
+    const totalVenda = calcularTotalProdutos();
+    const totalPago = calcularTotalPago();
+    const saldoDevedor = totalVenda - totalPago;
+
+    // Preparar pagamentos para envio
+    const pagamentosParaEnviar = [...pagamentosSelecionados];
+
+    // Se ainda houver saldo devedor, adicionar pagamento pendente
+    if (saldoDevedor > 0) {
+      pagamentosParaEnviar.push({
+        formaPagamento: "FIADO", // Ajuste conforme suas formas de pagamento
+        valor: saldoDevedor.toFixed(2),
+        status: "PENDENTE",
+        id: Date.now(),
+      });
+    }
+
+    const vendaRequest = {
+      clienteId: clienteSelecionado as number,
+      usuarioId: usuarioId!,
+      dataVenda: new Date().toISOString(),
+      itens: produtosSelecionados.map((p) => ({
+        produtoId: p.id,
+        quantidade: p.quantidade,
+        valorUnitario: p.preco,
+      })),
+      pagamentos: pagamentosParaEnviar.map((p) => ({
+        formaPagamento: p.formaPagamento as TipoPagamentoEnum,
+        valor: parseFloat(p.valor),
+        status: p.status,
+        dataPagamento: p.dataPagamento,
+      })),
+    };
+
+    try {
+      console.log("Enviando venda:", vendaRequest);
+
+      Alert.alert(
+        "Confirmar Venda",
+        `Total: R$ ${totalVenda.toFixed(2)}\nPago: R$ ${totalPago.toFixed(2)}\nSaldo: R$ ${saldoDevedor.toFixed(2)}\n\nDeseja finalizar a venda?`,
+        [
+          { text: "Cancelar", style: "cancel" },
+          {
+            text: "Finalizar",
+            style: "default",
+            onPress: async () => {
+              try {
+                const vendaCriada = await PostVenda(vendaRequest);
+
+                if (vendaCriada) {
+                  Alert.alert(
+                    "Sucesso!",
+                    `Venda #${vendaCriada.id} registrada com sucesso!`,
+                    [
+                      {
+                        text: "Ver Nota",
+                        onPress: () =>
+                          (navigation as any).navigate("Invoice", {
+                            vendaId: vendaCriada.id,
+                          }),
+                      },
+                      {
+                        text: "Nova Venda",
+                        onPress: () => {
+                          // Limpar formulário
+                          setClienteSelecionado(null);
+                          setProdutosSelecionados([]);
+                          setPagamentosSelecionados([]);
+                          setProdutoSelecionado(null);
+                          setQuantidade("1");
+                        },
+                      },
+                    ]
+                  );
+                }
+              } catch (error: any) {
+                console.error("Erro detalhado:", error);
+                Alert.alert(
+                  "Erro",
+                  error.response?.data?.message || "Erro ao processar venda"
+                );
+              }
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Erro ao preparar venda:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao processar a venda");
+    }
   };
 
   return (
     <Container>
-
       <Title>Nova Venda</Title>
-        <ScrollView>
-      {/* Cliente */}
-      <Section>
-        <Label>Cliente</Label>
-        <Picker
-          selectedValue={clienteSelecionado}
-          onValueChange={(value) => setClienteSelecionado(value)}
-        >
-          <Picker.Item label="Selecione um cliente" value={null} />
-          {clientes.map((c) => (
-            <Picker.Item key={c.id} label={c.nome} value={c.id} />
-          ))}
-        </Picker>
-      </Section>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Cliente */}
+        <Section>
+          <Label>Cliente *</Label>
+          <Picker
+            selectedValue={clienteSelecionado}
+            onValueChange={(value) => setClienteSelecionado(value)}
+            style={{ backgroundColor: "#f8f9fa", borderRadius: 5 }}
+          >
+            <Picker.Item label="Selecione um cliente" value={null} />
+            {clientes.map((c) => (
+              <Picker.Item key={c.id} label={c.nome} value={c.id} />
+            ))}
+          </Picker>
+        </Section>
 
-      {/* Produto */}
-      <Section>
-        <Label>Produto</Label>
-        <Picker
-          selectedValue={produtoSelecionado}
-          onValueChange={(value) => setProdutoSelecionado(value)}
-        >
-          <Picker.Item label="Selecione um produto" value={null} />
-          {produtos.map((p) => (
-            <Picker.Item key={p.id} label={`${p.nome} - R$ ${p.preco.toFixed(2)}`} value={p.id} />
-          ))}
-        </Picker>
-        <Label>Quantidade</Label>
-        <Input
-          keyboardType="numeric"
-          value={quantidade}
-          onChangeText={setQuantidade}
-        />
-        <Button onPress={handleAddProduto}>
-          <ButtonText>Adicionar Produto</ButtonText>
-        </Button>
-      </Section>
+        {/* Produto */}
+        <Section>
+          <Label>Produto *</Label>
+          <Picker
+            selectedValue={produtoSelecionado}
+            onValueChange={(value) => setProdutoSelecionado(value)}
+            style={{ backgroundColor: "#f8f9fa", borderRadius: 5 }}
+          >
+            <Picker.Item label="Selecione um produto" value={null} />
+            {produtos.map((p) => (
+              <Picker.Item
+                key={p.id}
+                label={`${p.nome} - R$ ${p.precoVenda.toFixed(2)} (Estoque: ${p.qtdeEstoque})`}
+                value={p.id}
+              />
+            ))}
+          </Picker>
 
-      {/* Lista de produtos */}
-      <ProductList>
-        {produtosSelecionados.map((p) => (
-          <ProductItem key={p.id}>
-            <ProductText>
-              {p.nome} - {p.quantidade} x R$ {p.preco.toFixed(2)}
-            </ProductText>
-            <RemoveButton onPress={() => handleRemoveProduto(p.id)}>
-              <RemoveText>Remover</RemoveText>
-            </RemoveButton>
-          </ProductItem>
-        ))}
-      </ProductList>
+          <Label>Quantidade</Label>
+          <Input
+            keyboardType="numeric"
+            value={quantidade}
+            onChangeText={(text) => {
+              if (/^\d*$/.test(text)) {
+                setQuantidade(text);
+              }
+            }}
+            placeholder="Quantidade"
+          />
 
-      {/* Forma de pagamento */}
-      <Section>
-        <Label>Forma de Pagamento</Label>
-        <Picker
-          selectedValue={pagamentoSelecionado}
-          onValueChange={(value) => setPagamentoSelecionado(value)}
-        >
-          <Picker.Item label="Selecione uma forma" value={null} />
-          {pagamentos.map((pg) => (
-            <Picker.Item key={pg.id} label={pg.descricao} value={pg.id} />
-          ))}
-        </Picker>
+          <Button onPress={handleAddProduto}>
+            <ButtonText>Adicionar Produto</ButtonText>
+          </Button>
+        </Section>
 
-        {pagamentoSelecionado === 2 && ( // Exemplo: "A prazo"
-          <>
-            <Label>Número de parcelas</Label>
-            <Input
-              keyboardType="numeric"
-              value={parcelas}
-              onChangeText={setParcelas}
-            />
-          </>
+        {/* Lista de produtos selecionados */}
+        {produtosSelecionados.length > 0 && (
+          <Section>
+            <Label>Produtos Selecionados:</Label>
+            <ProductList>
+              {produtosSelecionados.map((p) => (
+                <ProductItem key={p.id}>
+                  <ProductText>
+                    <Text style={{ fontWeight: "bold" }}>{p.nome}</Text>
+                    {"\n"}
+                    {p.quantidade} x R$ {p.preco.toFixed(2)} = R${" "}
+                    {(p.preco * p.quantidade).toFixed(2)}
+                    {"\n"}
+                    <Text style={{ fontSize: 12, color: "#666" }}>
+                      Estoque restante: {p.estoque - p.quantidade}
+                    </Text>
+                  </ProductText>
+                  <RemoveButton onPress={() => handleRemoveProduto(p.id)}>
+                    <RemoveText>X</RemoveText>
+                  </RemoveButton>
+                </ProductItem>
+              ))}
+            </ProductList>
+
+            <SubtotalText>
+              Subtotal: R$ {calcularTotalProdutos().toFixed(2)}
+            </SubtotalText>
+          </Section>
         )}
-      </Section>
 
-      {/* Total */}
-      <Section>
-        <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-          Total: R$ {calcularTotal().toFixed(2)}
-        </Text>
-      </Section>
+        {/* Pagamentos */}
+        <Section>
+          <Label>Pagamentos</Label>
 
-      {/* Botão finalizar */}
-      <Button onPress={handleFinalizarVenda}>
-        <ButtonText>Finalizar Venda</ButtonText>
-      </Button>
-        </ScrollView>
+          <Button onPress={() => setModalPagamentoVisible(true)}>
+            <ButtonText>Adicionar Pagamento</ButtonText>
+          </Button>
+
+          {pagamentosSelecionados.length > 0 && (
+            <PaymentSection>
+              {pagamentosSelecionados.map((p) => (
+                <PaymentItem key={p.id}>
+                  <PaymentItemText>
+                    {p.formaPagamento} - R$ {parseFloat(p.valor).toFixed(2)} (
+                    {p.status})
+                  </PaymentItemText>
+                  <PaymentRemoveButton
+                    onPress={() => p.id && handleRemovePagamento(p.id)}
+                  >
+                    <PaymentRemoveText>X</PaymentRemoveText>
+                  </PaymentRemoveButton>
+                </PaymentItem>
+              ))}
+
+              <PaymentItemText style={{ marginTop: 10, fontWeight: "bold" }}>
+                Total Pago: R$ {calcularTotalPago().toFixed(2)}
+              </PaymentItemText>
+            </PaymentSection>
+          )}
+        </Section>
+
+        {/* Resumo da venda */}
+        <Section>
+          <Label>Resumo da Venda</Label>
+
+          <TotalText>Total: R$ {calcularTotalProdutos().toFixed(2)}</TotalText>
+
+          <Text style={{ fontSize: 16, marginVertical: 3, color: "#27ae60" }}>
+            Pago: R$ {calcularTotalPago().toFixed(2)}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginVertical: 5,
+              color: calcularSaldoDevedor() > 0 ? "#e74c3c" : "#27ae60",
+            }}
+          >
+            {calcularSaldoDevedor() > 0 ? "Saldo Devedor:" : "Troco:"} R${" "}
+            {Math.abs(calcularSaldoDevedor()).toFixed(2)}
+          </Text>
+        </Section>
+
+        {/* Botão finalizar */}
+        <Button
+          onPress={handleFinalizarVenda}
+          style={{
+            backgroundColor:
+              calcularSaldoDevedor() <= 0 ? "#27ae60" : "#3498db",
+            marginBottom: 20,
+          }}
+        >
+          <ButtonText>
+            {calcularSaldoDevedor() <= 0
+              ? "Finalizar Venda"
+              : "Salvar Venda com Saldo"}
+          </ButtonText>
+        </Button>
+      </ScrollView>
+
+      {/* Modal de Pagamento */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalPagamentoVisible}
+        onRequestClose={() => setModalPagamentoVisible(false)}
+      >
+        <ModalContainer>
+          <ModalContent>
+            <Title>Adicionar Pagamento</Title>
+
+            <Label>Forma de Pagamento *</Label>
+            <Picker
+              selectedValue={pagamentoAtual.formaPagamento}
+              onValueChange={(value) =>
+                setPagamentoAtual({ ...pagamentoAtual, formaPagamento: value })
+              }
+              style={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: 5,
+                marginBottom: 15,
+                height: 50,
+              }}
+            >
+              <Picker.Item label="Selecione..." value="" />
+              <Picker.Item label="Dinheiro" value="Dinheiro" />
+              <Picker.Item
+                label="Cartão de Crédito"
+                value="Cartão de Crédito"
+              />
+              <Picker.Item label="Cartão de Débito" value="Cartão de Débito" />
+              <Picker.Item label="PIX" value="PIX" />
+              <Picker.Item label="Fiado" value="Fiado" />
+              <Picker.Item label="Cheque" value="Cheque" />
+              <Picker.Item label="A Prazo" value="A Prazo" />
+              <Picker.Item label="Transferência" value="Transferência" />
+              <Picker.Item label="Boleto" value="Boleto" />
+              <Picker.Item label="Outros" value="Outros" />
+            </Picker>
+
+            <Label>Valor *</Label>
+            <PaymentInput
+              keyboardType="numeric"
+              value={pagamentoAtual.valor}
+              onChangeText={(text) => {
+                // Permitir apenas números e ponto decimal
+                const cleaned = text.replace(/[^0-9.]/g, "");
+                // Garantir apenas um ponto decimal
+                const parts = cleaned.split(".");
+                if (parts.length > 2) return;
+                setPagamentoAtual({ ...pagamentoAtual, valor: cleaned });
+              }}
+              placeholder="R$ 0,00"
+              style={{ height: 50 }}
+            />
+
+            <Label>Status</Label>
+            <Picker
+              selectedValue={pagamentoAtual.status}
+              onValueChange={(value) =>
+                setPagamentoAtual({ ...pagamentoAtual, status: value })
+              }
+              style={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: 5,
+                marginBottom: 20,
+                height: 50,
+              }}
+            >
+              <Picker.Item label="Pago" value="PAGO" />
+              <Picker.Item label="Pendente" value="PENDENTE" />
+            </Picker>
+
+            {/* Botões padronizados */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 10,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setModalPagamentoVisible(false)}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#95a5a6",
+                  padding: 15,
+                  borderRadius: 8,
+                  marginRight: 10,
+                  alignItems: "center",
+                  elevation: 2,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                >
+                  Cancelar
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleAddPagamento}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#3498db",
+                  padding: 15,
+                  borderRadius: 8,
+                  marginLeft: 10,
+                  alignItems: "center",
+                  elevation: 2,
+                }}
+              >
+                <Text
+                  style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
+                >
+                  Adicionar
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ModalContent>
+        </ModalContainer>
+      </Modal>
     </Container>
   );
 };
