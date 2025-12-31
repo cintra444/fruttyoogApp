@@ -28,14 +28,19 @@ export type RootStackParamList = {
     fornecedorId?: number;
   };
     HistoryShop: undefined;
+    AddPayment: {
+      saleId: number;
+    customerId?: number;
+    customerName?: string;
+    balance: number;
+    totalValue: number;
+    }
     NewSale: undefined;
     HistorySale: undefined;
-    Invoice: undefined;
     RegisterProduct: undefined;
     RegisterCustomers: undefined;
     NewCustomers: undefined;
     EditCustomers: undefined;
-
     EditProduct: undefined;
     RegisterSuppliers: undefined;
     NewSuppliers: undefined;

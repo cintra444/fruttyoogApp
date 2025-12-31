@@ -42,6 +42,11 @@ import {
   GetProducts,
   GetFormasPagamento,
   PostVenda,
+  mapearFormaPagamento,
+  mapearStatusPagamento,
+  type NovaVendaRequest,
+  type ItemVendaRequest,
+  type PagamentoRequest,
 } from "../../../../Services/apiFruttyoog";
 
 // Tipos
@@ -74,21 +79,9 @@ type PagamentoSelecionado = {
   id?: number;
   formaPagamento: string;
   valor: string;
-  status: "PAGO" | "PENDENTE";
+  status: "PAGO" | "PENDENTE" | "CANCELADO";
   dataPagamento?: string;
 };
-
-type TipoPagamentoEnum =
-  | "DINHEIRO"
-  | "CHEQUE"
-  | "DEBITO"
-  | "A_PRAZO"
-  | "TRANSFERENCIA"
-  | "OUTROS"
-  | "FIADO"
-  | "BOLETO"
-  | "CREDITO"
-  | "PIX";
 
 const NewSale: React.FC = () => {
   const navigation = useNavigation();
@@ -98,6 +91,7 @@ const NewSale: React.FC = () => {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [formasPagamento, setFormasPagamento] = useState<FormaPagamento[]>([]);
   const [usuarioId, setUsuarioId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   // Estados do formulário
   const [clienteSelecionado, setClienteSelecionado] = useState<number | null>(
@@ -130,13 +124,12 @@ const NewSale: React.FC = () => {
 
   const carregarUsuarioId = async () => {
     try {
-      // Aqui você pode pegar o ID do usuário do AsyncStorage ou do contexto de autenticação
       const userData = await AsyncStorage.getItem("userData");
       if (userData) {
         const user = JSON.parse(userData);
         setUsuarioId(user.id);
       } else {
-        // Fallback para usuário padrão (ajuste conforme sua lógica)
+        // Fallback para usuário padrão
         setUsuarioId(1);
       }
     } catch (error) {
@@ -147,6 +140,8 @@ const NewSale: React.FC = () => {
 
   const carregarDados = async () => {
     try {
+      setLoading(true);
+
       // Carregar clientes
       const clientesData = await GetCliente();
       if (clientesData) {
@@ -167,6 +162,8 @@ const NewSale: React.FC = () => {
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
       Alert.alert("Erro", "Não foi possível carregar os dados iniciais");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -271,39 +268,25 @@ const NewSale: React.FC = () => {
       return;
     }
 
-    const formaPagamentoMapeada = mapearFormaPagamentoParaBackend(
+    const formaPagamentoMapeada = mapearFormaPagamento(
       pagamentoAtual.formaPagamento
     );
+    const statusMapeado = mapearStatusPagamento(pagamentoAtual.status);
 
     const novoPagamento: PagamentoSelecionado = {
       ...pagamentoAtual,
       id: Date.now(),
       formaPagamento: formaPagamentoMapeada,
-      dataPagamento:
-        pagamentoAtual.status === "PAGO"
-          ? new Date().toISOString().split("T")[0]
-          : undefined,
+      status: statusMapeado as "PAGO" | "PENDENTE",
     };
 
     setPagamentosSelecionados((prev) => [...prev, novoPagamento]);
-    setPagamentoAtual({ formaPagamento: "", valor: "", status: "PAGO" });
+    setPagamentoAtual({
+      formaPagamento: "",
+      valor: "",
+      status: "PAGO",
+    });
     setModalPagamentoVisible(false);
-  };
-
-  const mapearFormaPagamentoParaBackend = (formaPagamento: string) => {
-    const mapeamento: Record<string, string> = {
-      Dinheiro: "DINHEIRO",
-      "Cartão de Crédito": "CREDITO",
-      "Cartão de Débito": "DEBITO",
-      PIX: "PIX",
-      Fiado: "FIADO",
-      Cheque: "CHEQUE",
-      "A Prazo": "A_PRAZO",
-      Transferência: "TRANSFERENCIA",
-      Boleto: "BOLETO",
-      Outros: "OUTROS",
-    };
-    return mapeamento[formaPagamento] || "DINHEIRO";
   };
 
   // Remover pagamento
@@ -335,6 +318,55 @@ const NewSale: React.FC = () => {
     return null;
   };
 
+  // Preparar dados para envio
+  const prepararDadosVenda = (): NovaVendaRequest => {
+    const totalVenda = calcularTotalProdutos();
+    const totalPago = calcularTotalPago();
+    const saldoDevedor = totalVenda - totalPago;
+
+    // Preparar itens da venda
+    const itens: ItemVendaRequest[] = produtosSelecionados.map((p) => ({
+      produtoId: p.id,
+      quantidade: p.quantidade,
+      valorUnitario: p.preco,
+    }));
+
+    // Preparar pagamentos
+    const pagamentos: PagamentoRequest[] = [...pagamentosSelecionados].map(
+      (p) => ({
+        formaPagamento: p.formaPagamento,
+        valor: parseFloat(p.valor),
+        status: p.status,
+        dataPagamento:
+          p.dataPagamento ||
+          (p.status === "PAGO"
+            ? new Date().toISOString().split("T")[0]
+            : undefined),
+      })
+    );
+
+    // Se ainda houver saldo devedor, adicionar pagamento pendente
+    if (saldoDevedor > 0) {
+      pagamentos.push({
+        formaPagamento: "FIADO",
+        valor: saldoDevedor,
+        status: "PENDENTE",
+        dataPagamento: undefined,
+      });
+    }
+
+    // Preparar venda request
+    const vendaRequest: NovaVendaRequest = {
+      clienteId: clienteSelecionado as number,
+      usuarioId: usuarioId!,
+      dataVenda: new Date().toISOString(),
+      itens,
+      pagamentos,
+    };
+
+    return vendaRequest;
+  };
+
   // Finalizar venda
   const handleFinalizarVenda = async () => {
     const erro = validarVenda();
@@ -343,46 +375,13 @@ const NewSale: React.FC = () => {
       return;
     }
 
-    const totalVenda = calcularTotalProdutos();
-    const totalPago = calcularTotalPago();
-    const saldoDevedor = totalVenda - totalPago;
-
-    // Preparar pagamentos para envio
-    const pagamentosParaEnviar = [...pagamentosSelecionados];
-
-    // Se ainda houver saldo devedor, adicionar pagamento pendente
-    if (saldoDevedor > 0) {
-      pagamentosParaEnviar.push({
-        formaPagamento: "FIADO", // Ajuste conforme suas formas de pagamento
-        valor: saldoDevedor.toFixed(2),
-        status: "PENDENTE",
-        id: Date.now(),
-      });
-    }
-
-    const vendaRequest = {
-      clienteId: clienteSelecionado as number,
-      usuarioId: usuarioId!,
-      dataVenda: new Date().toISOString(),
-      itens: produtosSelecionados.map((p) => ({
-        produtoId: p.id,
-        quantidade: p.quantidade,
-        valorUnitario: p.preco,
-      })),
-      pagamentos: pagamentosParaEnviar.map((p) => ({
-        formaPagamento: p.formaPagamento as TipoPagamentoEnum,
-        valor: parseFloat(p.valor),
-        status: p.status,
-        dataPagamento: p.dataPagamento,
-      })),
-    };
-
     try {
+      const vendaRequest = prepararDadosVenda();
       console.log("Enviando venda:", vendaRequest);
 
       Alert.alert(
         "Confirmar Venda",
-        `Total: R$ ${totalVenda.toFixed(2)}\nPago: R$ ${totalPago.toFixed(2)}\nSaldo: R$ ${saldoDevedor.toFixed(2)}\n\nDeseja finalizar a venda?`,
+        `Total: R$ ${calcularTotalProdutos().toFixed(2)}\nPago: R$ ${calcularTotalPago().toFixed(2)}\nSaldo: R$ ${calcularSaldoDevedor().toFixed(2)}\n\nDeseja finalizar a venda?`,
         [
           { text: "Cancelar", style: "cancel" },
           {
@@ -390,6 +389,7 @@ const NewSale: React.FC = () => {
             style: "default",
             onPress: async () => {
               try {
+                setLoading(true);
                 const vendaCriada = await PostVenda(vendaRequest);
 
                 if (vendaCriada) {
@@ -419,11 +419,10 @@ const NewSale: React.FC = () => {
                   );
                 }
               } catch (error: any) {
-                console.error("Erro detalhado:", error);
-                Alert.alert(
-                  "Erro",
-                  error.response?.data?.message || "Erro ao processar venda"
-                );
+                console.error("Erro ao criar venda:", error);
+                Alert.alert("Erro", error.message || "Erro ao processar venda");
+              } finally {
+                setLoading(false);
               }
             },
           },
@@ -431,9 +430,42 @@ const NewSale: React.FC = () => {
       );
     } catch (error) {
       console.error("Erro ao preparar venda:", error);
-      Alert.alert("Erro", "Ocorreu um erro ao processar a venda");
+      Alert.alert("Erro", "Ocorreu um erro ao preparar a venda");
+      setLoading(false);
     }
   };
+
+  // Limpar formulário
+  const limparFormulario = () => {
+    setClienteSelecionado(null);
+    setProdutosSelecionados([]);
+    setPagamentosSelecionados([]);
+    setProdutoSelecionado(null);
+    setQuantidade("1");
+    setPagamentoAtual({
+      formaPagamento: "",
+      valor: "",
+      status: "PAGO",
+    });
+  };
+
+  // Verificar se pode finalizar
+  const podeFinalizar = () => {
+    return clienteSelecionado && produtosSelecionados.length > 0 && usuarioId;
+  };
+
+  // Formatar valor para exibição
+  const formatarValor = (valor: number) => {
+    return valor.toFixed(2).replace(".", ",");
+  };
+
+  if (loading) {
+    return (
+      <Container>
+        <Title>Carregando...</Title>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -573,21 +605,37 @@ const NewSale: React.FC = () => {
           </Text>
         </Section>
 
-        {/* Botão finalizar */}
-        <Button
-          onPress={handleFinalizarVenda}
-          style={{
-            backgroundColor:
-              calcularSaldoDevedor() <= 0 ? "#27ae60" : "#3498db",
-            marginBottom: 20,
-          }}
-        >
-          <ButtonText>
-            {calcularSaldoDevedor() <= 0
-              ? "Finalizar Venda"
-              : "Salvar Venda com Saldo"}
-          </ButtonText>
-        </Button>
+        {/* Botões de ação */}
+        <Section>
+          <Button
+            onPress={limparFormulario}
+            style={{
+              backgroundColor: "#95a5a6",
+              marginBottom: 10,
+            }}
+            disabled={!podeFinalizar()}
+          >
+            <ButtonText>Limpar</ButtonText>
+          </Button>
+
+          <Button
+            onPress={handleFinalizarVenda}
+            style={{
+              backgroundColor:
+                calcularSaldoDevedor() <= 0 ? "#27ae60" : "#3498db",
+              marginBottom: 20,
+            }}
+            disabled={!podeFinalizar() || loading}
+          >
+            <ButtonText>
+              {loading
+                ? "Processando..."
+                : calcularSaldoDevedor() <= 0
+                  ? "Finalizar Venda"
+                  : "Salvar Venda com Saldo"}
+            </ButtonText>
+          </Button>
+        </Section>
       </ScrollView>
 
       {/* Modal de Pagamento */}
@@ -640,6 +688,8 @@ const NewSale: React.FC = () => {
                 // Garantir apenas um ponto decimal
                 const parts = cleaned.split(".");
                 if (parts.length > 2) return;
+                // Limitar a 2 casas decimais
+                if (parts[1] && parts[1].length > 2) return;
                 setPagamentoAtual({ ...pagamentoAtual, valor: cleaned });
               }}
               placeholder="R$ 0,00"

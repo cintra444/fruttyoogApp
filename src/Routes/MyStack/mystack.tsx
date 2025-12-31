@@ -21,7 +21,6 @@ import NewShop from "../../screens/Admin/Compras/NewShop/NewShop";
 import NewSale from "../../screens/Admin/Vendas/NewSale/NewSale";
 import HistoryShop from "../../screens/Admin/Compras/HistoryShop/HistoryShop";
 import HistorySale from "../../screens/Admin/Vendas/HistorySale/HistorySale";
-import Invoice from "../../screens/Admin/Vendas/Invoice/Invoice";
 import RegisterProduct from "../../screens/Admin/Gestor/RegisterProduct/RegisterProduct";
 import RegisterCustomers from "../../screens/Admin/Gestor/RegisterCustomers/RegisterCustomers";
 import NewCustomers from "../../screens/Admin/Gestor/RegisterCustomers/NewCustomers/NewCustomers";
@@ -49,6 +48,7 @@ import ClientList from "src/screens/Admin/Gestor/ManageRegisters/ClientList/Clie
 import SupplierList from "src/screens/Admin/Gestor/ManageRegisters/SupplierList/SupplierList";
 import ProductList from "src/screens/Admin/Gestor/ManageRegisters/ProductList/ProductList";
 import CategoryList from "src/screens/Admin/Gestor/ManageRegisters/CategoryList/CategoryList";
+import AddPayment from "../../screens/Admin/Vendas/Payment/AddPayment";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -131,10 +131,11 @@ export function MyStack() {
                 options={{ headerTitle: () => <Header /> }}
               />
               <Stack.Screen
-                name="Invoice"
-                component={Invoice}
+                name="AddPayment"
+                component={AddPayment}
                 options={{ headerTitle: () => <Header /> }}
               />
+
               {/* outras telas */}
               {/* financeiro */}
               <Stack.Screen
