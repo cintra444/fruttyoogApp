@@ -58,5 +58,6 @@ export type RootStackParamList = {
     ClientList: undefined;
     SupplierList: undefined;
     ProductList: undefined;
-    CategoryList: undefined;    
+    CategoryList: undefined; 
+       
 };

@@ -34,7 +34,6 @@ import RegisterCategories from "../../screens/Admin/Gestor/RegisterCategories/Re
 import NewCategory from "../../screens/Admin/Gestor/RegisterCategories/NewCategory/NewCategory";
 import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCategory/EditCategory";
 import CurrentStock from "../../screens/Admin/Estoque/CurrentStock/CurrentStock";
-import LowStock from "../../screens/Admin/Estoque/LowStock/LowStock";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Payments from "src/screens/Admin/Financeiro/Payment/Payments";
 import Expenses from "src/screens/Admin/Financeiro/Expenses/Expenses";
@@ -253,11 +252,6 @@ export function MyStack() {
               <Stack.Screen
                 name="CurrentStock"
                 component={CurrentStock}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="LowStock"
-                component={LowStock}
                 options={{ headerTitle: () => <Header /> }}
               />
               <Stack.Screen
