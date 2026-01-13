@@ -259,6 +259,12 @@ export function MyStack() {
                 component={MonthlyBalance}
                 options={{ headerTitle: () => <Header /> }}
               />
+              {/* pagamentos */}
+              <Stack.Screen
+                name="Payments"
+                component={Payments}
+                options={{ headerTitle: () => <Header /> }}
+              />
 
               {/* cadastramentos */}
               <Stack.Screen

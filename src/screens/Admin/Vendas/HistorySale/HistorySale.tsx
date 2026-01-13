@@ -41,6 +41,7 @@ import {
   GetVenda,
   GetCliente,
   GetProducts,
+  GetNotaVendaByVendaId,
 } from "../../../../Services/apiFruttyoog";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -65,13 +66,19 @@ interface Produto {
 }
 
 interface ItemVenda {
+  id?: number;
+  notaVendaId?: number;
+  produtoId?: number;
+  produtoNome?: string;
   produto: {
     id: number;
-    nome: string;
+    nome?: string;
   };
   quantidade: number;
   valorUnitario: number;
   subTotal: number;
+  subtotal?: number;
+  vendaId?: number;
 }
 
 interface Venda {
@@ -89,6 +96,47 @@ interface Venda {
     dataPagamento?: string;
   }>;
 }
+
+const getNomeProduto = (item: ItemVenda, produtos: Produto[]): string => {
+  console.log("Item:", item);
+  console.log("Produto ID:", item.produto?.id);
+  console.log("Produto nome direto:", item.produto?.nome);
+  console.log("Total de produtos disponíveis:", produtos.length);
+
+  if (!item) return "Produto não identificado";
+
+  if (item.produtoNome && item.produtoNome.trim() !== "") {
+    return item.produtoNome;
+  }
+
+  if (item.produto?.nome && item.produto?.nome.trim() !== "") {
+    return item.produto.nome;
+  }
+
+  const produtoIdDireto = Number(item.produtoId);
+  if (!isNaN(produtoIdDireto)) {
+    const produtoEncontrado = produtos.find(
+      (p) => Number(p.id) === produtoIdDireto
+    );
+    if (produtoEncontrado?.nome) {
+      return produtoEncontrado.nome;
+    }
+  }
+  const produtoIdNested = Number(item.produto?.id);
+  if (!isNaN(produtoIdNested)) {
+    const produtoEncontrado = produtos.find(
+      (p) => Number(p.id) === produtoIdNested
+    );
+    if (produtoEncontrado?.nome) {
+      return produtoEncontrado.nome;
+    }
+  }
+  if (item.produtoId) {
+    return `Produto #${item.produtoId}`;
+  }
+
+  return `Produto #${item.produto?.id ?? "N/I"}`;
+};
 
 const HistorySale: React.FC = () => {
   const navigation = useNavigation<Props["navigation"]>();
@@ -117,11 +165,13 @@ const HistorySale: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const [clientesData, vendasData, produtosData] = await Promise.all([
-        GetCliente(),
-        GetVenda(),
-        GetProducts(),
-      ]);
+      const [clientesData, vendasData, produtosData, notaVendaData] =
+        await Promise.all([
+          GetCliente(),
+          GetVenda(),
+          GetProducts(),
+          GetNotaVendaByVendaId(1),
+        ]);
 
       if (clientesData) {
         setClientes(clientesData);
@@ -208,13 +258,13 @@ const HistorySale: React.FC = () => {
     // Filtrar por produto
     if (filtroProduto) {
       const produtoLower = filtroProduto.toLowerCase();
-      filtradas = filtradas.filter((v) => {
-        return (
-          v.itens?.some((item) =>
-            item.produto?.nome?.toLowerCase().includes(produtoLower)
-          ) || false
-        );
-      });
+
+      filtradas = filtradas.filter((v) =>
+        v.itens?.some((item) => {
+          const nomeProduto = getNomeProduto(item, produtos).toLowerCase();
+          return nomeProduto.includes(produtoLower);
+        })
+      );
     }
 
     setVendasFiltradas(filtradas);
@@ -315,43 +365,47 @@ const HistorySale: React.FC = () => {
 
   const criarTextoNota = (venda: Venda): string => {
     const dataFormatada = formatarData(venda.dataVenda);
-    const valorTotal = formatarMoeda(venda.valorTotal);
-    const valorTotalPago = formatarMoeda(venda.valorTotalPago);
-    const saldoDevedor = formatarMoeda(venda.saldoDevedor);
 
-    let texto = `
-═══════════════════════════════════
-          NOTA DE VENDA
-═══════════════════════════════════
-Nº: #${venda.id}
-Data: ${dataFormatada}
-Cliente: ${venda.cliente?.nome || "Não informado"}
-═══════════════════════════════════
-PRODUTOS:
-`;
+    let texto = "";
+    texto += "🧾 *FRUTTYOOG – NOTA DE VENDA*\n";
+    texto += "--------------------------------\n";
+    texto += `📅 Data: ${dataFormatada}\n`;
+    texto += `🧾 Venda Nº: ${venda.id}\n`;
+    texto += `👤 Cliente: ${venda.cliente?.nome || "Consumidor Final"}\n`;
+    texto += "--------------------------------\n";
+    texto += "*📦 PRODUTOS*\n";
 
     venda.itens?.forEach((item, index) => {
-      const subTotal = formatarMoeda(item.subTotal);
-      const valorUnitario = formatarMoeda(item.valorUnitario);
-      const produtoNome = item.produto?.nome || "Produto não informado";
-
-      texto += `
-${index + 1}. ${produtoNome}
-   Quantidade: ${item.quantidade} x ${valorUnitario} = ${subTotal}
-`;
+      const nomeProduto = getNomeProduto(item, produtos);
+      texto += `\n${index + 1}. ${nomeProduto}`;
+      texto += `\n   Qtd: ${item.quantidade}`;
+      texto += ` | Unit: ${formatarMoeda(item.valorUnitario)}`;
+      texto += ` | Subtotal: ${formatarMoeda(item.subTotal)}\n`;
     });
 
-    texto += `
-═══════════════════════════════════
-TOTAL: ${valorTotal}
-PAGO: ${valorTotalPago}
-SALDO: ${saldoDevedor}
-═══════════════════════════════════
-Fruttyoog © ${new Date().getFullYear()}
-Sistema de Gestão Comercial
-═══════════════════════════════════`;
+    texto += "--------------------------------\n";
+    texto += `💰 Total: ${formatarMoeda(venda.valorTotal)}\n`;
+    texto += `💵 Pago: ${formatarMoeda(venda.valorTotalPago)}\n`;
 
-    return texto.trim();
+    if (venda.saldoDevedor > 0) {
+      texto += `❗ Saldo Devedor: ${formatarMoeda(venda.saldoDevedor)}\n`;
+    } else {
+      texto += "✅ Situação: QUITADA\n";
+    }
+
+    if (venda.pagamentos?.length) {
+      texto += "--------------------------------\n";
+      texto += "*💳 PAGAMENTOS*\n";
+      venda.pagamentos.forEach((p) => {
+        texto += `• ${p.formaPagamento}: ${formatarMoeda(p.valor)} (${p.status})\n`;
+      });
+    }
+
+    texto += "--------------------------------\n";
+    texto += "🙏 Obrigado pela preferência!\n";
+    texto += "Fruttyoog © " + new Date().getFullYear() + "\n";
+
+    return texto;
   };
 
   const visualizarDetalhes = () => {
@@ -681,7 +735,7 @@ Sistema de Gestão Comercial
 
                 {/* Linhas dos produtos */}
                 {selectedVenda.itens?.map((item, index) => {
-                  const produtoNome = item.produto?.nome || "Produto";
+                  const produtoNome = getNomeProduto(item, produtos);
                   const valorUnitario = Number(item.valorUnitario) || 0;
                   const subTotal = Number(item.subTotal) || 0;
 

@@ -320,6 +320,24 @@ export const DeletePayment = async (id: number): Promise<void> => {
     }
 }
 
+export const GetPaymentsByStatus = async (status: string): Promise<Payment[] | void> => {
+    try {
+        const response = await api.get<Payment[]>(`/payments/status/${status}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
+
+export const GetPaymentsByTipo = async (tipo: string): Promise<Payment[] | void> => {
+    try {
+        const response = await api.get<Payment[]>(`/payments/tipo/${tipo}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error as ApiError);
+    }
+}
+
 //função item venda - Get, Post, Put, Delete
 interface ItemVenda {
     id: number;
@@ -1301,15 +1319,15 @@ export const DeleteCategoria = async (id: number): Promise<void> => {
 
 interface Despesa {
     id: number;
-    descricaoDespesa: string;
-    categoriaDespesa: string;
-    dataDespesa: string;
+    descricao: string;
+    categoria: string;
+    data: string;
     valor: number;
 }
 
 export const GetDespesa = async (): Promise<Despesa[] | void> => {
     try {
-        const response = await api.get<Despesa[]>("/despesa");
+        const response = await api.get<Despesa[]>("/api/despesas");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -1317,15 +1335,15 @@ export const GetDespesa = async (): Promise<Despesa[] | void> => {
 };
 
 interface PostDespesa {
-    descricaoDespesa: string;
-    categoriaDespesa: string;
-    dataDespesa: string;
+    descricao: string;
+    categoria: string;
+    data: string;
     valor: number;
 }
 
 export const PostDespesa = async (data: PostDespesa): Promise<Despesa | void> => {
     try {
-        const response = await api.post<Despesa>("/despesa", data);
+        const response = await api.post<Despesa>("/api/despesas", data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -1334,15 +1352,15 @@ export const PostDespesa = async (data: PostDespesa): Promise<Despesa | void> =>
 
 interface PutDespesa {
     id: number;
-    descricaoDespesa: string;
-    categoriaDespesa: string;
-    dataDespesa: string;
+    descricao: string;
+    categoria: string;
+    data: string;
     valor: number;
 }
 
 export const PutDespesa = async (data: PutDespesa): Promise<Despesa | void> => {
     try {
-        const response = await api.put<Despesa>(`/despesa/${data.id}`, data);
+        const response = await api.put<Despesa>(`/api/despesas/${data.id}`, data);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -1351,7 +1369,7 @@ export const PutDespesa = async (data: PutDespesa): Promise<Despesa | void> => {
 
 export const DeleteDespesa = async (id: number): Promise<void> => {
     try {
-        await api.delete(`/despesa/${id}`);
+        await api.delete(`/api/despesas/${id}`);
     } catch (error) {
         handleApiError(error as ApiError);
     }
@@ -1421,7 +1439,7 @@ interface Expense {
 
 export const GetExpenses = async (): Promise<Expense[] | void> => {
     try {
-        const response = await api.get<Expense[]>("/despesa");
+        const response = await api.get<Expense[]>("/api/despesas");
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
