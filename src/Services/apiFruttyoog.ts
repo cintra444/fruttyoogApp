@@ -1391,6 +1391,26 @@ export const RedefinirSenha = async (data: RedefinirSenha): Promise<void> => {
 
 //funcao para relatorios - get
 
+export interface EstoqueItem {
+    produtoId: number;
+  nome: string;
+  categoria: string;
+  quantidade: number;
+  estoqueMinimo: number;
+}
+
+export const GetEstoque = async (): Promise<EstoqueItem[] | null> => {
+  try {
+    const response = await api.get('/estoque'); // Endpoint correto é /estoque
+    console.log('Dados do estoque recebidos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar estoque:', error);
+    return null;
+  }
+};
+
+
 interface Report {
     categoria: string;
     produto: string;
@@ -1413,6 +1433,8 @@ export const GetStockReport = async (): Promise<Report[] | void> => {
         handleApiError(error as ApiError);
     }
 };
+
+
 
 export const GetFinancialReport = async (): Promise<Report[] | void> => {
     try {
