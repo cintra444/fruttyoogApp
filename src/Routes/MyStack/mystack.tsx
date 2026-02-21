@@ -55,248 +55,246 @@ export function MyStack() {
   const { user } = useApp();
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        {/* <NavigationContainer> */}
-        <Stack.Navigator screenOptions={{ header: () => <Header /> }}>
-          {!user ? (
+      <Stack.Navigator screenOptions={{ header: () => <Header /> }}>
+        {!user ? (
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+        ) : (
+          <>
             <Stack.Screen
-              name="Login"
-              component={Login}
+              name="Home"
+              component={Home}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Logout"
+              component={Logout}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={Settings}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Refresh"
+              component={Refresh}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Cadastro}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Dashboard"
+              component={Dashboard}
               options={{ headerShown: false }}
             />
-          ) : (
-            <>
-              <Stack.Screen
-                name="Home"
-                component={Home}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Logout"
-                component={Logout}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Settings"
-                component={Settings}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Refresh"
-                component={Refresh}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Register"
-                component={Cadastro}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Dashboard"
-                component={Dashboard}
-                options={{ headerShown: false }}
-              />
 
-              {/* compras */}
-              <Stack.Screen
-                name="Compras"
-                component={Compras}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewShop"
-                component={NewShop}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="HistoryShop"
-                component={HistoryShop}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* vendas */}
-              <Stack.Screen
-                name="Vendas"
-                component={Vendas}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewSale"
-                component={NewSale}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="HistorySale"
-                component={HistorySale}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="AddPayment"
-                component={AddPayment}
-                options={{ headerTitle: () => <Header /> }}
-              />
+            {/* compras */}
+            <Stack.Screen
+              name="Compras"
+              component={Compras}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewShop"
+              component={NewShop}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="HistoryShop"
+              component={HistoryShop}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* vendas */}
+            <Stack.Screen
+              name="Vendas"
+              component={Vendas}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewSale"
+              component={NewSale}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="HistorySale"
+              component={HistorySale}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="AddPayment"
+              component={AddPayment}
+              options={{ headerTitle: () => <Header /> }}
+            />
 
-              {/* outras telas */}
-              {/* financeiro */}
-              <Stack.Screen
-                name="Financeiro"
-                component={Financeiro}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Expenses"
-                component={Expenses}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="Revenues"
-                component={Revenues}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* relatórios */}
-              <Stack.Screen
-                name="Relatorios"
-                component={Relatorios}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="SalesReport"
-                component={SalesReport}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="StockReport"
-                component={StockReport}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="FinancialReport"
-                component={FinancialReport}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* gestor */}
-              <Stack.Screen
-                name="Gestor"
-                component={Gestor}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* produtos */}
-              <Stack.Screen
-                name="RegisterProduct"
-                component={RegisterProduct}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewProduct"
-                component={NewProduct}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="EditProduct"
-                component={EditProduct}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* clientes */}
-              <Stack.Screen
-                name="RegisterCustomers"
-                component={RegisterCustomers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewCustomers"
-                component={NewCustomers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="EditCustomers"
-                component={EditCustomers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* fornecedores */}
-              <Stack.Screen
-                name="RegisterSuppliers"
-                component={RegisterSuppliers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewSuppliers"
-                component={NewSuppliers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="EditSuppliers"
-                component={EditSuppliers}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* categorias */}
-              <Stack.Screen
-                name="RegisterCategories"
-                component={RegisterCategories}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="NewCategory"
-                component={NewCategory}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="EditCategory"
-                component={EditCategory}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* estoque */}
-              <Stack.Screen
-                name="Estoque"
-                component={Estoque}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="CurrentStock"
-                component={CurrentStock}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="MonthlyBalance"
-                component={MonthlyBalance}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              {/* pagamentos */}
-              <Stack.Screen
-                name="Payments"
-                component={Payments}
-                options={{ headerTitle: () => <Header /> }}
-              />
+            {/* outras telas */}
+            {/* financeiro */}
+            <Stack.Screen
+              name="Financeiro"
+              component={Financeiro}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Expenses"
+              component={Expenses}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="Revenues"
+              component={Revenues}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* relatórios */}
+            <Stack.Screen
+              name="Relatorios"
+              component={Relatorios}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="SalesReport"
+              component={SalesReport}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="StockReport"
+              component={StockReport}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="FinancialReport"
+              component={FinancialReport}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* gestor */}
+            <Stack.Screen
+              name="Gestor"
+              component={Gestor}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* produtos */}
+            <Stack.Screen
+              name="RegisterProduct"
+              component={RegisterProduct}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewProduct"
+              component={NewProduct}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="EditProduct"
+              component={EditProduct}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* clientes */}
+            <Stack.Screen
+              name="RegisterCustomers"
+              component={RegisterCustomers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewCustomers"
+              component={NewCustomers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="EditCustomers"
+              component={EditCustomers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* fornecedores */}
+            <Stack.Screen
+              name="RegisterSuppliers"
+              component={RegisterSuppliers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewSuppliers"
+              component={NewSuppliers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="EditSuppliers"
+              component={EditSuppliers}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* categorias */}
+            <Stack.Screen
+              name="RegisterCategories"
+              component={RegisterCategories}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="NewCategory"
+              component={NewCategory}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="EditCategory"
+              component={EditCategory}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* estoque */}
+            <Stack.Screen
+              name="Estoque"
+              component={Estoque}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="CurrentStock"
+              component={CurrentStock}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="MonthlyBalance"
+              component={MonthlyBalance}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            {/* pagamentos */}
+            <Stack.Screen
+              name="Payments"
+              component={Payments}
+              options={{ headerTitle: () => <Header /> }}
+            />
 
-              {/* cadastramentos */}
-              <Stack.Screen
-                name="ManageRegisters"
-                component={ManageRegisters}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="ClientList"
-                component={ClientList}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="SupplierList"
-                component={SupplierList}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="ProductList"
-                component={ProductList}
-                options={{ headerTitle: () => <Header /> }}
-              />
-              <Stack.Screen
-                name="CategoryList"
-                component={CategoryList}
-                options={{ headerTitle: () => <Header /> }}
-              />
-            </>
-          )}
-        </Stack.Navigator>
-        <Footer />
-      </SafeAreaView>
+            {/* cadastramentos */}
+            <Stack.Screen
+              name="ManageRegisters"
+              component={ManageRegisters}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="ClientList"
+              component={ClientList}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="SupplierList"
+              component={SupplierList}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="ProductList"
+              component={ProductList}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="CategoryList"
+              component={CategoryList}
+              options={{ headerTitle: () => <Header /> }}
+            />
+          </>
+        )}
+      </Stack.Navigator>
+
+      <Footer />
     </>
   );
 }

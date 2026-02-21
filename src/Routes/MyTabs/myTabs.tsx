@@ -1,65 +1,72 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { Platform, StatusBar, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import Home from '../../screens/Home/Home';
-import Settings from '../../screens/Settings/settings'
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Home from "../../screens/Home/Home";
+import Settings from "../../screens/Settings/settings";
 import Footer from "../../components/Footer/Footer";
 import Refresh from "../../screens/Refresh/Refresh";
-import Chat from '../../screens/Chat/Chat';
-import Logout from '../../screens/Auth/Logout/Logout';
-import  Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import Chat from "../../screens/Chat/Chat";
+import Logout from "../../screens/Auth/Logout/Logout";
+import { FontAwesome as Icon } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
 const MyTabs = () => {
-    return (
-        <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
-            <Tab.Navigator tabBar={() => <Footer />}
-                screenOptions={{
-                    tabBarActiveTintColor: '#e91e63',
-                    tabBarInactiveTintColor: '#000',
-                    headerShown: false,
-                }}
-                >
-
-                <Tab.Screen name="Home" component={Home} options={{
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="home" size={24} color={color} />
-                    ),
-                }}
-            />
-                <Tab.Screen name="Settings" component={Settings}  options={{
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="cog" size={24} color={color} />
-                    ),
-                }}
-            />
-                <Tab.Screen name="refresh" component={Refresh} options={{
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="refresh" size={24} color={color} />
-                    ),
-                }}
-            />
-                <Tab.Screen name="Logout" component={Logout} options={{
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="sign-out" size={24} color={color} />
-                    ),
-                }}
-            />
-                <Tab.Screen name="Chat" component={Chat} options={{
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="comments" size={24} color={color} />
-                    ),
-                }}
-            />
-              </Tab.Navigator>
-        </SafeAreaView>
-        </SafeAreaProvider>
-       
-    );
+  return (
+    <Tab.Navigator
+      tabBar={() => <Footer />}
+      screenOptions={{
+        tabBarActiveTintColor: "#e91e63",
+        tabBarInactiveTintColor: "#000",
+        headerShown: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="home" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="cog" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Refresh"
+        component={Refresh}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="refresh" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Logout"
+        component={Logout}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="sign-out" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="comments" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
 };
 
 export default MyTabs;

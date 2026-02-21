@@ -1118,7 +1118,7 @@ interface CompraRequest {
     pagamentos: PagamentoCompraRequest[];
 }
 
-interface CompraResponse {
+export interface CompraResponse {
     id: number;
     fornecedorId: number;
     tipoCompra: string;
@@ -1146,13 +1146,18 @@ interface PagamentoCompraResponse {
     valor: number;
     descricao?: string;
 }
-export const GetCompra = async (): Promise<CompraResponse[] | void> => {
+export const GetCompra = async (): Promise<CompraResponse[] | null> => {
     try {
         const response = await api.get<CompraResponse[]>("/compra");
         console.log('✅ Endpoint /compras encontrado:', response.data?.length || 0, 'compras');
-        return response.data;
-    } catch (error) {
-        handleApiError(error as ApiError);
+        return response.data || [];
+    } catch (error: any) {
+        console.error('❌ Erro ao buscar compras:', error);
+
+        if (error.response?.status === 403) {
+      console.warn('🔒 Acesso negado (403) ao endpoint /compra');
+      return null; // Retorna null para indicar erro de permissão
+    }
     }
 
 
@@ -1180,7 +1185,7 @@ export const GetCompra = async (): Promise<CompraResponse[] | void> => {
     
     console.log('⚠️ Nenhum endpoint de compras encontrado. Usando dados de exemplo.');
     
-    return getComprasExemplo();
+    return null; // Ou retornar dados de exemplo se desejar
     
   }
 
@@ -1316,7 +1321,34 @@ export const DeleteCategoria = async (id: number): Promise<void> => {
 
 
 // funcao para despesas - Get, Post, Put, Delete
-
+export interface DespesaResponse {
+  id: number;
+  descricao: string;
+  valor: number;
+  categoria?: string;
+  dataDespesa?: string;
+  data?: string; // Campo alternativo se for diferente
+  formaPagamento?: string;
+  observacao?: string;
+}
+// Função para buscar despesas
+export const GetDespesas = async (): Promise<DespesaResponse[] | null> => {
+  try {
+    const response = await api.get('/api/despesas');
+    console.log('✅ Dados de despesas recebidos:', response.data?.length || 0, 'despesas');
+    return response.data;
+  } catch (error) {
+    console.error('❌ Erro ao buscar despesas:', error);
+    
+    // Se o endpoint não existir, retorna array vazio para desenvolvimento
+    if ((error as any).response?.status === 404) {
+      console.warn('⚠️ Endpoint /api/despesas não encontrado. Retornando array vazio para desenvolvimento.');
+      return [];
+    }
+    
+    return null;
+  }
+};
 interface Despesa {
     id: number;
     descricao: string;
