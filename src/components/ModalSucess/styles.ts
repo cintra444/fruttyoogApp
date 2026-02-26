@@ -6,35 +6,36 @@ export const CenteredView = styled.View`
     flex: 1;
     justify-content: center;
     align-items: center;
-    marginTop: 22;
+    background-color: rgba(15, 23, 42, 0.45);
+    padding: 16px;
 `;
 
 export const ModalView = styled.View`
-    margin: 20px;
+    width: 100%;
+    max-width: 340px;
     background-color: white;
-    border-radius: 20px;
-    padding: 35px;
+    border-radius: 16px;
+    padding: 24px;
     align-items: center;
     shadow-color: #000;
-    shadow-offset: {
-        width: 0px;
-        height: 2px;
-    };
+    shadow-offset: 0px 2px;
     shadow-opacity: 0.25;
     shadow-radius: 4px;
-    elevation: 5px;
+    elevation: 5;
 `;
 
 export const ModalText = styled.Text`
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     text-align: center;
+    color: #0f172a;
+    font-size: 15px;
 `;
 
 export const ButtonModal = styled.TouchableOpacity`
-    background-color: #2196F3;
-    border-radius: 20px;
-    padding: 10px;
-    elevation: 2px;
+    background-color: #0f766e;
+    border-radius: 10px;
+    padding: 10px 20px;
+    elevation: 2;
 `;
 
 

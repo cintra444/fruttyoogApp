@@ -22,11 +22,11 @@ export type RootStackParamList = {
     NewShop: {
     novoProdutoId?: number;
     fornecedorId?: number;
-  };
+  } | undefined;
   
   NewProduct: {
     fornecedorId?: number;
-  };
+  } | undefined;
     HistoryShop: undefined;
     AddPayment: {
       saleId: number;
@@ -59,5 +59,6 @@ export type RootStackParamList = {
     SupplierList: undefined;
     ProductList: undefined;
     CategoryList: undefined; 
-       
+    ExportData: undefined;
+        
 };

@@ -1,20 +1,17 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
-
-type UserProps = {
-    id: string;
-    name: string;
-    email: string;
-    token: string;
-    isAdmin: boolean; // nova propriedade
-};
+import {
+    StoredUser,
+    loadStoredUser,
+    storeUser,
+    clearStoredUser,
+} from "src/Services/authStorage";
 
 type AppContextProps = {
-    user: UserProps | null;
-    handleLogin: (user: UserProps) => void;
-    handleLogout: (navigation: NavigationProp<any>) => void;
+    user: StoredUser | null;
+    handleLogin: (user: StoredUser) => Promise<void>;
+    handleLogout: (navigation: NavigationProp<any>) => Promise<void>;
 };
 
 type AppProviderProps = {
@@ -24,7 +21,7 @@ type AppProviderProps = {
 const AppContext = createContext<AppContextProps>({} as AppContextProps);
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-    const [user, setUser] = useState<UserProps | null>(null);
+    const [user, setUser] = useState<StoredUser | null>(null);
 
     useEffect(() => {
         loadUser();
@@ -32,36 +29,34 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     const loadUser = async () => {
         try {
-            const response = await AsyncStorage.getItem('@fruttyoog:user');
-            if (response) {
-                const data = JSON.parse(response);
-                if (data && data.id && data.name && data.email && data.token) {
-                    setUser(data);
-                } else {
-                    Alert.alert('Erro', 'Dados do usuário inválidos');
-                }
+            const data = await loadStoredUser();
+            if (data) {
+                setUser(data);
             }
         } catch (error) {
-            Alert.alert('Erro', 'Erro ao carregar usuário: ' + error);
+            Alert.alert("Erro", "Erro ao carregar usuário: " + error);
         }
     };
 
-    const handleLogin = async (userData: UserProps) => {
+    const handleLogin = async (userData: StoredUser) => {
         setUser(userData);
         try {
-            await AsyncStorage.setItem('@fruttyoog:user', JSON.stringify(userData));
+            await storeUser(userData);
         } catch (error) {
-            Alert.alert('Erro', 'Erro ao salvar usuário: ' + error);
+            Alert.alert("Erro", "Erro ao salvar usuário: " + error);
         }
     };
 
     const handleLogout = async (navigation: NavigationProp<any>) => {
         setUser(null);
         try {
-            await AsyncStorage.removeItem('@fruttyoog:user');
-            navigation.navigate('Login');
+            await clearStoredUser();
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "Login" as never }],
+            });
         } catch (error) {
-            Alert.alert('Erro', 'Erro ao remover usuário: ' + error);
+            Alert.alert("Erro", "Erro ao remover usuário: " + error);
         }
     };
 

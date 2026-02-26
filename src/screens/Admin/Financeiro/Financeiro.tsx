@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
+import { Container, Card, CardIcon, CardTitle, } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -36,11 +36,7 @@ const cards = [
   return (
     <Container>
        {/* Botão de voltar */}
-            <BackButton onPress={() => navigation.goBack()}>
-              <Icon name="arrow-left" size={33} color="#000" />
-              <BackButtonText>Voltar</BackButtonText>
-            </BackButton>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Financeiro</Text>
+<Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Financeiro</Text>
       <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
         {cards.map((card) => (
           <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>

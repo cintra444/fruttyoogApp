@@ -25,7 +25,7 @@ const footerItems: FooterItem[] = [
 ];
 
 const Footer = () => {
-  const navigation = useNavigation<NavigationProp<FooterParamList, any>>();
+  const navigation = useNavigation<NavigationProp<FooterParamList>>();
   const insets = useSafeAreaInsets();
 
   return (

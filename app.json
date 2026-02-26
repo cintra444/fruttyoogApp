@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.cintra.fruttyoogapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -30,8 +34,13 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-font",
-      "@react-native-community/datetimepicker"
-    ]
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "11f5ed5f-1b2a-4c59-ab07-addb50820627"
+      }
+    },
+    "owner": "cintra"
   }
 }

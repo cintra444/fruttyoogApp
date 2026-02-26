@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from './styles';
+import { Container, Card, CardIcon, CardTitle, } from './styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from 'src/Navigation/types';
@@ -30,16 +30,18 @@ const cards = [
         color: '#FF9800',
         onPress: () => navigation.navigate('FinancialReport'),
     },
+    {
+        title: 'Exportar para Excel',
+        icon: 'file-excel',
+        color: '#0F766E',
+        onPress: () => navigation.navigate('ExportData'),
+    },
 ];
 
   return (
     <Container>
        {/* Botão de voltar */}
-            <BackButton onPress={() => navigation.goBack()}>
-              <Icon name="arrow-left" size={33} color="#000" />
-              <BackButtonText>Voltar</BackButtonText>
-            </BackButton>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Relatórios</Text>
+<Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Relatórios</Text>
       <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
         {cards.map((card) => (
           <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>
@@ -57,3 +59,4 @@ const cards = [
 
 
 export default Relatorios;
+

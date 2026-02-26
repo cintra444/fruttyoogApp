@@ -1,17 +1,74 @@
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
+import { getStoredToken, clearStoredUser } from "./authStorage";
 
-const API_URL = "https://milly-unreclusive-nonpreventively.ngrok-free.dev";
-//configurando a base url da api
+const normalizeApiUrl = (value?: string): string | undefined => {
+  if (!value) return undefined;
+  return value.trim().replace(/\/+$/, "").replace(/\/api$/, "");
+};
+
+const isExpoGo = (Constants as any)?.appOwnership === "expo";
+
+const isEmulatorOnlyUrl = (value?: string): boolean => {
+  if (!value) return false;
+  return (
+    value.includes("10.0.2.2") ||
+    value.includes("localhost") ||
+    value.includes("127.0.0.1")
+  );
+};
+
+const getExpoDevHostApiUrl = (): string | undefined => {
+  // Expo Go em dispositivo físico: usa IP da máquina que está rodando o Metro.
+  const hostUri =
+    (Constants.expoConfig as any)?.hostUri ||
+    (Constants as any)?.manifest2?.extra?.expoGo?.debuggerHost;
+
+  if (!hostUri || typeof hostUri !== "string") return undefined;
+
+  const host = hostUri.split(":")[0];
+  if (!host || host === "localhost" || host === "127.0.0.1") return undefined;
+
+  return `http://${host}:8080`;
+};
+
+const DEFAULT_API_URLS = [
+  getExpoDevHostApiUrl(),
+  "http://10.0.2.2:8080",
+  "http://localhost:8080",
+  "http://127.0.0.1:8080",
+];
+
+const ENV_URLS = [
+  normalizeApiUrl(process.env.EXPO_PUBLIC_API_URL),
+  normalizeApiUrl(process.env.EXPO_PUBLIC_API_FALLBACK_URL),
+  normalizeApiUrl(process.env.API_URL),
+].filter((url) => !(isExpoGo && isEmulatorOnlyUrl(url)));
+
+const API_URL_CANDIDATES = [...ENV_URLS, ...DEFAULT_API_URLS].filter(
+  (value, index, self): value is string => Boolean(value) && self.indexOf(value as string) === index
+);
+
+let activeApiUrlIndex = 0;
+let ACTIVE_API_URL_INTERNAL = API_URL_CANDIDATES[activeApiUrlIndex] ?? DEFAULT_API_URLS[0];
+
+export const getActiveApiUrl = (): string => ACTIVE_API_URL_INTERNAL;
+export const ACTIVE_API_URL = ACTIVE_API_URL_INTERNAL;
+
+// configurando a base url da api
 const api = axios.create({
-  baseURL: API_URL || "http://192.168.1.8:8080" ,
+  baseURL: ACTIVE_API_URL_INTERNAL,
   headers: {
      "Content-Type": "application/json",
    },
 });
 //configurando o interceptor para adicionar o token automaticamente
 api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem("token");
+  config.baseURL = ACTIVE_API_URL_INTERNAL;
+  const token = await getStoredToken();
+  if (__DEV__) {
+    console.log("API URL:", ACTIVE_API_URL_INTERNAL);
+  }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,10 +79,29 @@ api.interceptors.request.use(async (config) => {
 
 //interceptador para lidar com erros
 api.interceptors.response.use((response) => response, (error) => {
+    const config = error?.config as any;
+    const canRetryInOtherHost = Boolean(
+      error?.request &&
+      !error?.response &&
+      config &&
+      !config.__retriedWithFallbackHost &&
+      API_URL_CANDIDATES.length > 1
+    );
+
+    if (canRetryInOtherHost) {
+        activeApiUrlIndex = (activeApiUrlIndex + 1) % API_URL_CANDIDATES.length;
+        ACTIVE_API_URL_INTERNAL = API_URL_CANDIDATES[activeApiUrlIndex];
+        config.__retriedWithFallbackHost = true;
+        config.baseURL = ACTIVE_API_URL_INTERNAL;
+        if (__DEV__) {
+          console.warn(`Falha de rede. Tentando host alternativo: ${ACTIVE_API_URL_INTERNAL}`);
+        }
+        return api(config);
+    }
+
     if (error.response && error.response.status === 401) {
-        AsyncStorage.removeItem("token");
-        //redireciona para a tela de login
-        
+        clearStoredUser();
+        // redirecionamento é tratado pela camada de navegação/contexto
     } else 
         if (error.request) {
              console.error("Erro de rede: ", error.request);
@@ -81,8 +157,6 @@ export const Login = async (data: LoginData): Promise<any> => {
             email: data.email,
             password: data.password,
         });
-       const token = response.data.token;
-       await AsyncStorage.setItem("token", token);
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
@@ -1231,6 +1305,7 @@ export const PostCompra = async (data: CompraRequest): Promise<CompraResponse | 
         return response.data;
     } catch (error) {
         handleApiError(error as ApiError);
+        throw error;
     }
 };
 

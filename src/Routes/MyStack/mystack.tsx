@@ -34,7 +34,6 @@ import RegisterCategories from "../../screens/Admin/Gestor/RegisterCategories/Re
 import NewCategory from "../../screens/Admin/Gestor/RegisterCategories/NewCategory/NewCategory";
 import EditCategory from "../../screens/Admin/Gestor/RegisterCategories/EditCategory/EditCategory";
 import CurrentStock from "../../screens/Admin/Estoque/CurrentStock/CurrentStock";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Payments from "src/screens/Admin/Financeiro/Payment/Payments";
 import Expenses from "src/screens/Admin/Financeiro/Expenses/Expenses";
 import Revenues from "src/screens/Admin/Financeiro/Revenues/Revenues";
@@ -48,6 +47,8 @@ import SupplierList from "src/screens/Admin/Gestor/ManageRegisters/SupplierList/
 import ProductList from "src/screens/Admin/Gestor/ManageRegisters/ProductList/ProductList";
 import CategoryList from "src/screens/Admin/Gestor/ManageRegisters/CategoryList/CategoryList";
 import AddPayment from "../../screens/Admin/Vendas/Payment/AddPayment";
+import Chat from "src/screens/Chat/Chat";
+import ExportData from "src/screens/Admin/Relatorios/ExportData/ExportData";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,13 +56,14 @@ export function MyStack() {
   const { user } = useApp();
   return (
     <>
-      <Stack.Navigator screenOptions={{ header: () => <Header /> }}>
+      <Stack.Navigator
+        screenOptions={{
+          header: () => <Header />,
+          contentStyle: { backgroundColor: "#f8fafc" },
+        }}
+      >
         {!user ? (
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="Login" component={Login} />
         ) : (
           <>
             <Stack.Screen
@@ -90,9 +92,14 @@ export function MyStack() {
               options={{ headerTitle: () => <Header /> }}
             />
             <Stack.Screen
+              name="Chat"
+              component={Chat}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
               name="Dashboard"
               component={Dashboard}
-              options={{ headerShown: false }}
+              options={{ headerTitle: () => <Header /> }}
             />
 
             {/* compras */}
@@ -169,6 +176,11 @@ export function MyStack() {
             <Stack.Screen
               name="FinancialReport"
               component={FinancialReport}
+              options={{ headerTitle: () => <Header /> }}
+            />
+            <Stack.Screen
+              name="ExportData"
+              component={ExportData}
               options={{ headerTitle: () => <Header /> }}
             />
             {/* gestor */}
@@ -294,7 +306,7 @@ export function MyStack() {
         )}
       </Stack.Navigator>
 
-      <Footer />
+      {user ? <Footer /> : null}
     </>
   );
 }

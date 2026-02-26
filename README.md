@@ -1,46 +1,48 @@
-<<<<<<< HEAD
+## Fruttyoog App
 
-# Fruttyoog App
+Bem-vindo ao repositório do **Fruttyoog App**.
 
-Bem-vindo ao repositório do Fruttyoog App!
+### Descrição
 
-## Descrição
+Aplicativo em desenvolvimento para gestão do negócio Fruttyoog, com módulos de:
+- compras
+- vendas
+- estoque
+- financeiro
+- relatórios
+- cadastros de produtos, clientes, fornecedores e categorias.
 
-em desenvolvimento....
-
-## Instalação
-
-Siga os passos abaixo para configurar o ambiente de desenvolvimento:
+### Instalação
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/fruttyoog-app.git
-   ```
-2. Navegue até o diretório do projeto:
-   ```bash
+   git clone <URL_DO_REPOSITORIO>
    cd fruttyoog-app
    ```
-3. Instale as dependências:
+
+2. Instale as dependências:
    ```bash
    npm install
    ```
 
-## Uso
+### Uso
 
-Para iniciar a aplicação, execute o comando:
+Para iniciar a aplicação em modo de desenvolvimento:
 
 ```bash
 npm start
 ```
 
-## Contribuição
+Depois, escolha abrir no emulador Android, iOS ou no navegador (Expo).
+
+### Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests.
 
-## Licença
+### Licença
 
-Este projeto está licenciado sob a licença [Nome da Licença].
+Este projeto está licenciado sob a licença de sua preferência (atualize este texto quando definir a licença).
 
-## Contato
+### Contato
 
-Para mais informações, entre em contato com [seu email].
+Para mais informações, entre em contato com o mantenedor do projeto.

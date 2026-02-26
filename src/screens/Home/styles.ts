@@ -1,12 +1,12 @@
 import styled from "styled-components/native";
-
+import { colors, spacing, fontSizes } from "src/theme";
 
 export const Container = styled.View`
     flex: 1;
     justify-content: center;
     align-items: center;
-    padding: 16px;
-    background-color: #ffffff;
+    padding: ${spacing.md}px;
+    background-color: ${colors.background};
     padding: 20px;
 `;
 
@@ -18,24 +18,24 @@ export const Logo = styled.Image`
 `;
 
 export const WelcomeText = styled.Text`
-    font-size: 24px;
+    font-size: ${fontSizes.lg}px;
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
-    color: #000;
+    color: ${colors.text};
 `;
 
 
 export const QuestionText = styled.Text`
-    font-size: 18px;
+    font-size: ${fontSizes.md}px;
     margin-bottom: 20px;
     text-align: center;
-    color: #000;
+    color: ${colors.text};
 `;
     
 export const Button = styled.TouchableOpacity`
-    background-color: #005006;
-    padding: 10px;
+    background-color: ${colors.primary};
+    padding: ${spacing.sm}px;
     border-radius: 5px;
     margin-bottom: 10px;
     width: 80%;
@@ -43,22 +43,21 @@ export const Button = styled.TouchableOpacity`
 `;
 
 export const ButtonText = styled.Text`
-    color: #1D71B8;
+    color: ${colors.secondaryText};
     font-weight: bold;
-    font-size: 24px;
+    font-size: ${fontSizes.lg}px;
 `;
 
 export const AdminButton = styled.TouchableOpacity`
-    background-color: #FFA500;
-    padding: 10px;
+    background-color: ${colors.accent};
+    padding: ${spacing.sm}px;
     border-radius: 5px;
     margin-bottom: 10px;
     width: 80%;
     align-items: center;
 `;
 export const AdminButtonText = styled.Text`
-    color: #fff;    
+    color: ${colors.primaryText};    
     font-weight: bold;
-    font-size: 24px;
+    font-size: ${fontSizes.lg}px;
 `;
-   

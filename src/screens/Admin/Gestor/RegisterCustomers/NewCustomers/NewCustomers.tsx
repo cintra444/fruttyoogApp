@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Container, Section, Label, Input, Button, ButtonText } from "./styles";
 import { PostCliente } from "../../../../../Services/apiFruttyoog";
-import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import { } from "../../../Gestor/styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -155,11 +155,7 @@ const NewCustomers: React.FC = () => {
         keyboardVerticalOffset={80}
       >
         {/* Botão de voltar */}
-        <BackButton onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={33} color="#000" />
-          <BackButtonText>Voltar</BackButtonText>
-        </BackButton>
-        <Text
+<Text
           style={{
             fontSize: 24,
             fontWeight: "bold",
@@ -249,3 +245,4 @@ const NewCustomers: React.FC = () => {
 };
 
 export default NewCustomers;
+

@@ -6,27 +6,21 @@ import {
   Title,
   Section,
   Label,
-  CardContainer,
-  CardTouchable,
-  CardTitle,
   ListItem,
   ListText,
-  DeleteButton,
-  DeleteButtonText,
 } from "./styles";
 import {
   GetProducts,
-  DeleteProdutos,
-} from "../../.../../../../../Services/apiFruttyoog";
+} from "src/Services/apiFruttyoog";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { BackButton, BackButtonText } from "../../styles";
+import { } from "../../styles";
 
 interface Product {
   id: number;
-  name: string;
+  nome: string;
   descricao: string;
   precoCusto: number;
   precoVenda: number;
@@ -35,7 +29,7 @@ interface Product {
   tipoUnidade: string;
   categoria: {
     id: number;
-    nome: string;
+    nome?: string;
   };
 }
 
@@ -87,12 +81,7 @@ const ProductList: React.FC = () => {
 
   return (
     <Container>
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-
-      <Title
+<Title
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -122,13 +111,13 @@ const ProductList: React.FC = () => {
               <ListItem key={product.id}>
                 <View style={{ flex: 1 }}>
                   <ListText style={{ fontWeight: "bold", fontSize: 16 }}>
-                    {product.name}
+                    {product.nome}
                   </ListText>
                   <ListText style={{ color: "#666", fontSize: 14 }}>
                     Código: {product.codigoProduto}
                   </ListText>
                   <ListText style={{ color: "#666", fontSize: 14 }}>
-                    Categoria: {product.categoria.nome}
+                    Categoria: {product.categoria.nome ?? "Sem categoria"}
                   </ListText>
                   <ListText style={{ color: "#666", fontSize: 14 }}>
                     Estoque: {product.qtdeEstoque}{" "}
@@ -159,3 +148,4 @@ const ProductList: React.FC = () => {
 };
 
 export default ProductList;
+

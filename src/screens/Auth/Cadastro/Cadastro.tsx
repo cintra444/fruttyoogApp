@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import CadastroForm from '../../../components/CadastroForm/CadastroForm';
 import { useNavigation } from '@react-navigation/native';
 import { Container, FormWrapper, Title } from './styles';
-import api from 'src/Services/apiFruttyoog';
+import api, { getActiveApiUrl } from 'src/Services/apiFruttyoog';
 
 
 const Cadastro: React.FC = () => {
@@ -11,11 +11,16 @@ const Cadastro: React.FC = () => {
 
     const handleFormSubmit = async (data: any) => {
       try {
-        await api.post('/usuarios', data);
+        await api.post('/usuarios', {
+          username: data.nome ?? data.username,
+          email: data.email,
+          password: data.senha ?? data.password,
+          role: data.role ?? 'USER',
+        });
         Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
         navigation.navigate('Login');
-      } catch (error) {
-        Alert.alert('Erro', 'Não foi possível realizar o cadastro. Tente novamente mais tarde.');
+      } catch {
+        Alert.alert('Erro', `Não foi possível realizar o cadastro.\nAPI: ${getActiveApiUrl()}`);
       }
         
     };

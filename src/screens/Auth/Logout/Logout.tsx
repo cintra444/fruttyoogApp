@@ -1,22 +1,17 @@
 import React from "react";
 import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useApp } from "src/contexts/AppContext";
 import { Container, Title, Button, ButtonText } from "./styles";
 
 const Logout: React.FC = () => {
   const navigation = useNavigation();
+  const { handleLogout: signOut } = useApp();
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("token"); // remove o JWT salvo
+      await signOut(navigation as never);
       Alert.alert("Sessão encerrada", "Você saiu da sua conta.");
-
-      // Redireciona para a tela de Login
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" as never }],
-      });
     } catch (error) {
       Alert.alert("Erro", "Não foi possível encerrar a sessão.");
     }
@@ -30,7 +25,7 @@ const Logout: React.FC = () => {
         <ButtonText>Sair</ButtonText>
       </Button>
 
-      <Button bgColor="#4CAF50" onPress={() => navigation.goBack()}>
+      <Button bgColor="#4CAF50" onPress={() => navigation.navigate("Home" as never)}>
         <ButtonText>Cancelar</ButtonText>
       </Button>
     </Container>

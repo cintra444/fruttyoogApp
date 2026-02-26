@@ -3,8 +3,8 @@ import { Alert, Text } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'src/Navigation/types';
 import { useApp } from '../../../contexts/AppContext';
-import { Login as loginApi } from '../../../Services/apiFruttyoog';
-import { Container, Input, Button, ButtonText, WelcomeText, QuestionText } from './styles';
+import { getActiveApiUrl, Login as loginApi } from '../../../Services/apiFruttyoog';
+import { Container, Logo, Input, Button, ButtonText, WelcomeText, QuestionText } from './styles';
 
 const Login: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -21,15 +21,16 @@ const Login: React.FC = () => {
 
     try {
       const res = await loginApi({ email, password });
+      console.log("RESPOSTA LOGIN:", res);
 
-      if (res && res.token) {
+      if (res && res.token && res.usuario) {
         // Determinar se é admin
-        const isAdmin = res.role === 'admin';
+        const isAdmin = res.usuario.role === 'ADMIN';
 
-        handleLogin({
-          id: res.id,
-          name: res.name,
-          email: res.email,
+        await handleLogin({
+          id: String(res.usuario.id),
+          name: res.usuario.nome,
+          email: res.usuario.email,
           token: res.token,
           isAdmin,
         });
@@ -44,12 +45,13 @@ const Login: React.FC = () => {
         Alert.alert('Erro', 'Credenciais inválidas');
       }
     } catch (err) {
-      Alert.alert('Erro', 'Não foi possível fazer login');
+      Alert.alert('Erro', `Não foi possível fazer login.\nAPI: ${getActiveApiUrl()}`);
     }
   };
 
   return (
     <Container>
+      <Logo source={require('../../../assets/logo.png')} />
       <WelcomeText>Bem-vindo!</WelcomeText>
       <QuestionText>Informe suas credenciais para continuar</QuestionText>
 

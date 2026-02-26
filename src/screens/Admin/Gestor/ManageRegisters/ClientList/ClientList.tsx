@@ -8,9 +8,7 @@ import {
   Label,
   ListItem,
   ListText,
-  BackButton,
-  BackButtonText,
-} from "./styles";
+  } from "./styles";
 import {
   GetCliente,
   DeleteCliente,
@@ -53,12 +51,7 @@ const ClientList: React.FC = () => {
 
   return (
     <Container>
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-
-      <Title
+<Title
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -112,3 +105,4 @@ const ClientList: React.FC = () => {
 };
 
 export default ClientList;
+

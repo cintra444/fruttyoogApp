@@ -1,0 +1,24 @@
+diff --git a/node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h b/node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h
+index bb59351..0fb1bfe 100644
+--- a/node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h
++++ b/node_modules/react-native/ReactCommon/react/renderer/core/graphicsConversions.h
+@@ -76,8 +76,12 @@ inline folly::dynamic toDynamic(const YGValue& dimension) {
+       return "stretch";
+     case YGUnitPoint:
+       return dimension.value;
+-    case YGUnitPercent:
+-      return std::format("{}%", dimension.value);
++    case YGUnitPercent: {
++      std::array<char, 64> percentBuffer{};
++      std::snprintf(
++          percentBuffer.data(), percentBuffer.size(), "%g%%", dimension.value);
++      return percentBuffer.data();
++    }
+   }
+ 
+   return nullptr;
+@@ -287,3 +291,4 @@ inline std::string toString(const CornerInsets& cornerInsets) {
+ #endif
+ 
+ } // namespace facebook::react
++

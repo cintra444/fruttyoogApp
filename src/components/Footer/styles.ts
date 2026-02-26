@@ -1,17 +1,18 @@
-import styled from 'styled-components/native';
+import styled from "styled-components/native";
+import { colors, spacing } from "src/theme";
 
 export const FooterContainer = styled.View`
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    padding: 10px;
-    background-color: #fff;
+    padding: ${spacing.sm}px;
+    background-color: ${colors.background};
     border-top-width: 1px;
-    border-color: #ddd;
-    hmin-height: 60px;
+    border-color: ${colors.text};
+    min-height: 60px;
 `;
 
 export const IconContainer = styled.TouchableOpacity`
-    padding: 10px;
+    padding: ${spacing.sm}px;
     align-items: center;
 `;

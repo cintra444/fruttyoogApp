@@ -15,7 +15,7 @@ import {
   DeleteButtonText,
 } from "./styles";
 import { Picker } from "@react-native-picker/picker";
-import { BackButton, BackButtonText } from "../../../Gestor/styles";
+import { } from "../../../Gestor/styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -260,11 +260,7 @@ const EditCustomers: React.FC = () => {
   return (
     <Container>
       {/* Botão de voltar */}
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-      <Text
+<Text
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -474,3 +470,4 @@ const EditCustomers: React.FC = () => {
 };
 
 export default EditCustomers;
+

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   Title,
   Container,
@@ -48,6 +47,7 @@ import {
   type ItemVendaRequest,
   type PagamentoRequest,
 } from "../../../../Services/apiFruttyoog";
+import { loadStoredUser } from "src/Services/authStorage";
 
 // Tipos
 type Cliente = {
@@ -111,7 +111,7 @@ const NewSale: React.FC = () => {
   // Estados para modal de pagamento
   const [modalPagamentoVisible, setModalPagamentoVisible] = useState(false);
   const [pagamentoAtual, setPagamentoAtual] = useState<PagamentoSelecionado>({
-    formaPagamento: "",
+    formaPagamento: "Dinheiro",
     valor: "",
     status: "PAGO",
   });
@@ -124,10 +124,9 @@ const NewSale: React.FC = () => {
 
   const carregarUsuarioId = async () => {
     try {
-      const userData = await AsyncStorage.getItem("userData");
-      if (userData) {
-        const user = JSON.parse(userData);
-        setUsuarioId(user.id);
+      const user = await loadStoredUser();
+      if (user?.id) {
+        setUsuarioId(Number(user.id));
       } else {
         // Fallback para usuário padrão
         setUsuarioId(1);
@@ -263,7 +262,9 @@ const NewSale: React.FC = () => {
       return;
     }
 
-    if (!pagamentoAtual.valor || parseFloat(pagamentoAtual.valor) <= 0) {
+    const valorNormalizado = pagamentoAtual.valor.replace(",", ".");
+    const valorPagamento = parseFloat(valorNormalizado);
+    if (!pagamentoAtual.valor || Number.isNaN(valorPagamento) || valorPagamento <= 0) {
       Alert.alert("Erro", "Digite um valor válido!");
       return;
     }
@@ -277,12 +278,13 @@ const NewSale: React.FC = () => {
       ...pagamentoAtual,
       id: Date.now(),
       formaPagamento: formaPagamentoMapeada,
+      valor: valorPagamento.toFixed(2),
       status: statusMapeado as "PAGO" | "PENDENTE",
     };
 
     setPagamentosSelecionados((prev) => [...prev, novoPagamento]);
     setPagamentoAtual({
-      formaPagamento: "",
+      formaPagamento: "Dinheiro",
       valor: "",
       status: "PAGO",
     });
@@ -640,13 +642,23 @@ const NewSale: React.FC = () => {
 
       {/* Modal de Pagamento */}
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalPagamentoVisible}
         onRequestClose={() => setModalPagamentoVisible(false)}
       >
-        <ModalContainer>
-          <ModalContent>
+        <ModalContainer style={{ backgroundColor: "rgba(15, 23, 42, 0.55)" }}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => setModalPagamentoVisible(false)}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()}
+              style={{ width: "92%", maxWidth: 430 }}
+            >
+              <ModalContent>
             <Title>Adicionar Pagamento</Title>
 
             <Label>Forma de Pagamento *</Label>
@@ -663,19 +675,34 @@ const NewSale: React.FC = () => {
               }}
             >
               <Picker.Item label="Selecione..." value="" />
-              <Picker.Item label="Dinheiro" value="Dinheiro" />
-              <Picker.Item
-                label="Cartão de Crédito"
-                value="Cartão de Crédito"
-              />
-              <Picker.Item label="Cartão de Débito" value="Cartão de Débito" />
-              <Picker.Item label="PIX" value="PIX" />
-              <Picker.Item label="Fiado" value="Fiado" />
-              <Picker.Item label="Cheque" value="Cheque" />
-              <Picker.Item label="A Prazo" value="A Prazo" />
-              <Picker.Item label="Transferência" value="Transferência" />
-              <Picker.Item label="Boleto" value="Boleto" />
-              <Picker.Item label="Outros" value="Outros" />
+              {formasPagamento.length > 0 ? (
+                formasPagamento.map((forma) => (
+                  <Picker.Item
+                    key={forma.id}
+                    label={forma.descricao}
+                    value={forma.descricao}
+                  />
+                ))
+              ) : (
+                <>
+                  <Picker.Item label="Dinheiro" value="Dinheiro" />
+                  <Picker.Item
+                    label="Cartão de Crédito"
+                    value="Cartão de Crédito"
+                  />
+                  <Picker.Item
+                    label="Cartão de Débito"
+                    value="Cartão de Débito"
+                  />
+                  <Picker.Item label="PIX" value="PIX" />
+                  <Picker.Item label="Fiado" value="Fiado" />
+                  <Picker.Item label="Cheque" value="Cheque" />
+                  <Picker.Item label="A Prazo" value="A Prazo" />
+                  <Picker.Item label="Transferência" value="Transferência" />
+                  <Picker.Item label="Boleto" value="Boleto" />
+                  <Picker.Item label="Outros" value="Outros" />
+                </>
+              )}
             </Picker>
 
             <Label>Valor *</Label>
@@ -683,12 +710,9 @@ const NewSale: React.FC = () => {
               keyboardType="numeric"
               value={pagamentoAtual.valor}
               onChangeText={(text) => {
-                // Permitir apenas números e ponto decimal
-                const cleaned = text.replace(/[^0-9.]/g, "");
-                // Garantir apenas um ponto decimal
+                const cleaned = text.replace(/[^0-9.,]/g, "").replace(",", ".");
                 const parts = cleaned.split(".");
                 if (parts.length > 2) return;
-                // Limitar a 2 casas decimais
                 if (parts[1] && parts[1].length > 2) return;
                 setPagamentoAtual({ ...pagamentoAtual, valor: cleaned });
               }}
@@ -755,11 +779,13 @@ const NewSale: React.FC = () => {
                 <Text
                   style={{ color: "white", fontWeight: "bold", fontSize: 16 }}
                 >
-                  Adicionar
+                  Adicionar Pagamento
                 </Text>
               </TouchableOpacity>
             </View>
-          </ModalContent>
+              </ModalContent>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </ModalContainer>
       </Modal>
     </Container>

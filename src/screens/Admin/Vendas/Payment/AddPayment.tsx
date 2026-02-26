@@ -13,11 +13,10 @@ import {
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../../Navigation/types";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "react-native-date-picker";
 import {
   Container,
   Header,
-  BackButton,
   Title,
   Subtitle,
   Content,
@@ -242,7 +241,8 @@ const AddPayment = () => {
       console.error("Erro ao salvar pagamento:", error);
       Alert.alert(
         "Erro",
-        error.message || "Não foi possível salvar o pagamento. Tente novamente."
+        error.message ||
+          "Não foi possível salvar o pagamento. Tente novamente.",
       );
     } finally {
       setLoading(false);
@@ -301,12 +301,7 @@ const AddPayment = () => {
     >
       <Container>
         <Header>
-          <BackButton onPress={() => navigation.goBack()}>
-            <Text style={{ fontSize: 24, color: "white", fontWeight: "bold" }}>
-              ←
-            </Text>
-          </BackButton>
-          <Title>Adicionar Pagamento</Title>
+<Title>Adicionar Pagamento</Title>
           <Subtitle>Venda #{saleId}</Subtitle>
         </Header>
 
@@ -387,7 +382,7 @@ const AddPayment = () => {
                     {pagamento.dataPagamento && (
                       <Text style={{ fontSize: 12, color: "#7f8c8d" }}>
                         {new Date(pagamento.dataPagamento).toLocaleDateString(
-                          "pt-BR"
+                          "pt-BR",
                         )}
                       </Text>
                     )}
@@ -474,7 +469,7 @@ const AddPayment = () => {
                           </Text>
                         </TouchableOpacity>
                       );
-                    }
+                    },
                   )}
                 </View>
               )}
@@ -499,10 +494,9 @@ const AddPayment = () => {
               </TouchableOpacity>
               {showDatePicker && (
                 <DateTimePicker
-                  value={paymentDate}
+                  date={paymentDate}
                   mode="date"
-                  display="default"
-                  onChange={handleDateChange}
+                  onDateChange={setPaymentDate}
                 />
               )}
             </FormGroup>
@@ -631,3 +625,4 @@ const AddPayment = () => {
 };
 
 export default AddPayment;
+

@@ -1061,21 +1061,30 @@ const HistoryShop: React.FC = () => {
         </ScrollView>
       )}
       {/* Modal de Detalhes */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={fecharModal}
+      >
+        <TouchableOpacity
           style={{
             flex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             justifyContent: "flex-end",
           }}
+          activeOpacity={1}
+          onPress={fecharModal}
         >
-          <View
+          <TouchableOpacity
             style={{
               backgroundColor: "white",
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               maxHeight: "90%",
             }}
+            activeOpacity={1}
+            onPress={(event) => event.stopPropagation()}
           >
             <ScrollView
               showsVerticalScrollIndicator={true}
@@ -1698,8 +1707,8 @@ const HistoryShop: React.FC = () => {
                 </TouchableOpacity>
               </View>
             </ScrollView>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
     </Container>
   );

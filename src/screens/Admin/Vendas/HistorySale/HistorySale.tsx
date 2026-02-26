@@ -26,6 +26,7 @@ import {
   ActionButton,
   ActionText,
   ModalContent,
+  ModalOverlay,
   ModalTitle,
   CloseButton,
   CloseText,
@@ -1266,10 +1267,20 @@ const HistorySale: React.FC = () => {
       <Modal
         visible={modalOpcoesVisible}
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={fecharModalOpcoes}
       >
-        <ModalContent>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={fecharModalOpcoes}
+          style={{ flex: 1 }}
+        >
+          <ModalOverlay>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={(event) => event.stopPropagation()}
+            >
+              <ModalContent>
           <ModalTitle>Venda #{selectedVenda?.id}</ModalTitle>
 
           {selectedVenda && (
@@ -1346,7 +1357,10 @@ const HistorySale: React.FC = () => {
               Ir para o início
             </Text>
           </TouchableOpacity>
-        </ModalContent>
+              </ModalContent>
+            </TouchableOpacity>
+          </ModalOverlay>
+        </TouchableOpacity>
       </Modal>
 
       {/* MODAL DE NOTA COMPLETA (SUBSTITUI O INVOICE) */}

@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { BackButton, BackButtonText } from "../../../../Admin/Gestor/styles";
+import { } from "../../../../Admin/Gestor/styles";
 import { PostFornecedor } from "../../../../../Services/apiFruttyoog"; // ajuste o caminho
 
 const NewSuppliers: React.FC = () => {
@@ -55,11 +55,7 @@ const NewSuppliers: React.FC = () => {
   return (
     <Container>
       {/* Botão de voltar */}
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-      <Text
+<Text
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -106,3 +102,4 @@ const NewSuppliers: React.FC = () => {
 };
 
 export default NewSuppliers;
+

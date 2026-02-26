@@ -506,7 +506,7 @@ const StockReport: React.FC = () => {
                 style={{ flex: 1, marginRight: 5 }}
               >
                 <ButtonText active={filterType === "estoque-baixo"}>
-                  ⚠️ Estoque Baixo ({estatisticas.total.estoqueBaixo})
+                  Estoque Baixo ({estatisticas.total.estoqueBaixo})
                 </ButtonText>
               </Button>
 
@@ -948,19 +948,9 @@ const StockReport: React.FC = () => {
               }}
             >
               <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: "#E65100",
-                  marginRight: 10,
-                }}
-              >
-                ⚠️
-              </Text>
-              <Text
                 style={{ fontSize: 16, fontWeight: "bold", color: "#E65100" }}
               >
-                Atenção: Estoque Baixo
+                Estoque Baixo
               </Text>
             </View>
             <Text style={{ fontSize: 14, color: "#E65100", marginBottom: 10 }}>
@@ -1011,3 +1001,4 @@ const StockReport: React.FC = () => {
 };
 
 export default StockReport;
+

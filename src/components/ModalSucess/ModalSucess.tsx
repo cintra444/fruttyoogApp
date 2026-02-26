@@ -17,7 +17,7 @@ interface ModalSuccessProps {
 const ModalSuccess: React.FC<ModalSuccessProps> = ({ visible, message, onClose }) => {
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={visible}
             onRequestClose={onClose}

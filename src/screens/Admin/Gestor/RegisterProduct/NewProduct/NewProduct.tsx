@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, Alert, Text, ActivityIndicator, View } from "react-native";
 import { Container, Section, Label, Input, Button, ButtonText } from "./styles";
-import { BackButton, BackButtonText } from "../../styles";
+import { } from "../../styles";
 import api from "../../../../../Services/apiFruttyoog";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Picker } from "@react-native-picker/picker";
@@ -185,12 +185,7 @@ const NewProduct: React.FC = () => {
   return (
     <Container>
       {/* Botão de voltar */}
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-
-      <Text
+<Text
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -348,7 +343,7 @@ const NewProduct: React.FC = () => {
           </Button>
 
           <Button
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("RegisterProduct")}
             style={{ flex: 1, marginLeft: 10, backgroundColor: "#757575" }}
           >
             <ButtonText>Cancelar</ButtonText>
@@ -379,3 +374,4 @@ const NewProduct: React.FC = () => {
 };
 
 export default NewProduct;
+

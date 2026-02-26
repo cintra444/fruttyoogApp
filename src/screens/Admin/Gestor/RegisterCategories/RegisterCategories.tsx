@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 import { ScrollView, Text } from "react-native";
-import { Container, Card, CardIcon, CardTitle, BackButton, BackButtonText } from "../../Gestor/styles";
+import { Container, Card, CardIcon, CardTitle, } from "../../Gestor/styles";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
@@ -30,11 +30,7 @@ const RegisterCategories: React.FC = () => {
   return (
     <Container>
       {/* Botão de voltar */}
-                  <BackButton onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-left" size={33} color="#000" />
-                    <BackButtonText>Voltar</BackButtonText>
-                  </BackButton>
-                  <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gerenciar Categorias</Text>
+<Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginVertical: 20 }}>Gerenciar Categorias</Text>
     <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}>
       {cards.map((card) => (
         <Card key={card.title} onPress={card.onPress} activeOpacity={0.8} borderColor={card.color}>

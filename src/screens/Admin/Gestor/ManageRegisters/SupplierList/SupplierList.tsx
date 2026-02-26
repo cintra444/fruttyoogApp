@@ -21,7 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/Navigation/types";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { BackButton, BackButtonText } from "../../styles";
+import { } from "../../styles";
 
 interface Supplier {
   id: number;
@@ -79,12 +79,7 @@ const SupplierList: React.FC = () => {
 
   return (
     <Container>
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-
-      <Title
+<Title
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -133,3 +128,4 @@ const SupplierList: React.FC = () => {
 };
 
 export default SupplierList;
+

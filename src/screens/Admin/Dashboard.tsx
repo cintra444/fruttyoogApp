@@ -9,8 +9,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RootStackParamList } from "src/Navigation/types";
 
-import { Title } from "../Auth/Login/styles";
-
 type DashboardStackParamList = {
   Compras: undefined;
   Vendas: undefined;

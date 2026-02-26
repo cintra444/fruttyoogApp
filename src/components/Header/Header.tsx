@@ -1,6 +1,6 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { useNavigation, NavigationProp, useRoute } from "@react-navigation/native";
 import { FontAwesome as Icon } from "@expo/vector-icons";
 import { RootStackParamList } from "src/Navigation/types";
 import {
@@ -14,26 +14,27 @@ import {
 
 const Header: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute();
   const insets = useSafeAreaInsets();
+  const canGoBack = navigation.canGoBack();
+  const routeName = route.name === "Home" ? "Fruttyoog" : route.name;
 
   return (
     <HeaderContainer style={{ paddingTop: insets.top }}>
       <HeaderLeft>
-        <VersionText>Acessar</VersionText>
+        {canGoBack ? (
+          <IconButton onPress={() => navigation.goBack()}>
+            <Icon name="arrow-left" size={18} color="#111827" />
+          </IconButton>
+        ) : null}
       </HeaderLeft>
 
       <HeaderCenter>
-        <IconButton onPress={() => navigation.navigate("Login")}>
-          <Icon name="sign-in" size={24} color="#000" />
-        </IconButton>
-
-        <IconButton onPress={() => navigation.navigate("Register")}>
-          <Icon name="user-plus" size={24} color="#000" />
-        </IconButton>
+        <VersionText>{routeName}</VersionText>
       </HeaderCenter>
 
       <HeaderRight>
-        <VersionText>v1.0.0</VersionText>
+        <VersionText>v1</VersionText>
       </HeaderRight>
     </HeaderContainer>
   );

@@ -81,13 +81,20 @@ export const ActionText = styled.Text`
 `;
 
 export const ModalContent = styled.View`
-  flex: 1;
-  justify-content: center;
+  width: 92%;
+  max-width: 420px;
   background-color: white;
-  margin: 40px;
   padding: 20px;
   border-radius: 12px;
   elevation: 5;
+`;
+
+export const ModalOverlay = styled.View`
+  flex: 1;
+  background-color: rgba(15, 23, 42, 0.55);
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
 `;
 
 export const ModalTitle = styled.Text`

@@ -11,7 +11,11 @@ import {
   TotalText,
   BalanceText,
 } from "./styles";
-import { GetExpenses, GetRevenues } from "../../../Services/apiFruttyoog"; // ajuste conforme sua API
+import {
+  GetCompra,
+  GetDespesas,
+  GetVenda,
+} from "../../../Services/apiFruttyoog";
 
 interface Expense {
   id: number;
@@ -35,16 +39,55 @@ const MonthlyBalance: React.FC = () => {
     handleLoadData();
   }, []);
 
+  const isCurrentMonth = (value?: string) => {
+    if (!value) return false;
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return false;
+
+    const now = new Date();
+    return (
+      date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()
+    );
+  };
+
   const handleLoadData = async () => {
     try {
-      const exp = await GetExpenses(); // retorna despesas do mês atual
-      const rev = await GetRevenues(); // retorna receitas do mês atual
+      const [vendas, compras, despesas] = await Promise.all([
+        GetVenda(),
+        GetCompra(),
+        GetDespesas(),
+      ]);
 
-      setExpenses(exp || []);
-      setRevenues(rev || []);
+      const revenuesMapped: Revenue[] = (vendas || [])
+        .filter((item) => isCurrentMonth(item.dataVenda))
+        .map((item) => ({
+          id: item.id,
+          descricao: `Venda #${item.id} - ${item.cliente?.nome || "Cliente"}`,
+          valor: Number(item.valorTotal || 0),
+        }));
 
-      setTotalExpenses(exp?.reduce((acc: number, e: Expense) => acc + e.valor, 0) || 0);
-      setTotalRevenues(rev?.reduce((acc: number, r: Revenue) => acc + r.valor, 0) || 0);
+      const purchaseExpenses: Expense[] = (compras || [])
+        .filter((item) => isCurrentMonth(item.dataCompra))
+        .map((item) => ({
+          id: item.id,
+          descricao: `Compra #${item.id}`,
+          valor: Number(item.valorNota || 0),
+        }));
+
+      const miscExpenses: Expense[] = (despesas || [])
+        .filter((item) => isCurrentMonth(item.dataDespesa || item.data))
+        .map((item) => ({
+          id: item.id,
+          descricao: item.descricao || "Despesa",
+          valor: Number(item.valor || 0),
+        }));
+
+      const allExpenses = [...purchaseExpenses, ...miscExpenses];
+
+      setExpenses(allExpenses);
+      setRevenues(revenuesMapped);
+      setTotalExpenses(allExpenses.reduce((acc, e) => acc + e.valor, 0));
+      setTotalRevenues(revenuesMapped.reduce((acc, r) => acc + r.valor, 0));
     } catch {
       Alert.alert("Erro", "Não foi possível carregar os dados do balanço");
     }

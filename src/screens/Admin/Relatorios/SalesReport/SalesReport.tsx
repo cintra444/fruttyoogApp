@@ -102,6 +102,21 @@ interface Venda {
 
 type TimeRange = "hoje" | "semana" | "mes" | "ano" | "todos";
 
+const paymentLabelMap: Record<string, string> = {
+  DINHEIRO: "Dinheiro",
+  PIX: "PIX",
+  CARTAO_CREDITO: "Cartão de Crédito",
+  CARTAO_DEBITO: "Cartão de Débito",
+  CREDITO: "Cartão de Crédito",
+  DEBITO: "Cartão de Débito",
+  A_PRAZO: "A Prazo",
+  FIADO: "Fiado",
+  TRANSFERENCIA: "Transferência",
+  BOLETO: "Boleto",
+  CHEQUE: "Cheque",
+  OUTROS: "Outros",
+};
+
 /* =======================
    COMPONENTE
 ======================= */
@@ -303,16 +318,31 @@ const SalesReport: React.FC = () => {
   const paymentMethodsData = useMemo(() => {
     const map = new Map<string, number>();
 
+    const getPaymentLabel = (value: unknown): string => {
+      if (!value) return "Outros";
+
+      if (typeof value === "string") {
+        return paymentLabelMap[value] || value;
+      }
+
+      if (typeof value === "object") {
+        const raw =
+          (value as any).descricao ||
+          (value as any).tipo ||
+          (value as any).nome ||
+          (value as any).formaPagamento;
+
+        if (typeof raw === "string" && raw.trim().length > 0) {
+          return paymentLabelMap[raw] || raw;
+        }
+      }
+
+      return "Outros";
+    };
+
     filteredVendas.forEach((venda) => {
       venda.pagamentos?.forEach((pagamento) => {
-        // Tenta obter o nome da forma de pagamento
-        const formaPagamento = pagamento.formaPagamento;
-        let nomeForma = "Desconhecida";
-
-        if (formaPagamento && typeof formaPagamento === "object") {
-          nomeForma =
-            formaPagamento.nome || formaPagamento.tipo || "Desconhecida";
-        }
+        const nomeForma = getPaymentLabel(pagamento.formaPagamento);
 
         map.set(nomeForma, (map.get(nomeForma) || 0) + (pagamento.valor || 0));
       });

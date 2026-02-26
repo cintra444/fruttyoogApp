@@ -24,8 +24,6 @@ import {
   ItemRow,
   SectionTitle,
   RemoveItemButton,
-  BackButton,
-  BackButtonText,
   PriceInputContainer,
   PriceInput,
   PriceButton,
@@ -415,7 +413,9 @@ const NewShop: React.FC = () => {
       const pagamento = { ...novosPagamentos[index] };
 
       (pagamento as any)[campo] =
-        campo === "valor" ? parseFloat(valor) || 0 : valor;
+        campo === "valor"
+          ? parseFloat(String(valor).replace(",", ".")) || 0
+          : valor;
       novosPagamentos[index] = pagamento;
       return novosPagamentos;
     });
@@ -694,7 +694,7 @@ const NewShop: React.FC = () => {
         Alert.alert("Sucesso", "Compra cadastrada com sucesso!", [
           {
             text: "OK",
-            onPress: () => navigation.goBack(),
+            onPress: () => (navigation as any).navigate("HistoryShop"),
           },
           {
             text: "Nova Compra",
@@ -703,6 +703,11 @@ const NewShop: React.FC = () => {
             },
           },
         ]);
+      } else {
+        Alert.alert(
+          "Erro",
+          "Não foi possível salvar a compra. Verifique os dados e tente novamente."
+        );
       }
     } catch (error: any) {
       console.error("❌ Erro ao cadastrar compra:", error);
@@ -1214,12 +1219,7 @@ const NewShop: React.FC = () => {
 
   return (
     <Container>
-      <BackButton onPress={() => navigation.goBack()}>
-        <Icon name="arrow-left" size={33} color="#000" />
-        <BackButtonText>Voltar</BackButtonText>
-      </BackButton>
-
-      <Title>Nova Compra</Title>
+<Title>Nova Compra</Title>
 
       <ScrollView showsVerticalScrollIndicator={true} style={{ flex: 1 }}>
         {/* Seção: Dados da Compra */}
@@ -1649,3 +1649,4 @@ const NewShop: React.FC = () => {
 };
 
 export default NewShop;
+
